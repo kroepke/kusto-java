@@ -1,0 +1,3 @@
+[submodule "upstream/kusto-query-language"]
+	path = upstream/kusto-query-language
+	url = https://github.com/microsoft/Kusto-Query-Language
