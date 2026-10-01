@@ -720,7 +720,9 @@ output `{api, input, ok, value}` is committed as `dotnet-facts.json` and every c
 - `LinkedHashMap`/`LinkedHashSet` everywhere (3.17). `Distinct()` is insertion-ordered.
 - `List.Sort` is unstable in .NET; the single site (`SyntaxFacts.cs:773`) sorts 605 entries,
   287 with text `""`, then `GetOrAddValue` keeps the first per text. Only the `""` key is
-  affected: Java does not register `""` (D13) and `TrapsTest.tryGetKindEmpty` pins the oracle's answer.
+  affected. The oracle answers `TryGetKind("") == (true, SyntaxKind.None)` (`run.sh probe`,
+  2026-10-02); Java registers `""` → `None` explicitly after the sort (D13) and
+  `TrapsTest.tryGetKindEmpty` pins it.
 - `OrderBy` (stable) → `List.sort` (stable). `StringComparer.OrdinalIgnoreCase` → upper-case
   per char then compare (`'_'` vs `'a'` differs from `String.CASE_INSENSITIVE_ORDER`).
 - `StringAndNumberComparer` quirks (`:97-115`) mirrored with `// PORT-BUG`.
@@ -757,8 +759,9 @@ Constants stay: `QueryParser.MaxDepth = 300`, `ForwardParser.MaxCallDepth = 30`,
 - Invariants: `KustoCode.parse` never throws (no `Throwable` on a 4 MB thread, every corpus and
   fuzz input). `parseAndAnalyze` and lazy `SyntaxToken.value()` follow "Java throws iff the
   oracle throws", recorded in the golden `outcome`. T0 measures on the oracle whether
-  `ParseAndAnalyze` ever throws over the corpora; if it never does, the Java invariant is
-  tightened to "never throws" for analysis too.
+  `ParseAndAnalyze` ever throws over the corpora. **Result (2026-10-02): zero throws over
+  readme, docs and sentinel (6,266 records), zero token-value throws.** The Java invariant is
+  therefore "never throws" for analysis too; `outcome.analyze` still records any throw.
 
 ---
 
@@ -809,11 +812,12 @@ Full lists: `porting/scope.json` and `porting/manifest.json`. Summary
 
 Command text (`.`-prefixed), decided:
 
-1. **Unverified claim, to be settled in T0:** with zero command parsers, `CommandGrammar` may
-   throw in `PartialParser.FindBestPath` (`Enumerable.Max` on empty, `PartialParser.cs:365`).
-   T0 runs the oracle with `GlobalState.Default.WithServerKind("Unknown")` on `.foo` and
-   records the result. D10 (a guard in `CommandGrammar.partialCommand` returning `-1` when
-   `commandParsers.length == 0`) is adopted only if it throws.
+1. **Settled in T0 (`oracle/run.sh probe`, 2026-10-02):** with zero command parsers,
+   `.foo` under `GlobalState.Default.WithServerKind("Unknown")` throws
+   `InvalidOperationException` ("Sequence contains no elements") from
+   `PartialParser.FindBestPath` (`PartialParser.cs:365`) for both `Parse` and
+   `ParseAndAnalyze`. D10 is adopted: `CommandGrammar.partialCommand` returns `-1` when
+   `commandParsers.length == 0`, so Java commands parse as `UnknownCommand` without throwing.
 2. Commands parse as `UnknownCommand`; `.show tables | where …` binds against a null row scope
    and reports false "name does not refer to any known item" errors. **Mirror upstream's
    `UnknownCommand` path unchanged.** Command records are compared on tokens and fidelity
@@ -839,10 +843,10 @@ Command text (`.`-prefixed), decided:
 | D7 | `Parsers<TInput>` | static generic methods + `LexicalTokenParsers` facade (3.10) | no static import from generic type |
 | D8 | `QueryGrammar.Initialize` | split into region methods; cross-boundary locals become fields (3.19) | 64 KB |
 | D9 | `ForwardParser.s_callDepth` | one shared `ThreadLocal` counter; fallback is result-equivalent (3.9) | erasure |
-| D10 | `CommandGrammar.partialCommand` | guard for zero command parsers (8), **if T0 confirms the throw** | stub |
+| D10 | `CommandGrammar.partialCommand` | guard for zero command parsers (8); T0 confirmed the throw | stub |
 | D11 | `DateTime.TryParse` | `Z`/offset → UTC, not local (5.2) | determinism |
 | D12 | culture-sensitive string APIs | ordinal (5.4) | invariant policy |
-| D13 | `SyntaxFacts.textToKindMap` | `""` not registered (5.3) | unstable sort |
+| D13 | `SyntaxFacts.textToKindMap` | `""` registered explicitly as `None`, matching the oracle (5.3) | unstable sort |
 | D14 | yield methods | eager lists (3.4) | cold paths |
 | D15 | `Interlocked.CacheLineSeparated` | dropped (`scope.json droppedTypes`) | dead code |
 | D16 | catalog named arguments | `P` builder (3.12) | Java |

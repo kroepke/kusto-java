@@ -28,7 +28,7 @@ All committed. `mvn verify` never needs .NET.
  "generatedAt": "<ISO-8601>"}
 ```
 `sourcesSha256` is the SHA-256 over the sorted list of `(path, blob)` of every compiled C# file,
-including the generated ones. Java compares `upstream` with `manifest.upstreamCommit` and
+including the generated ones and the oracle's own `oracle/kusto-oracle/src/*.cs`. Java compares `upstream` with `manifest.upstreamCommit` and
 fails the suite on mismatch.
 
 ## Record
@@ -59,7 +59,9 @@ From `KustoCode.GetLexicalTokens()` of the **analysed** code (so `AlwaysProduceE
 `kind` = `SyntaxKind` member name; `triviaStart` = offset of the trivia; `start` = offset of
 the text; `end` = `start + text.Length`; `value` = `DotNet.str(token.Value)` for literal
 tokens (`SyntaxToken.Value` after `SyntaxToken.From`), else `null`; if computing the value
-throws, `value` is `"!<ExceptionTypeName>"` and `outcome.tokenValues` becomes `"throw"`.
+throws, `value` is `"!<ExceptionTypeName>"` (unmapped .NET name) and `outcome.tokenValues`
+becomes `"throw:<Name>"` (mapped). The token `value` is set only for literal tokens
+(`SyntaxToken.From(lexicalToken).Value` when `IsLiteral`), else `null`.
 `diagnostics` = the token's own diagnostics (same shape as below, positions absolute).
 
 ### fidelity
@@ -132,3 +134,9 @@ build `GlobalState.Default.WithCluster(new ClusterSymbol(cluster, new DatabaseSy
   `unclassified`. Pass rates per layer exclude known differences and print their count.
 - Known differences are reviewed like code: each entry has a `reason`, a `dRow` and an
   `expires` upstream commit after which it must be re-justified.
+
+## Rendering decisions (T0)
+
+The oracle's concrete choices for points this document leaves open (string escaping, token
+diagnostic positions, `symbolOwner` lookup, `signature` text, empty results on throw, schema
+member order) are recorded in `oracle/README.md` and are normative for `GoldenWriter`.
