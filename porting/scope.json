@@ -478,5 +478,170 @@
   "src/Kusto.Language/Symbols/": 1,
   "src/Kusto.Language/Syntax/": 0,
   "src/Kusto.Language/Utils/": 0
- }
+ },
+ "synthetic": [
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Out.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/IntRef.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func3.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func4.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func5.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func6.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func7.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func8.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func9.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Linq.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetStrings.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetChars.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetNumber.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetDecimal.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetBoolean.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetGuid.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/TimeSpan.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DateTime.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNet.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/OperationCanceledException.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Internal.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/IntList.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/ReadOnlyList.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/EqualityComparer.java",
+   "module": "kusto-language",
+   "wave": 0,
+   "purpose": ".NET compatibility shim (no upstream source)"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LexicalTokenParsers.java",
+   "module": "kusto-language",
+   "wave": 3,
+   "purpose": "non-generic facade over Parsers<LexicalToken>, generated by kusto-language-generator"
+  },
+  {
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/P.java",
+   "module": "kusto-language",
+   "wave": 1,
+   "purpose": "named-argument builder for Parameter, catalogs only"
+  }
+ ],
+ "droppedTypes": [
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
+   "type": "CacheLineSeparated",
+   "reason": "dead code (PORTING.md D15)"
+  }
+ ]
 }

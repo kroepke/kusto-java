@@ -23,6 +23,14 @@ JAVA PATH RULES
   DefaultSyntaxVisitor, SyntaxVisitor1, DefaultSyntaxVisitor1. Hand-written partials of those
   classes map to the generated path with a mergeNote.
 - Stubs: from scope.json; status "stubbed".
+- Per-type drops: scope.json "droppedTypes" [{upstreamPath,type,reason}]; the type's javaPath is
+  omitted from the entry (and its types[]) and recorded under entry "droppedTypes".
+- Synthetic entries: scope.json "synthetic" [{javaPath,module,wave,purpose}] -> entries with
+  upstreamPath/upstreamBlob null, scope "synthetic", status "pending".
+- Hand-owned fields: porting/status.json (optional, never written by this script) maps
+  <upstreamPath> (or <javaPath> for synthetic entries) -> {status, notes, syncedAt, droppedMembers, ...};
+  its fields are merged over the computed entry. Defaults: syncedAt = manifest upstreamCommit,
+  droppedMembers = [].
 Status values: pending, generated, stubbed, excluded, unclassified (ported/partial set by hand).
 """
 import json, re, subprocess, sys, os, collections
@@ -318,6 +326,11 @@ def main():
                 if not t['partial']:
                     warnings.append('%s: hand-written type %s shares name with generated node but is not partial' % (path, jn))
             recs.append(rec)
+        drops = [d for d in scope.get('droppedTypes', []) if d['upstreamPath'] == path]
+        if drops:
+            dn = {d['type']: d for d in drops}
+            e['droppedTypes'] = [{'type': r['name'], 'javaPath': r['javaPath'], 'reason': dn[r['name']]['reason']} for r in recs if r['name'] in dn]
+            recs = [r for r in recs if r['name'] not in dn]
         e['types'] = recs
         if e['scope'] == 'stub':
             for r in recs: r['stub'] = True       # javaPath of the stub is e['javaPaths'], not derived
@@ -409,9 +422,40 @@ def main():
         if not ok: errors.append(msg)
     if not ok_a: errors.append('entry/file mismatch')
 
+    # ---- synthetic entries
+    status_over = {}
+    sp = os.path.join(ROOT, 'status.json')
+    if os.path.exists(sp):
+        status_over = json.load(open(sp))
+    for sy in scope.get('synthetic', []):
+        jp = sy['javaPath']
+        if jp in entries:
+            errors.append('duplicate synthetic javaPath ' + jp); continue
+        entries[jp] = {'upstreamPath': None, 'upstreamBlob': None, 'scope': 'synthetic', 'status': 'pending',
+                       'wave': sy.get('wave'), 'lines': 0, 'namespace': None, 'types': [], 'javaPaths': [jp],
+                       'partialGroup': None, 'purpose': sy.get('purpose', ''), 'traps': [], 'notes': '',
+                       'module': sy.get('module')}
+    for k in status_over:
+        if k not in entries: warnings.append('status.json key not in manifest: ' + k)
+    for k, e in entries.items():
+        e.update(status_over.get(k, {}))
+        e.setdefault('syncedAt', commit)
+        e.setdefault('droppedMembers', [])
+    # synthetic javaPaths participate in uniqueness checks
+    for sy in scope.get('synthetic', []):
+        if sy['javaPath'] in by_jp or any(sy['javaPath'] in e['javaPaths'] for e in entries.values() if e['scope'] != 'synthetic'):
+            errors.append('synthetic javaPath collides: ' + sy['javaPath'])
+        modnames[sy['javaPath'].split('/')[0]][os.path.basename(sy['javaPath'])].add(sy['javaPath'])
+        all_jps.add(sy['javaPath'])
+    dup_c = [(m, n, sorted(v)) for m, d in modnames.items() for n, v in d.items() if len(v) > 1]
+    for x in dup_c:
+        msg = 'duplicate Java file name in module %s: %s' % (x[0], x[2])
+        if msg not in errors: errors.append(msg)
+    report = [r if not r[0].startswith('(c)') else (r[0], not dup_c, '%d modules, %d paths (incl. synthetic), %d dup names' % (len(modnames), len(all_jps), len(dup_c))) for r in report]
+
     # ---- write manifest
     out = {'upstreamCommit': commit, 'generatedBy': 'porting/tools/build_manifest.py',
-           'entries': [entries[p] for p in sorted(entries)]}
+           'entries': [entries[p] for p in sorted(entries, key=lambda k: (entries[k]['upstreamPath'] is None, k))]}
     for e in out['entries']:
         for t in e['types']:
             t.pop('namespace', None) if t.get('namespace') == e['namespace'] else None
@@ -433,7 +477,7 @@ def main():
     for w in waves_s: waves_s[w]['javaFiles'] = len(jfiles_by_wave[w])
     multi = sorted(((e['upstreamPath'], len(e['types'])) for e in ents if len(e['types']) > 1 and e['status'] != 'generated'), key=lambda x: (-x[1], x[0]))
     summary = {'upstreamCommit': commit, 'perWave': dict(sorted(waves_s.items())), 'perScope': dict(scope_c),
-               'perStatus': dict(status_c), 'inScopeLines': inscope_lines,
+               'perStatus': dict(status_c), 'entriesTotal': len(ents), 'syntheticCount': scope_c.get('synthetic', 0), 'inScopeLines': inscope_lines,
                'totalJavaFiles': len({p for e in ents for p in e['javaPaths']}),
                'arityFamilies': fam_table, 'multiTypeFiles': [{'upstreamPath': p, 'topLevelTypes': c} for p, c in multi],
                'generatedNodeCount': len(node_names), 'unclassified': unclassified}

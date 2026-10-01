@@ -2,14 +2,14 @@
  "upstreamCommit": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
  "perWave": {
   "0": {
-   "files": 51,
+   "files": 75,
    "lines": 15451,
-   "javaFiles": 297
+   "javaFiles": 320
   },
   "1": {
-   "files": 52,
+   "files": 53,
    "lines": 7910,
-   "javaFiles": 71
+   "javaFiles": 72
   },
   "2": {
    "files": 6,
@@ -17,9 +17,9 @@
    "javaFiles": 5
   },
   "3": {
-   "files": 45,
+   "files": 46,
    "lines": 16340,
-   "javaFiles": 59
+   "javaFiles": 60
   },
   "4": {
    "files": 15,
@@ -42,16 +42,19 @@
   "buildTime": 4,
   "include": 180,
   "stub": 9,
-  "optional": 8
+  "optional": 8,
+  "synthetic": 26
  },
  "perStatus": {
   "excluded": 124,
-  "pending": 191,
+  "pending": 217,
   "stubbed": 9,
   "generated": 1
  },
+ "entriesTotal": 351,
+ "syntheticCount": 26,
  "inScopeLines": 75551,
- "totalJavaFiles": 473,
+ "totalJavaFiles": 498,
  "arityFamilies": [
   {
    "namespace": "Kusto.Language",
@@ -323,10 +326,6 @@
   },
   {
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxList.cs",
-   "topLevelTypes": 2
-  },
-  {
-   "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
    "topLevelTypes": 2
   },
   {
