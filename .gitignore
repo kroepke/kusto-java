@@ -1,0 +1,10 @@
+target/
+build/
+oracle/generated/
+oracle/**/bin/
+oracle/**/obj/
+*.iml
+.idea/
+.vscode/
+*.swp
+.DS_Store
