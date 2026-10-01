@@ -1,0 +1,1862 @@
+{
+ "upstreamCommit": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
+ "javaRoot": "kusto-language/src/main/java/org/graylog/kusto/language",
+ "entryPoints": [
+  "src/Kusto.Language/KustoCode.cs:147 Parse",
+  "src/Kusto.Language/KustoCode.cs:164 ParseAndAnalyze"
+ ],
+ "conventions": {
+  "optional": "true = in scope by directory but not reachable from entry points; cheap to port, safe to defer",
+  "buildTimeOnly": "true = generator input, not runtime code",
+  "deviation": "documented behavioural difference needed for the cut"
+ },
+ "include": [
+  {
+   "upstreamPath": "src/Kusto.Language/KustoCode.cs",
+   "reason": "Entry point: Parse (147), ParseAndAnalyze (164), Create (200), Analyze, GetDiagnostics.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoCode.java",
+   "lines": 518
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/GlobalState.cs",
+   "reason": "Entry-point argument; holds catalogs, ParseOptions, Cache, ServerKind, commandMap (118) and GetCommand (847). Default (1150-1196) wires Functions/Aggregates/PlugIns/Operators/Options.All.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/GlobalState.java",
+   "lines": 1218
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Functions.cs",
+   "reason": "Built-in scalar function catalog; GlobalState.Default (1170).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Functions.java",
+   "lines": 4227
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Functions.Convert.cs",
+   "reason": "partial class Functions (line 11); merge into Functions.java per partial-class rule.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Functions.java",
+   "lines": 342
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Aggregates.cs",
+   "reason": "Built-in aggregate catalog; GlobalState.Default (1171).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Aggregates.java",
+   "lines": 861
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/PlugIns.cs",
+   "reason": "Built-in plugin catalog; GlobalState.Default (1172).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/PlugIns.java",
+   "lines": 1180
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Operators.cs",
+   "reason": "Built-in operator catalog; GlobalState.Default (1173); QueryParser/QueryGrammar/SyntaxFacts.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Operators.java",
+   "lines": 420
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/FunctionHelpers.cs",
+   "reason": "Used by Functions/Aggregates/PlugIns to build signatures.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/FunctionHelpers.java",
+   "lines": 153
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/FunctionBodyFacts.cs",
+   "reason": "Used by Binder caches (GlobalBindingCache, LocalBindingCache, Binder_FunctionCalls, FunctionCallInfo) and SyntaxNode_Semantics.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/FunctionBodyFacts.java",
+   "lines": 363
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/QueryOperatorParameters.cs",
+   "reason": "Operator parameter catalog; QueryParser, QueryGrammar, KustoFacts, Binder_TreeBinder, Binder_NodeBinder.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/QueryOperatorParameters.java",
+   "lines": 639
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Options.cs",
+   "reason": "Query option catalog: GlobalState.Default passes Language.Options.All (GlobalState.cs:1174). Required.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Options.java",
+   "lines": 255
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Properties.cs",
+   "reason": "GlobalStateProperty constants read by in-scope code: MaxAnalysisDepth (Syntax/SyntaxTree.cs:54), MaxCachedResultTypes (Binder/Binder_FunctionCalls.cs:1992), MaxCachedExpansions (Binder_FunctionCalls.cs:2202), AllowClientParameters (Binder/Binder_NodeBinder.cs:586). MaxParseTextSize is only read by Editor (KustoCodeService.cs:74) but is one field of the same static class; keep for mirror fidelity.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Properties.java",
+   "lines": 46
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/KustoCache.cs",
+   "reason": "Required: Binder.TryBind calls globals.WithCache() and Cache.GetOrCreate<GlobalBindingCache>() (Binder/Binder_API.cs:168-169, also 283/288, 314-315, 349-350, 383-384); QueryGrammar.From (Parser/QueryGrammar.cs:41-43); CommandGrammar.From (Parser/CommandGrammar.cs:385,411). Java: key the map by Class<?>.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoCache.java",
+   "lines": 76
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/KustoDialect.cs",
+   "reason": "5-value enum; KustoCode.Dialect (KustoCode.cs:114-139) and KustoFacts.CanBeIdentifier/BracketNameIfNecessary (Parser/KustoFacts.cs:607-672). Trivial; port as-is.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoDialect.java",
+   "lines": 12
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/ServerKinds.cs",
+   "reason": "4 string constants; GlobalState.cs:195,873-880,1171; KustoCode.cs:123-127; CommandGrammar.cs:383-458. Trivial; port as-is.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/ServerKinds.java",
+   "lines": 19
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_API.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 870
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 63
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_ContextBuilder.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 565
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_FunctionCalls.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 2766
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_Misc.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "note": "Uses Editor.ClientDirectiveArgument (781) and ConnectionInfo (750) for #database/#connect directives (656-760).",
+   "lines": 2803
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_Names.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "note": "Reads Editor.CompletionHint semantically to decide tabular context (851-857).",
+   "lines": 866
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 4681
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_Operators.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 304
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_Projection.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 839
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 105
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 571
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java",
+   "lines": 1211
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/CallSiteInfo.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/CallSiteInfo.java",
+   "lines": 87
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/ColumnMap.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ColumnMap.java",
+   "lines": 301
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/FunctionCallExpansion.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/FunctionCallExpansion.java",
+   "lines": 18
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/FunctionCallInfo.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/FunctionCallInfo.java",
+   "lines": 99
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/FunctionCallResult.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/FunctionCallResult.java",
+   "lines": 40
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/GlobalBindingCache.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/GlobalBindingCache.java",
+   "lines": 33
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/LocalBindingCache.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/LocalBindingCache.java",
+   "lines": 28
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/LocalScope.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/LocalScope.java",
+   "lines": 233
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/ParameterMatchKind.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ParameterMatchKind.java",
+   "lines": 97
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/ProjectionBuilder.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ProjectionBuilder.java",
+   "lines": 225
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/ScopeKind.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ScopeKind.java",
+   "lines": 34
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/SemanticInfo.cs",
+   "reason": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/SemanticInfo.java",
+   "lines": 244
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ArgumentKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ArgumentKind.java",
+   "lines": 67
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ClusterSymbol.java",
+   "lines": 182
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ColumnSymbol.java",
+   "lines": 223
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/CombineKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CombineKind.java",
+   "lines": 26
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/CommandSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CommandSymbol.java",
+   "note": "Port as-is (71 lines, depends only on TableSymbol/SchemaDisplay). Needed by GlobalState.GetCommand (847) and Binder_NodeBinder.VisitCustomCommand (4633).",
+   "lines": 71
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/Conversion.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Conversion.java",
+   "lines": 38
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/CustomAvailabilityContext.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomAvailabilityContext.java",
+   "lines": 15
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/CustomAvailabilty.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomAvailabilty.java",
+   "lines": 7
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/CustomReturnType.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomReturnType.java",
+   "lines": 7
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/CustomReturnTypeContext.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomReturnTypeContext.java",
+   "lines": 142
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/DatabaseSymbol.java",
+   "lines": 319
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/DebugDisplay.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/DebugDisplay.java",
+   "lines": 199
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/DynamicSymbol.java",
+   "lines": 169
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/EmptyScope.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/EmptyScope.java",
+   "lines": 18
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/EntityGroupElementSymbol.java",
+   "lines": 67
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/EntityGroupSymbol.java",
+   "lines": 96
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ErrorSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ErrorSymbol.java",
+   "lines": 25
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/FunctionSymbol.java",
+   "lines": 420
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/GraphModelSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/GraphModelSymbol.java",
+   "lines": 119
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/GraphSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/GraphSymbol.java",
+   "lines": 156
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/GroupSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/GroupSymbol.java",
+   "lines": 35
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/OperatorKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/OperatorKind.java",
+   "lines": 78
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/OperatorSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/OperatorSymbol.java",
+   "lines": 46
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/OptionSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/OptionSymbol.java",
+   "lines": 43
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/Parameter.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Parameter.java",
+   "lines": 356
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayout.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterLayout.java",
+   "lines": 108
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayouts.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterLayouts.java",
+   "lines": 495
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ParameterSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterSymbol.java",
+   "lines": 29
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ParameterTypeKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterTypeKind.java",
+   "lines": 156
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/PatternSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/PatternSymbol.java",
+   "lines": 118
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ResultNameKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ResultNameKind.java",
+   "lines": 59
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ReturnTypeKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ReturnTypeKind.java",
+   "lines": 138
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ScalarSymbol.java",
+   "lines": 120
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ScalarTypes.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ScalarTypes.java",
+   "lines": 388
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/SchemaDisplay.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/SchemaDisplay.java",
+   "lines": 75
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/Scope.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Scope.java",
+   "lines": 24
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/Signature.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Signature.java",
+   "lines": 694
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/Symbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Symbol.java",
+   "lines": 362
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/SymbolKind.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/SymbolKind.java",
+   "lines": 146
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/SymbolMatch.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/SymbolMatch.java",
+   "lines": 228
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TableState.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TableState.java",
+   "lines": 75
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TableSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TableSymbol.java",
+   "lines": 600
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/Tabularity.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Tabularity.java",
+   "lines": 40
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TupleSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TupleSymbol.java",
+   "lines": 64
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TypeFacts.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TypeFacts.java",
+   "lines": 634
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TypeSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TypeSymbol.java",
+   "lines": 19
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/VariableSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/VariableSymbol.java",
+   "lines": 57
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/VoidSymbol.cs",
+   "reason": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/VoidSymbol.java",
+   "lines": 25
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+   "reason": "Diagnostic model; KustoCode.GetDiagnostics (KustoCode.cs:366-382). No Editor/command dependencies found.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Diagnostic.java",
+   "lines": 239
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs",
+   "reason": "Diagnostic model; KustoCode.GetDiagnostics (KustoCode.cs:366-382). No Editor/command dependencies found.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/DiagnosticFacts.java",
+   "lines": 1127
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ArgumentCheckers.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ArgumentCheckers.java",
+   "lines": 59
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Cancellation.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Cancellation.java",
+   "lines": 41
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ConnectionInfo.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ConnectionInfo.java",
+   "lines": 104
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/DictionaryExtensions.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/DictionaryExtensions.java",
+   "lines": 59
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/EmptyReadOnlyList.java",
+   "lines": 10
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Ensure.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Ensure.java",
+   "lines": 67
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/HashSetExtensions.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/HashSetExtensions.java",
+   "lines": 21
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Interlocked.java",
+   "lines": 118
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ListExtensions.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ListExtensions.java",
+   "lines": 431
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/MostRecentlyUsedCache.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/MostRecentlyUsedCache.java",
+   "lines": 83
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ObjectPool.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ObjectPool.java",
+   "lines": 61
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Optional.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Optional.java",
+   "lines": 22
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/SafeList.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/SafeList.java",
+   "lines": 136
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/StringAndNumberComparer.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/StringAndNumberComparer.java",
+   "lines": 131
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/StringExtensions.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/StringExtensions.java",
+   "lines": 28
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/StringTable.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/StringTable.java",
+   "lines": 98
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/SubstringMap.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/SubstringMap.java",
+   "lines": 212
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/TextKeyedDictionary.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/TextKeyedDictionary.java",
+   "lines": 223
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ThreadSafeDictionary.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ThreadSafeDictionary.java",
+   "lines": 70
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/UniqueNameTable.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/UniqueNameTable.java",
+   "lines": 77
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ValueComparer.cs",
+   "reason": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ValueComparer.java",
+   "lines": 108
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/CustomNode.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/CustomNode.java",
+   "note": "Used by Binder_Names (293-377), Binder_TreeBinder (1032), Binder_NodeBinder (1209), SyntaxVisitor (12,23,41,48). Carries CompletionHint per element.",
+   "lines": 236
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/FakeExpression.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/FakeExpression.java",
+   "lines": 28
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SeparatedElement.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SeparatedElement.java",
+   "lines": 87
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxCategory.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxCategory.java",
+   "lines": 47
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxElement.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxElement.java",
+   "lines": 1219
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxExtensions.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxExtensions.java",
+   "lines": 57
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxFacts.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxFacts.java",
+   "lines": 930
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxKind.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxKind.java",
+   "lines": 735
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxList.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxList.java",
+   "lines": 142
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxNode.java",
+   "note": "Directive.Name/ArgumentsText/Arguments (267,272,277) parse lazily via Editor.ClientDirective.TryParse (288). NamedParameter.GetCompletionHint (249).",
+   "mergeNote": "16 partial classes, most extend T4-generated nodes (Expression 107, Directive ~262, NamedParameter ~247, ...): merge each into the corresponding generated Java node class.",
+   "lines": 297
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxNode_Semantics.java",
+   "mergeNote": "Partials of SyntaxNode (14), SyntaxElement (103), Expression (233): merge into those Java files, not a separate file.",
+   "lines": 281
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxToken.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxToken.java",
+   "lines": 771
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxTree.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxTree.java",
+   "lines": 77
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxVisitor.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxVisitor.java",
+   "lines": 63
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/ValueInfo.cs",
+   "reason": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/ValueInfo.java",
+   "lines": 31
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CharScanners.cs",
+   "reason": "Not reachable: only caller is Editor/Kusto/Analyzers/AvoidUsingHasWithIPv4Strings.cs.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CharScanners.java",
+   "optional": true,
+   "lines": 64
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/ArraySource.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ArraySource.java",
+   "lines": 47
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Describer.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Describer.java",
+   "lines": 309
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/LimitSource.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LimitSource.java",
+   "lines": 29
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/OffsetValue.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/OffsetValue.java",
+   "lines": 29
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParseResult.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParseResult.java",
+   "lines": 26
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Parser.java",
+   "lines": 258
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserExtensions.cs",
+   "reason": "Not reachable: no callers anywhere (grep). Parser<char> convenience methods.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParserExtensions.java",
+   "optional": true,
+   "lines": 34
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParserVisitors.java",
+   "lines": 161
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Parsers.java",
+   "lines": 1520
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ApplyParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ApplyParser.java",
+   "lines": 147
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/BestParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/BestParser.java",
+   "lines": 312
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ConvertParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ConvertParser.java",
+   "lines": 128
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FailsParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/FailsParser.java",
+   "lines": 63
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FirstParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/FirstParser.java",
+   "lines": 207
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ForwardParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ForwardParser.java",
+   "lines": 109
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/IfParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/IfParser.java",
+   "lines": 155
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/LimitParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LimitParser.java",
+   "lines": 86
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ListPrimaryParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ListPrimaryParser.java",
+   "lines": 36
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MapParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/MapParser.java",
+   "lines": 190
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MatchParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/MatchParser.java",
+   "lines": 150
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/NotParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/NotParser.java",
+   "lines": 61
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/OneOrMoreParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/OneOrMoreParser.java",
+   "lines": 91
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/OptionalParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/OptionalParser.java",
+   "lines": 90
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ProduceParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ProduceParser.java",
+   "lines": 77
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/RequiredParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/RequiredParser.java",
+   "lines": 84
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ResultPrimaryParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ResultPrimaryParser.java",
+   "lines": 23
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/RuleParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/RuleParser.java",
+   "lines": 114
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SequenceParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SequenceParser.java",
+   "lines": 91
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SourceConsumer.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SourceConsumer.java",
+   "lines": 12
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SourceProducer.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SourceProducer.java",
+   "lines": 17
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ZeroOrMoreParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ZeroOrMoreParser.java",
+   "lines": 86
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/PartialParser.cs",
+   "reason": "Referenced by CommandGrammar.cs:57,65. Also used by Editor completion. Port with CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/PartialParser.java",
+   "lines": 1177
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/RightParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/RightParser.java",
+   "lines": 40
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeParse.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SafeParse.java",
+   "lines": 700
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeScan.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SafeScan.java",
+   "lines": 695
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Source.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Source.java",
+   "lines": 87
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/TextSource.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TextSource.java",
+   "lines": 76
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CommandFacts.cs",
+   "reason": "Not reachable from entry points: only referenced by itself (CommandFacts) and used by no in-scope file (grep). Depends on ScriptFacts/CommentFacts. Cheap public utility.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CommandFacts.java",
+   "optional": true,
+   "lines": 115
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CommandGrammar.cs",
+   "reason": "Reached by KustoCode.Create for any text whose first token is '.' (KustoCode.cs:210-214, GetKind 331-359). Base class supplies UnknownCommand fallback (CommandGrammar.cs:519-525), CommandBlock, pipe-to-query and CreateCommandGrammar switch (448-463). Port fully; the four generated subclasses are stubs.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CommandGrammar.java",
+   "deviation": "PORT-DEVIATION REQUIRED: with zero command parsers, partialCommand (53-78) calls PartialParser.ScanPartialBest on an empty array; FindBestPath does results.Max(...) on an empty List (Parser/Combinators/PartialParser.cs:365) which throws InvalidOperationException in .NET. Upstream only reaches this via the default branch (461) for unrecognised server kinds. Guard: if commandParsers.length == 0, the partialCommand scanner returns -1 (or omit bestCommandOrPartial from First()). Verify with a Java test parsing '.show tables'.",
+   "lines": 872
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CommentFacts.cs",
+   "reason": "Not reachable: only caller is Parser/CommandFacts.cs.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CommentFacts.java",
+   "optional": true,
+   "lines": 109
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/KustoFacts.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/KustoFacts.java",
+   "lines": 1483
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+   "reason": "partial class KustoFacts; s_engineCommandKeywordsThatNeedBrackets (14) is a static string set, not generated. Merge into KustoFacts.java.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/KustoFacts.java",
+   "lines": 187
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/LexicalToken.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LexicalToken.java",
+   "lines": 57
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/ParseOptions.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParseOptions.java",
+   "lines": 114
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/PredefinedRuleParsers.cs",
+   "reason": "Constructed unconditionally in CommandGrammar ctor (CommandGrammar.cs:45). Only consumed by generated command grammars, but needed to keep the ctor intact. 17 Editor.CompletionHint uses (179-315).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/PredefinedRuleParsers.java",
+   "lines": 396
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/QueryGrammar.cs",
+   "reason": "Always constructed: KustoCode.Create calls QueryGrammar.From(globals).QueryBlock even for ParserKind.Default (KustoCode.cs:217-218), stored in KustoCode.Grammar (42, consumed only by Editor). Also used by ParserKind.Grammar (225-227) and CommandGrammar (42). Heavy CompletionKind/CompletionItem/CompletionPriority/CompletionRank/CompletionHint annotation use.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/QueryGrammar.java",
+   "lines": 4101
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/QueryParser.cs",
+   "reason": "Default parser: KustoCode.cs:223. Uses Editor.CompletionHint (3409-3417).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/QueryParser.java",
+   "lines": 7062
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/ScannerExtensions.cs",
+   "reason": "Not reachable: no callers anywhere (grep).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ScannerExtensions.java",
+   "optional": true,
+   "lines": 84
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/ScriptFacts.cs",
+   "reason": "Not reachable from entry points: only caller is Editor/CodeScript.cs:157 and Parser/CommandFacts.cs:78-79. Uses Editor.TextRange (90,121-145).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ScriptFacts.java",
+   "optional": true,
+   "lines": 158
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/SyntaxParsers.cs",
+   "reason": "Grammar helpers; builds CompletionItem annotations (105-160, 287-456, 664).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SyntaxParsers.java",
+   "lines": 672
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/TextFacts.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TextFacts.java",
+   "lines": 656
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/TokenParser.cs",
+   "reason": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TokenParser.java",
+   "lines": 1321
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/TriviaFacts.cs",
+   "reason": "Not reachable: only callers are Editor/Kusto/KustoCodeService.cs:533 and KustoCompleter.cs:379. 'using Kusto.Language.Editor' (line 5) is unused.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TriviaFacts.java",
+   "optional": true,
+   "lines": 62
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeKinds.cs",
+   "reason": "(a) 4 string constants. KustoCode.cs:120,132,133,210,215,341,358.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeKinds.java",
+   "optional": false,
+   "lines": 33
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionHint.cs",
+   "reason": "(a) [Flags] enum, semantically load-bearing: Binder_Names.cs:851-857 uses it to decide tabular context; NamedParameter.ExpressionHint is a generated syntax property (Generators/SyntaxNodeInfos.cs:727); every generated node overrides GetCompletionHintCore (SyntaxNodeGenerator.cs:549-561); SyntaxElement.cs:306-311; CustomNode.cs:108-234; SeparatedElement.cs:43-48; QueryParser.cs:3409-3417; QueryGrammar.cs (17); PredefinedRuleParsers.cs:179-315; CommandGrammar.cs:12,710-716.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionHint.java",
+   "optional": false,
+   "lines": 174
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionKind.cs",
+   "reason": "(a) enum. SyntaxParsers.cs (23 refs), QueryGrammar.cs (148), CommandGrammar.cs:13,749-779.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionKind.java",
+   "optional": false,
+   "lines": 154
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionPriority.cs",
+   "reason": "(a) holds both CompletionPriority and CompletionRank enums. SyntaxParsers.cs:105-456; QueryGrammar.cs (32 Priority refs, 9 Rank refs at 578-782).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionPriority.java",
+   "optional": false,
+   "lines": 35
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionItem.cs",
+   "reason": "(a) Parser annotation object. Constructed in SyntaxParsers.cs:409,664 and QueryGrammar.cs:578-3601 (18 sites); WithApplyTexts(string) at SyntaxParsers.cs:413; DisplayText read at CommandGrammar.cs:190. Annotations are opaque to in-scope code (only Editor reads them), so a stub is possible, but the class is self-contained (deps: CompletionText, Utils) and needed by any later completion port.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionItem.java",
+   "optional": false,
+   "lines": 434
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionText.cs",
+   "reason": "(a) Transitive dep of CompletionItem (ApplyTexts, CreateApplyTexts 205-211, WithApplyTexts 284-311). Deps: Utils only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionText.java",
+   "optional": false,
+   "lines": 101
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/TextRange.cs",
+   "reason": "(a) 55-line struct. Only used by ScriptFacts.cs:90,121-145 (optional, off-path). Port with ScriptFacts or drop both.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/TextRange.java",
+   "optional": true,
+   "lines": 56
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientDirective.cs",
+   "reason": "(a) Semantically load-bearing: SyntaxNode.cs:267-295 (Directive.Name/ArgumentsText/Arguments) -> Binder_Misc.cs:700-760 applies #database/#connect to change current cluster/database; Binder_NodeBinder.cs:4665 adds diagnostics. Port as-is against a minimal EditString stub.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClientDirective.java",
+   "optional": false,
+   "lines": 219
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientDirectiveArgument.cs",
+   "reason": "(a) 29-line value class. SyntaxNode.cs:277; Binder_Misc.cs:711-781 (Text, Value).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClientDirectiveArgument.java",
+   "optional": false,
+   "lines": 30
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt",
+   "reason": "Driver for the ~226 concrete SyntaxNode classes plus SyntaxVisitor/DefaultSyntaxVisitor Visit* methods. Output (GeneratedSyntaxNodes.cs) is NOT checked in (grep for 'class BinaryExpression' finds nothing). Every in-scope layer depends on these classes, including command nodes (Command, CustomCommand, UnknownCommand, PartialCommand, BadCommand, CommandBlock, CommandAndSkippedTokens, CommandWith*Clause).",
+   "buildTimeOnly": true,
+   "lines": 14
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeInfos.cs",
+   "reason": "Authoritative schema for generated syntax nodes (226 entries). Must be ported to a Java generator input or the .tt must be run once to produce C# to mirror.",
+   "buildTimeOnly": true,
+   "lines": 3344
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
+   "reason": "Emits node classes, GetCompletionHintCore (549-561), visitors (314-370). Its emitted usings alias CompletionKind/CompletionHint to Kusto.Language.Editor (292-293).",
+   "buildTimeOnly": true,
+   "lines": 682
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CodeGenerator.cs",
+   "reason": "Writer helper used by SyntaxNodeGenerator (included by GeneratedSyntaxNodes.tt).",
+   "buildTimeOnly": true,
+   "lines": 879
+  }
+ ],
+ "exclude": [
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/AnalyzerInfo.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 27
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/BrackettingStyle.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 28
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClassificationKind.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 136
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClassificationResult.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 22
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClassifiedRange.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 41
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientDirectiveInfo.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 64
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientParameter.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 42
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClusterReference.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 19
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeAction.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 425
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeBlock.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 56
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeScript.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 272
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeService.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 202
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeServiceFactory.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 99
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeServiceFeatures.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 24
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CommonCodeService.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 389
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionDisplay.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 103
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionInfo.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 43
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionOptions.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 91
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/DatabaseReference.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 25
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/DisabledDiagnostics.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 217
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 22
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/FormattedText.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 21
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/FormattingOptions.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 675
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 865
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/ConvertToMacroExpandActor.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 270
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/DiagnosticFixActor.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 156
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/ExtractValueToLetStatementActor.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 312
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/InlineDatabaseFunctionActor.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 292
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/RenameActor.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 61
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AnalyzerUtilities.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 230
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidJoinWithoutKindAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 37
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidStrlenWithDynamic.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 38
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingContainsAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 107
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingFormatDateTimeInPredicateAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 170
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingHasWithIPv4Strings.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 189
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingLegacyPartitionAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 63
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingNullStringComparisonAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 102
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingObsoleteFunctions.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 159
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingToBoolOnNumericsAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 48
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/CalledFunctionHasErrorsAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 58
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/ColumnHasSameNameAsVariableAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 67
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 35
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/NullAggregationAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 52
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingMaterializedViewIntrinsicAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 115
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingOptimizedAlternative.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 42
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/StdevTimespanConversionAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 51
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/AnnotatedParserFinder.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 454
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 44
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoActors.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 32
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 134
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoAnalyzers.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 85
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoClassifier.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 269
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 666
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoCodeServiceFactory.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 96
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoCompleter.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 3655
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 263
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoFixers.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 27
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoFormatter.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 1851
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoOutliner.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 139
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoQualifier.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 162
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoQuickInfoBuilder.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 535
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoReferenceFinder.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 256
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoRelatedElementFinder.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 221
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoServiceHelpers.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 90
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/ParserPath.cs",
+   "reason": "IntelliSense/formatting/analyzers/actors/code service. No reference from root, Parser, Syntax, Binder, Symbols, Diagnostics or Utils (exhaustive grep of all 122 Editor type names).",
+   "lines": 99
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/MinimalTextKind.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 22
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OffsetCodeService.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 266
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OutlineInfo.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 21
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OutlineRange.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 27
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OutliningOptions.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 78
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/PlacementStyle.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 20
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/PositionBias.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 19
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/QuickInfo.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 273
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 80
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/RelatedInfo.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 136
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/SpacingStyle.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 53
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/SyntaxReference.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 38
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/TextEdit.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 65
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/UnknownCodeService.cs",
+   "reason": "Editor-service type. No reference from in-scope code (exhaustive grep of all 122 Editor type names; qualified 'Editor.' grep finds only ClientDirectiveArgument, CompletionHint, CompletionItem, CompletionKind, TextRange).",
+   "lines": 15
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/TestHelpers.cs",
+   "reason": "internal static class used only by the unit-test assembly (InternalsVisibleTo in Properties/AssemblyInfo.cs). No in-scope caller. Port its helpers into Java test sources if the cache tests are ported; requires KustoCode._localCache (KustoCode.cs:76) to stay package-private.",
+   "lines": 63
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Properties/AssemblyInfo.cs",
+   "reason": "Only [assembly: InternalsVisibleTo(\"Kusto.Language.UT\")]. Java equivalent: package-private members + tests in same package.",
+   "lines": 5
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommandGrammar.tt",
+   "reason": "T4 driver for generated EngineCommandGrammar (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommands.tt",
+   "reason": "T4 driver for generated EngineCommands (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommandGrammar.tt",
+   "reason": "T4 driver for generated DataManagerCommandGrammar (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommands.tt",
+   "reason": "T4 driver for generated DataManagerCommands (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommandGrammar.tt",
+   "reason": "T4 driver for generated ClusterManagerCommandGrammar (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommands.tt",
+   "reason": "T4 driver for generated ClusterManagerCommands (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommandGrammar.tt",
+   "reason": "T4 driver for generated AriaBridgeCommandGrammar (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommands.tt",
+   "reason": "T4 driver for generated AriaBridgeCommands (output not checked in). Replaced by a stub; see stubs.",
+   "lines": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+   "reason": "T4 include for command generators only.",
+   "lines": 13
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CommandGenerator.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 2110
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/Grammar.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 2427
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CommandInfo.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 26
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/EngineCommandInfos.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 3778
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/DataManagerCommandInfos.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 21
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 21
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs",
+   "reason": "Command-grammar generator input. Deferred: needed only to generate real command parsers/symbols (642 engine commands in EngineCommandInfos.cs; one 'show version' each for DM/CM/AriaBridge).",
+   "lines": 21
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/Kusto.Language.Generators.csproj",
+   "reason": "Build file.",
+   "lines": 5
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge",
+   "reason": "Bridge.NET (JavaScript) build project. Out of scope."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Kusto.Language.csproj",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 32
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Directory.Build.props",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 5
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Directory.Build.targets",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 7
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Package.props",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 37
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/build-multiTarget.cmd",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 10
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/pack-multiTarget.cmd",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 9
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/bridge.net.help.md",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 33
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/readme.md",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 430
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/version.txt",
+   "reason": "Build/packaging/docs, no code.",
+   "lines": 1
+  }
+ ],
+ "stubs": [
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommands.tt (generated EngineCommands.cs, namespace Kusto.Language)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/EngineCommands.java",
+   "stubbedMembers": [
+    "public final class EngineCommands { private EngineCommands() {} }",
+    "public static final List<CommandSymbol> All = List.of();  // C#: public static readonly IReadOnlyList<CommandSymbol> All"
+   ],
+   "reason": "Generated by Parser/CodeGen/EngineCommands.tt via CommandGenerator.GenerateSymbols (Generators/CommandGenerator.cs:131-198); output not in repo. In-scope code reads only the static All list. Empty list => GlobalState.GetCommand returns null => Binder_NodeBinder.VisitCustomCommand returns null. Since stub grammars never produce CustomCommand, nothing observes the difference.",
+   "referencedFrom": [
+    "src/Kusto.Language/GlobalState.cs:874"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommands.tt (generated DataManagerCommands.cs, namespace Kusto.Language)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/DataManagerCommands.java",
+   "stubbedMembers": [
+    "public final class DataManagerCommands { private DataManagerCommands() {} }",
+    "public static final List<CommandSymbol> All = List.of();  // C#: public static readonly IReadOnlyList<CommandSymbol> All"
+   ],
+   "reason": "Generated by Parser/CodeGen/DataManagerCommands.tt via CommandGenerator.GenerateSymbols (Generators/CommandGenerator.cs:131-198); output not in repo. In-scope code reads only the static All list. Empty list => GlobalState.GetCommand returns null => Binder_NodeBinder.VisitCustomCommand returns null. Since stub grammars never produce CustomCommand, nothing observes the difference.",
+   "referencedFrom": [
+    "src/Kusto.Language/GlobalState.cs:876"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommands.tt (generated ClusterManagerCommands.cs, namespace Kusto.Language)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/ClusterManagerCommands.java",
+   "stubbedMembers": [
+    "public final class ClusterManagerCommands { private ClusterManagerCommands() {} }",
+    "public static final List<CommandSymbol> All = List.of();  // C#: public static readonly IReadOnlyList<CommandSymbol> All"
+   ],
+   "reason": "Generated by Parser/CodeGen/ClusterManagerCommands.tt via CommandGenerator.GenerateSymbols (Generators/CommandGenerator.cs:131-198); output not in repo. In-scope code reads only the static All list. Empty list => GlobalState.GetCommand returns null => Binder_NodeBinder.VisitCustomCommand returns null. Since stub grammars never produce CustomCommand, nothing observes the difference.",
+   "referencedFrom": [
+    "src/Kusto.Language/GlobalState.cs:878"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommands.tt (generated AriaBridgeCommands.cs, namespace Kusto.Language)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/AriaBridgeCommands.java",
+   "stubbedMembers": [
+    "public final class AriaBridgeCommands { private AriaBridgeCommands() {} }",
+    "public static final List<CommandSymbol> All = List.of();  // C#: public static readonly IReadOnlyList<CommandSymbol> All"
+   ],
+   "reason": "Generated by Parser/CodeGen/AriaBridgeCommands.tt via CommandGenerator.GenerateSymbols (Generators/CommandGenerator.cs:131-198); output not in repo. In-scope code reads only the static All list. Empty list => GlobalState.GetCommand returns null => Binder_NodeBinder.VisitCustomCommand returns null. Since stub grammars never produce CustomCommand, nothing observes the difference.",
+   "referencedFrom": [
+    "src/Kusto.Language/GlobalState.cs:880"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommandGrammar.tt (generated EngineCommandGrammar.cs, namespace Kusto.Language.Parsing)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/EngineCommandGrammar.java",
+   "stubbedMembers": [
+    "public class EngineCommandGrammar extends CommandGrammar",
+    "public EngineCommandGrammar(GlobalState globals) { super(globals); }",
+    "// NOT overridden: CommandParserInfo[] createCommandParsers(PredefinedRuleParsers rules)"
+   ],
+   "reason": "Generated by Parser/CodeGen/EngineCommandGrammar.tt via CommandGenerator.GenerateParser (Generators/CommandGenerator.cs:56-120); output not in repo. Stub keeps the subclass so CommandGrammar.CreateCommandGrammar stays a verbatim mirror and real generated grammars can be dropped in later. No override of CreateCommandParsers: inherits the base empty array (CommandGrammar.cs:499-503). Every command then parses as UnknownCommand (CommandGrammar.cs:519-525) plus optional '| query-operator' pipes. Requires the CommandGrammar empty-parser guard (see include deviation).",
+   "referencedFrom": [
+    "src/Kusto.Language/Parser/CommandGrammar.cs:452"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommandGrammar.tt (generated DataManagerCommandGrammar.cs, namespace Kusto.Language.Parsing)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/DataManagerCommandGrammar.java",
+   "stubbedMembers": [
+    "public class DataManagerCommandGrammar extends CommandGrammar",
+    "public DataManagerCommandGrammar(GlobalState globals) { super(globals); }",
+    "// NOT overridden: CommandParserInfo[] createCommandParsers(PredefinedRuleParsers rules)"
+   ],
+   "reason": "Generated by Parser/CodeGen/DataManagerCommandGrammar.tt via CommandGenerator.GenerateParser (Generators/CommandGenerator.cs:56-120); output not in repo. Stub keeps the subclass so CommandGrammar.CreateCommandGrammar stays a verbatim mirror and real generated grammars can be dropped in later. No override of CreateCommandParsers: inherits the base empty array (CommandGrammar.cs:499-503). Every command then parses as UnknownCommand (CommandGrammar.cs:519-525) plus optional '| query-operator' pipes. Requires the CommandGrammar empty-parser guard (see include deviation).",
+   "referencedFrom": [
+    "src/Kusto.Language/Parser/CommandGrammar.cs:454"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommandGrammar.tt (generated ClusterManagerCommandGrammar.cs, namespace Kusto.Language.Parsing)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ClusterManagerCommandGrammar.java",
+   "stubbedMembers": [
+    "public class ClusterManagerCommandGrammar extends CommandGrammar",
+    "public ClusterManagerCommandGrammar(GlobalState globals) { super(globals); }",
+    "// NOT overridden: CommandParserInfo[] createCommandParsers(PredefinedRuleParsers rules)"
+   ],
+   "reason": "Generated by Parser/CodeGen/ClusterManagerCommandGrammar.tt via CommandGenerator.GenerateParser (Generators/CommandGenerator.cs:56-120); output not in repo. Stub keeps the subclass so CommandGrammar.CreateCommandGrammar stays a verbatim mirror and real generated grammars can be dropped in later. No override of CreateCommandParsers: inherits the base empty array (CommandGrammar.cs:499-503). Every command then parses as UnknownCommand (CommandGrammar.cs:519-525) plus optional '| query-operator' pipes. Requires the CommandGrammar empty-parser guard (see include deviation).",
+   "referencedFrom": [
+    "src/Kusto.Language/Parser/CommandGrammar.cs:456"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommandGrammar.tt (generated AriaBridgeCommandGrammar.cs, namespace Kusto.Language.Parsing)",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/AriaBridgeCommandGrammar.java",
+   "stubbedMembers": [
+    "public class AriaBridgeCommandGrammar extends CommandGrammar",
+    "public AriaBridgeCommandGrammar(GlobalState globals) { super(globals); }",
+    "// NOT overridden: CommandParserInfo[] createCommandParsers(PredefinedRuleParsers rules)"
+   ],
+   "reason": "Generated by Parser/CodeGen/AriaBridgeCommandGrammar.tt via CommandGenerator.GenerateParser (Generators/CommandGenerator.cs:56-120); output not in repo. Stub keeps the subclass so CommandGrammar.CreateCommandGrammar stays a verbatim mirror and real generated grammars can be dropped in later. No override of CreateCommandParsers: inherits the base empty array (CommandGrammar.cs:499-503). Every command then parses as UnknownCommand (CommandGrammar.cs:519-525) plus optional '| query-operator' pipes. Requires the CommandGrammar empty-parser guard (see include deviation).",
+   "referencedFrom": [
+    "src/Kusto.Language/Parser/CommandGrammar.cs:458"
+   ],
+   "generated": true
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/EditString.cs",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/EditString.java",
+   "stubbedMembers": [
+    "public EditString(String text)  // C# ctor EditString(string) line 44",
+    "public static final EditString Empty  // line 52",
+    "public String getCurrentText()  // line 24; also OriginalText (19) may alias CurrentText",
+    "public int length()  // C# Length, line 57",
+    "public char charAt(int index)  // C# indexer this[int], line 62",
+    "public EditString substring(int start, int length)  // C# Substring(int,int), line 174",
+    "public EditString substring(int start)  // C# Substring(int), line 201",
+    "public String toString()  // returns CurrentText, line 129",
+    "public static EditString of(String text) / static String toStr(EditString)  // replace C# implicit conversions at lines 72 and 80"
+   ],
+   "reason": "825-line edit-tracking string (deps: TextEdit, PositionBias, TextRange, private struct Edit at 622) used by editor refactorings. ClientDirective uses only a read-only slice: properties typed EditString (13,23,28,38), ctor params (41-46), TryParse(EditString) (60) passing text to TokenParser.ScanTrivia/ScanIdentifier/ScanWhitespace/ScanRealLiteral/ScanLongLiteral(string,...) and TextFacts.GetLineEnd/GetNextLineStart(string,...) via implicit conversion (63-189), indexer (66,119,134-163), Length, Substring, CurrentText (146,154,198), Empty (91,99). In-scope consumer SyntaxNode.cs:267,272 converts Name/ArgumentsText back to string. Alternative: change ClientDirective's EditString members to String (a deviation) and drop EditString entirely.",
+   "referencedFrom": [
+    "src/Kusto.Language/Editor/ClientDirective.cs:13,23,28,38,41-46,60,91,99,146,154,198",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs:272 (ArgumentsText => Info.ArgumentsText, implicit EditString->string)"
+   ]
+  }
+ ]
+}

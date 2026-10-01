@@ -1,0 +1,1295 @@
+{
+  "area": "parser-combinators",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Source.cs",
+      "lines": 87,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "Source<T> (abstract class)",
+        "SourceCache (class)"
+      ],
+      "purpose": "Abstract input abstraction (Peek/IsEnd) plus a per-source type-keyed cache used by PartialParser memoization.",
+      "dependsOn": [
+        "Kusto.Language.Utils.Interlocked"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "Interlocked",
+        "Dictionary",
+        "generic method with new() constraint",
+        "Func<T>",
+        "out"
+      ],
+      "traps": [
+        "Source.cs:28 Utils.Interlocked.CompareExchange(ref _cache,...) -> use AtomicReferenceFieldUpdater/VarHandle or plain lazy init (Parser is single-threaded per source)",
+        "Source.cs:48-52 GetOrCreate<T>() where T:new() needs Class<T>+supplier in Java (no reified generics)",
+        "Source.cs:39,59-65 Dictionary<Type,object> keyed by typeof(T) -> Map<Class<?>,Object>; GetOrCreate(Func<T>) calls creator() TWICE (line 63-64, first result discarded) - upstream quirk to mirror or note",
+        "Source.cs:13,16 Peek(int n=0) default param -> overload; Source<char> boxed chars: Source<T> with T=char needs Character or separate primitive source in Java",
+        "Source.cs:73-83 TryGetValue out param -> Optional/return null"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by every parser (Parse/Scan take Source<TInput>). Port as-is; Class<T> keyed cache.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Source.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/TextSource.cs",
+      "lines": 76,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "TextSource (sealed class : Source<char>)"
+      ],
+      "purpose": "Source<char> over a string slice; used by char scanners via Parsers.Match(string)/Text.",
+      "dependsOn": [
+        "Parser/Combinators/Source.cs",
+        "Kusto.Language.Utils.StringTable"
+      ],
+      "partialGroup": null,
+      "memberCount": 8,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "string.Compare",
+        "StringTable"
+      ],
+      "traps": [
+        "TextSource.cs:63 string.Compare(a,i,b,0,n)==0 is CULTURE-SENSITIVE (current culture, not ordinal) -> Java must use regionMatches (ordinal) and decide fidelity vs. correct semantics",
+        "TextSource.cs:68 string.Compare(...,ignoreCase) culture-sensitive case-insensitive -> regionMatches(true,...) is Unicode simple fold, differs from culture rules (e.g. Turkish I)",
+        "TextSource.cs:68 Matches(int,string,bool) lacks bounds check (offs<_source.Length) unlike overload at :58-63; string.Compare tolerates overrun, Java regionMatches returns false - equivalent",
+        "TextSource.cs:30 Peek returns '\\0' past end -> char 0",
+        "TextSource.cs:17,50 StringTable interning of substrings (Utils) - drop to String.substring or port StringTable"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Only reachable via Parser<char> (CharScanners, Editor analyzer AvoidUsingHasWithIPv4Strings) and Parsers<TInput>.Convert(char) branch at Parsers.cs:89. Lexer (TokenParser) does NOT use it. Cheap to port (75 lines) so Parsers.java compiles faithfully; low priority.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TextSource.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/ArraySource.cs",
+      "lines": 47,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ArraySource<TInput> (sealed class : Source<TInput>)"
+      ],
+      "purpose": "Source over an IReadOnlyList slice. This is THE source used for Parser<LexicalToken> (QueryParser.cs:42, SyntaxParsers.cs:618,646,656).",
+      "dependsOn": [
+        "Parser/Combinators/Source.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "default parameters"
+      ],
+      "traps": [
+        "ArraySource.cs:38 default(TInput) past end -> null for reference types; for Source<char> would be 0",
+        "ArraySource.cs:15 optional ctor args start=0,length=-1 -> overloads",
+        "ArraySource.cs:18-25 length clamp uses Math.Min(length, input.Count-start)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core: the token-stream source for the query grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ArraySource.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/LimitSource.cs",
+      "lines": 29,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "LimitSource<TInput> (sealed class : Source<TInput>)"
+      ],
+      "purpose": "Decorator that artificially ends a source at a relative index limit. Used by LimitParser, SafeParse/SafeScan, QueryParser.cs:257.",
+      "dependsOn": [
+        "Parser/Combinators/Source.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "LimitSource.cs:24 Peek(n=0) default arg while Source.Peek declares n=0 too; IsEnd checks n>=_limit relative to wrapped source offset (limit is relative index, nested LimitSource compounds)",
+        "LimitSource.cs:14 wrapping creates new object per limit; cache (Source.Cache) is NOT forwarded: wrapped source gets its own empty SourceCache"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Required by LimitParser and the stack-safe parser/scanner.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LimitSource.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/OffsetValue.cs",
+      "lines": 29,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "OffsetValue<TValue> (struct)"
+      ],
+      "purpose": "Value plus source offset pair; only produced by Parsers<char>.TextAndOffset.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "generic-over-primitive",
+        "readonly fields"
+      ],
+      "traps": [
+        "OffsetValue.cs:6 struct -> Java record/final class; generic TValue boxed"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Only consumer is Parsers.cs:1464 TextAndOffset (char parsers, editor-only). Port the 20-line type as a record so Parsers.java stays mirror-complete; no scope use.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/OffsetValue.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParseResult.cs",
+      "lines": 26,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ParseResult<TOutput> (struct)"
+      ],
+      "purpose": "Result of Parser<TInput,TOutput>.Parse(source,start): consumed Length (negative = failure) and produced Value.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "generic-over-primitive",
+        "expression-bodied property"
+      ],
+      "traps": [
+        "ParseResult.cs:12,17 Length/Value get-only struct props; hot path allocates one per parse in C# (stack) but a heap object in Java -> perf; consider final class/record",
+        "ParseResult.cs:22 Succeeded => Length>=0 but ParserExtensions.TryParse uses Length>0 (inconsistent, mirror both)",
+        "default(ParseResult<T>) would have Length 0 = success; callers always use ctor"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core return type of the typed Parse overload.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParseResult.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserExtensions.cs",
+      "lines": 34,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ParserExtensions (static class)"
+      ],
+      "purpose": "Convenience extension methods to parse a string with Parser<char>.",
+      "dependsOn": [
+        "Parser/Combinators/TextSource.cs",
+        "Parser/Combinators/Parser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "out"
+      ],
+      "traps": [
+        "ParserExtensions.cs:25-31 TryParse out param -> return Optional/holder; returns result.Length>0 (not Succeeded)",
+        "Extension methods on Parser<char> only (char-specific) -> static methods taking Parser<Character>"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Only for Parser<char>/string parsing; no callers in src outside Combinators (grep). Mirror policy allows excluding unused char-only helpers; trivial to add later.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParserExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/RightParser.cs",
+      "lines": 40,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "RightParser<TInput,TOutput> (struct)"
+      ],
+      "purpose": "Wrapper type marking a parser as valid on the right side of Apply (type-safety trick produced by Parsers.Rule(LeftValue,...)).",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "generic-over-primitive",
+        "internal members"
+      ],
+      "traps": [
+        "RightParser.cs:12,15 internal Parser property/ctor -> package-private in Java; package org.graylog.kusto.language.parsing is shared with Parsers so OK",
+        "RightParser.cs:23-38 With* methods rewrap; struct->class OK"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for QueryGrammar's Apply/Rule right-side usage.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/RightParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parser.cs",
+      "lines": 258,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "Parser<TInput> (abstract class)",
+        "Parser<TInput,TOutput> (abstract class)"
+      ],
+      "purpose": "Root of the combinator hierarchy: tag/annotations/hidden flags with copy-on-write clones, structural flags (IsOptional etc.), child access, Accept visitors, Parse/Scan.",
+      "dependsOn": [
+        "Parser/Combinators/Describer.cs",
+        "Parser/Combinators/ParserVisitors.cs",
+        "Parser/Combinators/Parsers.cs",
+        "Parser/Combinators/Source.cs",
+        "Kusto.Language.Utils.EmptyReadOnlyList",
+        "ToReadOnly"
+      ],
+      "partialGroup": null,
+      "memberCount": 30,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "covariant-new-hiding",
+        "delegate/Func",
+        "LINQ",
+        "string interpolation",
+        "DebuggerDisplay"
+      ],
+      "traps": [
+        "Parser.cs:234-249 'new' member hiding with covariant returns (WithTag etc.) -> Java covariant return override of non-final method; works if base methods are non-final",
+        "Parser.cs:20 protected abstract Clone() shallow copy; Java: clone() override per subclass (no Cloneable)",
+        "Parser.cs:33 WithTag: string equality tag != this.Tag is ordinal in C#; Java .equals fine",
+        "Parser.cs:58-60 annotations.ToReadOnly() then reference compare 'this.Annotations != list' (:60) is reference inequality, nearly always true -> always clones; mirror reference compare (!=) not equals",
+        "Parser.cs:78-92 Description lazily cached in non-volatile field, benign race",
+        "Parser.cs:91 interpolated $\"{Tag}: ...\" -> string concat; Describer.Describe(this.WithTag(null)) tag normalised to empty",
+        "Parser.cs:256 Cast<T>() => (T)(object)o unchecked cast; Java unchecked (T) cast",
+        "Parser.cs:231 Parse(Source,int inputStart) overload on 2-arg subclass vs 4-arg on base: Java overloading ok",
+        "Parser.cs:45 DebuggerDisplay attribute -> drop",
+        "Parser.cs:167-168 IsNegation/IsConditional have no doc comments; flags are virtual props -> methods isNegation() etc."
+      ],
+      "proposedStatus": "ported",
+      "justification": "Foundation; every combinator derives from it.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Parser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs",
+      "lines": 161,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ParserVisitor<TInput> (abstract class)",
+        "ParserVisitor<TInput,TResult> (abstract class)",
+        "ParserVisitor<TInput,TArg,TResult> (abstract class)",
+        "IsParentVisitor (class : ParserVisitor<LexicalToken,Parser<LexicalToken>,bool>)"
+      ],
+      "purpose": "Three visitor arities over all 21 parser kinds plus IsParentVisitor (child-of test for LexicalToken parsers).",
+      "dependsOn": [
+        "Parser/Combinators/Parsers/*.cs (all parser types)",
+        "Parser/LexicalToken.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 70,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "LINQ",
+        "expression-bodied members",
+        "static field singleton",
+        "generic methods VisitX<TOutput>"
+      ],
+      "traps": [
+        "ParserVisitors.cs:10,36,62 same simple name with 1/2/3 type params: Java forbids; ParserVisitor<TInput> visitors: Accept(visitor) has 3 overloads (void, TResult, TArg+TResult) -> in Java use 3 abstract Accept overloads with distinct visitor classes (ParserVisitor, ParserVisitorR, ParserVisitorAR is not needed: same-name generic classes ParserVisitor<TInput>/<TInput,TResult>/<TInput,TArg,TResult> cannot coexist in Java; must be renamed e.g. ParserVisitor, ParserVisitorWithResult, ParserVisitorWithArg, recorded as unavoidable deviation)",
+        "ParserVisitors.cs:12 generic abstract methods VisitApply<TLeft,TOutput> -> Java generic methods OK; wildcard-typed parser params",
+        "ParserVisitors.cs:105-106 IsParentVisitor.VisitFails returns 'parser.Pattern != child' - looks like an upstream bug (all siblings use ==); preserve verbatim",
+        "ParserVisitors.cs:91 public static mutable field Instance -> static final",
+        "ParserVisitors.cs:89 bool result with TResult=bool -> Boolean boxing",
+        "IsParentVisitor has no callers outside this file (grep) - dead code"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Visitor bases required by Accept; IsParentVisitor is dead/editor-oriented (zero callers) and depends on LexicalToken - port the three abstract visitors, IsParentVisitor optional (stub or port verbatim for mirror).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ParserVisitors.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Describer.cs",
+      "lines": 309,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "Describer (static class)",
+        "Describer.Writer<TInput> (private nested class : ParserVisitor<TInput>)"
+      ],
+      "purpose": "Builds a textual grammar description of a parser (used for Parser.Description, debugging/diagnostic and Editor).",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Parser/Combinators/ParserVisitors.cs",
+        "Parser/Combinators/Parsers.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 25,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "StringBuilder",
+        "switch",
+        "default parameter",
+        "Action<>"
+      ],
+      "traps": [
+        "Describer.cs:16 showRequired=true default param -> overload",
+        "Describer.cs:157 unused Action<Parser,Writer> parameter",
+        "Describer.cs:107-150 Writer stores 'separator' string compared with != (reference/ordinal) - use equals",
+        "Describer.cs:173 switch on ApplyKind; builds temporary Parsers<TInput>.ZeroOrMore(...) objects during describe (allocation, fine)",
+        "String output is observable via Parser.Description (tests/debug) - keep exact punctuation: ' | ', ' ', '[..]', '{..}', '{..}+', '!' , 'fails(..)', 'not(..)', 'match()', 'forward()', 'map()'"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Parser.Description depends on it; port faithfully (cheap, deterministic).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Describer.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers.cs",
+      "lines": 1520,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "Parsers<TInput> (static class)",
+        "Parsers<TInput>.ElementAndSeparatorProducer<TElement,TSeparator,TProducer> (private static class)",
+        "Parsers<TInput>.ElementProducer<TElement,TProducer> (private static class)",
+        "Parsers<TInput>.LeftValue<TLeft> (public struct, empty)",
+        "ElementAndSeparator<TElement,TSeparator> (public struct)"
+      ],
+      "purpose": "The combinator factory API: And/Or/Best/First/Rule(1..9 + 4 right-side)/List/OList/Optional/Required/Map/Match/Text/etc. Used with TInput=LexicalToken by QueryGrammar, SyntaxParsers, PredefinedRuleParsers, CommandGrammar; TInput=char only by CharScanners (editor analyzer).",
+      "dependsOn": [
+        "Parser/Combinators/Parsers/*.cs",
+        "Parser/Combinators/Parser.cs",
+        "Parser/Combinators/RightParser.cs",
+        "Parser/Combinators/TextSource.cs",
+        "Parser/Combinators/OffsetValue.cs",
+        "Kusto.Language.Utils (Ensure, ObjectPool, ToReadOnly)"
+      ],
+      "partialGroup": null,
+      "memberCount": 95,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func",
+        "LINQ",
+        "extension-methods",
+        "struct",
+        "params arrays",
+        "static-generic-class",
+        "default parameters",
+        "tuple-less",
+        "out"
+      ],
+      "traps": [
+        "Parsers.cs:13 static generic class Parsers<TInput>: static state (Any at :25, ObjectPools at :530,:799) is PER CLOSED TYPE in C#; Java static fields are shared across all TInput -> pools must be erased/Object-typed or per-class registries",
+        "Parsers.cs:19 'using static Parsers<LexicalToken>' used by grammar files -> Java static imports require a concrete class; Parsers<TInput> generic static methods must become <TInput> generic static methods on a non-generic Parsers class, changing call-site shape (Parsers.<LexicalToken>match(...)) or a LexicalTokenParsers subclass facade",
+        "Parsers.cs:85-107 Convert overload on Parser<char>/Func<string,TOutput> sits in generic class Parsers<TInput> but returns Parser<char,...> (C# lets it live there since it calls Parsers<char>); overload resolution of Convert<TOutput>(Parser<TInput>,Func<TInput,TOutput>) vs Func<IReadOnlyList<TInput>,TOutput> vs Func<string,TOutput> vs TOutput value (:116) is AMBIGUOUS in Java (lambda arity same) -> must be renamed (convertSingle, convertList, convertText, convertValue); hundreds of call sites in QueryGrammar affected",
+        "Parsers.cs:36-44 Apply(...fnRightParser(default(LeftValue<TLeft>))) invokes the grammar lambda with a default struct to obtain the right parser once; LeftValue is an empty struct -> empty class singleton",
+        "Parsers.cs:640-655 Match(char, ignoreCase) uses char.ToUpper/ToLower (culture-SENSITIVE current culture) -> Character.toUpperCase/ toLowerCase; Turkish-culture divergence",
+        "Parsers.cs:657-715 Match(string, ignoreCase) uses text.ToLower()/ToUpper() culture-sensitive (:664-665), returns ~i (bitwise complement, negative failure length encoding) when mismatch at index i (:681,:704) vs -1 in TextSource path (:674,:698): negative lengths encode consumed-before-fail - preserve ~i semantics",
+        "Parsers.cs:594-613 MatchAny with EqualityComparer<TInput> -> java.util.Comparator/BiPredicate; default comparer = Object.equals (LexicalToken equality!)",
+        "Parsers.cs:530,799 ObjectPool<List<..>> static per generic instantiation",
+        "Parsers.cs:839-1430 Rule<TParser1..TParser9,TOutput>: 9 + 4 hand-expanded arities with Func<T1..T9,TOutput> -> Java needs custom Function1..Function9 functional interfaces (java.util.function lacks >2)",
+        "Parsers.cs:1348 empty struct LeftValue<TLeft> used purely as type witness",
+        "Parsers.cs:1506-1519 ElementAndSeparator struct throws ArgumentNullException when element==null (:1511) -> Objects.requireNonNull/NPE; Separator default(TSeparator)=null",
+        "Ensure.* calls throughout (Parsers.cs:300,848..1427) are [Conditional(DEBUG)] - drop/assert",
+        "Parsers.cs:732-1499 many params Parser<...>[] varargs: Java generic varargs -> @SafeVarargs/heap pollution warnings",
+        "Parsers.cs:25 'Any' static readonly field initialised via Match(t=>true)",
+        "Parsers.cs:1452-1470 Text/TextAndOffset char-specific (ToString on StringBuilder, TextSource.PeekText)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Port the full public surface used by QueryGrammar/SyntaxParsers/PredefinedRuleParsers with TInput generic. Char-specific members (Match(char|string), Text, TextAndOffset, Convert<char>, Parsers.cs:640-715,1452-1470) are only used by CharScanners/editor analyzer: port but mark low priority. Heavy Java overload renames required; this is the biggest risk file in the area.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/Parsers.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/PartialParser.cs",
+      "lines": 1177,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "PartialParser (static class)",
+        "PartialParser.Partial<TInput> (private static class)",
+        "Partial.MemoizedInfo (class)",
+        "Partial.BestPathKey (struct : IEquatable)",
+        "Partial.BestPathInfo (class)",
+        "Partial.PathFinder (class : ParserVisitor<TInput,ScanInput,ScanOutput>)",
+        "Partial.Path (class)",
+        "Partial.ScanInput (struct)",
+        "Partial.ScanOutput (struct)"
+      ],
+      "purpose": "Finds and applies the longest partial match of a grammar over input (for completion / command-name matching). Callers: CommandGrammar.cs:57,65 (control commands) and Editor completion only.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Parser/Combinators/ParserVisitors.cs",
+        "Parser/Combinators/Parsers/*.cs",
+        "Parser/Combinators/Source.cs",
+        "Parser/Combinators/LimitSource.cs",
+        "Kusto.Language.Utils (ObjectPool, SafeList, ToReadOnly)"
+      ],
+      "partialGroup": null,
+      "memberCount": 60,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "KustoCompleter (indirect)",
+        "ParserPath",
+        "AnnotatedParserFinder"
+      ],
+      "referencesCommands": [
+        "CommandGrammar.cs:57,65 ScanPartialBest/ParsePartialBest"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "implicit operator",
+        "tuple",
+        "LINQ",
+        "delegate/Func",
+        "Dictionary",
+        "IEquatable",
+        "pattern-matching",
+        "static-generic-class",
+        "ObjectPool",
+        "extension-methods"
+      ],
+      "traps": [
+        "PartialParser.cs:73-117 BestPathKey struct used as Dictionary key with custom hash = sum of parser.GetHashCode() (identity hash codes, nondeterministic but order-insensitive) - Java: System.identityHashCode + record key",
+        "PartialParser.cs:362-370 LINQ tuple (parser,path) with Distinct()/Max() ordering: ordering of bestParsers observable via bestParsers out-list",
+        "PartialParser.cs:376-387 '#if false' dead block - omit but keep as comment",
+        "PartialParser.cs:595,776 deconstruction 'var (result,max,maxLen)=ScanRepeat' tuple returns -> small record",
+        "PartialParser.cs:959 implicit conversion operator ScanInput->ScanOutput -> explicit factory method",
+        "PartialParser.cs:205,211 static ObjectPool<List<Path>> inside generic class: per-closed-type statics",
+        "PartialParser.cs:993 SafeList<Path>.Empty.Append",
+        "PartialParser.cs:19,28 extension methods on Parser<TInput> -> static methods"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Used only by CommandGrammar (management commands, out of scope) and Editor/IntelliSense (out of scope). Not reachable from lexing/parsing/binding. Exclude; revisit only if command grammar is ported.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/PartialParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeParse.cs",
+      "lines": 700,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "SafeParser (static class)",
+        "SafeParser.ParserPool<TInput> (private static class)",
+        "StackSafeParser<TInput> (internal class : ParserVisitor<TInput,Parser<TInput>>)",
+        "StackSafeParser.ParseState (private class)"
+      ],
+      "purpose": "Explicit-stack (non-recursive) parse engine with one visitor method per parser kind, used when ForwardParser call depth exceeds 30 and by QueryParser (field _safeParser, QueryParser.cs:151,175).",
+      "dependsOn": [
+        "Parser/Combinators/ParserVisitors.cs",
+        "Parser/Combinators/SafeScan.cs",
+        "Parser/Combinators/LimitSource.cs",
+        "Parser/Combinators/Parsers/*.cs",
+        "Kusto.Language.Utils.ObjectPool"
+      ],
+      "partialGroup": null,
+      "memberCount": 45,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "ObjectPool",
+        "state machine",
+        "extension-methods",
+        "static-generic-class"
+      ],
+      "traps": [
+        "SafeParse.cs:24-28 static ObjectPool inside generic static class ParserPool<TInput>: per-closed-type pool in C#, shared in Java -> use ObjectPool<StackSafeParser<?>> with unchecked cast or raw per-grammar",
+        "SafeParse.cs:78-94 ParseState public mutable fields; state held in List<ParseState> reused",
+        "SafeParse.cs:140 'this.state = default(ParseState)' (class -> null)",
+        "SafeParse.cs:352-663 many output.SetCount(n) calls = List truncation extension (Utils) -> subList(n,size).clear()",
+        "SafeParse.cs:246,290 negative result arithmetic (-len + rightLength) encodes failure length; must mirror exactly",
+        "SafeParse.cs:484 swaps this.source with LimitSource and restores via PreviousSource; error paths must restore",
+        "internal class -> package-private; used from QueryParser (same package? QueryParser is Kusto.Language.Parsing) - fine"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Required: QueryParser instantiates StackSafeParser directly and ForwardParser falls back to ParseSafe for deep recursion (stack overflow protection in Java too).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SafeParse.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeScan.cs",
+      "lines": 695,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "SafeScanner (static class)",
+        "SafeScanner.ScannerPool<TInput> (private static class)",
+        "StackSafeScanner<TInput> (internal class : ParserVisitor<TInput,Parser<TInput>>)",
+        "StackSafeScanner.ScanState (private class)"
+      ],
+      "purpose": "Explicit-stack Scan engine counterpart of SafeParse; used by ForwardParser when depth > 30 and by StackSafeParser internally.",
+      "dependsOn": [
+        "Parser/Combinators/ParserVisitors.cs",
+        "Parser/Combinators/LimitSource.cs",
+        "Parser/Combinators/Parsers/*.cs",
+        "Kusto.Language.Utils.ObjectPool"
+      ],
+      "partialGroup": null,
+      "memberCount": 40,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "ObjectPool",
+        "state machine",
+        "extension-methods",
+        "static-generic-class"
+      ],
+      "traps": [
+        "SafeScan.cs:24-28 per-closed-type static pool (see SafeParse)",
+        "SafeScan.cs:134 default(ScanState) -> null",
+        "SafeScan.cs:483 LimitSource wrapping then restore",
+        "Negative-length failure encoding must match Parsers' Scan exactly"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Required with SafeParse.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SafeScan.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ApplyParser.cs",
+      "lines": 147,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ApplyKind (enum)",
+        "ApplyParser<TInput,TLeft,TOutput> (sealed class : ListPrimaryParser)"
+      ],
+      "purpose": "Left-associative apply: parse left, then repeat/optionally/once apply right parser (used for binary-expression grammars).",
+      "dependsOn": [
+        "Parsers/ListPrimaryParser.cs",
+        "Parser/Combinators/RightParser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 12,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "enum",
+        "extension-methods"
+      ],
+      "traps": [
+        "ApplyParser.cs:91,96 output.SetCount() list truncation",
+        "ApplyParser.cs:93 failure length = -leftLength + rightLength (rightLength negative) - preserve",
+        "ApplyParser.cs:19,24 private ctor overload + public ctor taking RightParser (same arity different type) -> Java ok but erasure clash? Parser<TInput,TOutput> vs RightParser<..> are different classes, OK",
+        "ApplyParser.cs:14 property named ApplyKind same as type ApplyKind (Color Color) -> getApplyKind()"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used heavily by QueryGrammar expression rules.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ApplyParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/BestParser.cs",
+      "lines": 312,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "BestParser<TInput> (sealed class : Parser<TInput>)",
+        "BestParser<TInput,TOutput> (sealed class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Alternation that tries all parsers and keeps the one consuming the most input (optionally tie-break by Func<TOutput,TOutput,bool> IsBetter).",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 24,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func",
+        "Ensure.AreEqual"
+      ],
+      "traps": [
+        "BestParser.cs:55 Ensure.AreEqual is [Conditional(\"DEBUG\")] (Utils/Ensure.cs:18) - compiled out in release; Java: assert or omit",
+        "BestParser.cs:269,275 output.SetCount",
+        "BestParser.cs:219 default(TOutput)",
+        "Ties: first-best wins unless IsBetter; iteration order = array order (observable)",
+        "BestParser.cs:16-17 Ensure.ElementsNotNull"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by QueryGrammar (Best(...)).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/BestParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ConvertParser.cs",
+      "lines": 128,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ConvertParser<TInput,TOutput> (sealed class : ResultPrimaryParser)"
+      ],
+      "purpose": "Scans a pattern and converts consumed input into a single output via SourceProducer or Func<TInput,TOutput>/list producer.",
+      "dependsOn": [
+        "Parsers/ResultPrimaryParser.cs",
+        "Parsers/SourceProducer.cs",
+        "Kusto.Language.Utils.ObjectPool"
+      ],
+      "partialGroup": null,
+      "memberCount": 10,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func",
+        "ObjectPool",
+        "custom delegate"
+      ],
+      "traps": [
+        "ConvertParser.cs:108 static ObjectPool<List<TInput>> in generic class -> per-closed-type in C#",
+        "ConvertParser.cs:36-60 lambda converts list producer to SourceProducer: pooled list returned in finally",
+        "ConvertParser.cs:99 default(TOutput)",
+        "ConvertParser.cs:23 Ensure.IsTrue(listProducer!=null||singleProducer!=null)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used for token->value conversions.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ConvertParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FailsParser.cs",
+      "lines": 63,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "FailsParser<TInput> (sealed class : Parser<TInput>)"
+      ],
+      "purpose": "Negative lookahead: succeeds (consuming nothing) if the pattern fails.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Success returns 0 length; distinct from NotParser which consumes one item"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/FailsParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FirstParser.cs",
+      "lines": 207,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "FirstParser<TInput> (sealed class : Parser<TInput>)",
+        "FirstParser<TInput,TOutput> (class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Ordered choice: first successful alternative wins.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 24,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "Ensure.IsTrue"
+      ],
+      "traps": [
+        "FirstParser.cs:61,149 Ensure.IsTrue is [Conditional(\"DEBUG\")] (Utils/Ensure.cs:9): debug-only assert that zero-length parsers occur only last; use Java assert",
+        "FirstParser.cs:159,170 default(TOutput); output.SetCount",
+        "Order of alternatives is semantic"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of grammar (First(...)).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/FirstParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ForwardParser.cs",
+      "lines": 109,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ForwardParser<TInput,TOutput> (sealed class : ListPrimaryParser)"
+      ],
+      "purpose": "Deferred (late-bound) parser enabling recursive grammars; switches to stack-safe parse/scan beyond call depth 30.",
+      "dependsOn": [
+        "Parsers/ListPrimaryParser.cs",
+        "Parser/Combinators/SafeParse.cs",
+        "Parser/Combinators/SafeScan.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 10,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "ThreadStatic",
+        "delegate/Func",
+        "try/finally"
+      ],
+      "traps": [
+        "ForwardParser.cs:48-50 [ThreadStatic] static int s_callDepth + const MaxCallDepth=30 inside GENERIC class -> thread-static per closed type in C#; Java ThreadLocal<int[]> (single shared across instantiations unless per-class) -> depth accounting differs but only triggers fallback earlier/later; also Java default stack (512KB-1MB) may overflow before 30 nested ForwardParsers' deep frames",
+        "ForwardParser.cs:12 DeferredParser is a Func property invoked each time (grammar lazily resolves) - Supplier",
+        "Fall back to ParseSafe/ScanSafe changes only the execution engine, results must be identical"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for recursive grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ForwardParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/IfParser.cs",
+      "lines": 155,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "IfParser<TInput> (sealed class : Parser<TInput>)",
+        "IfParser<TInput,TOutput> (sealed class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Conditional parse: run Parser only if Test scans successfully at the same position.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 26,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "switch"
+      ],
+      "traps": [
+        "IfParser.cs:131 default(TOutput)",
+        "GetChildParser switch with default null"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/IfParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/LimitParser.cs",
+      "lines": 86,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "LimitParser<TInput,TOutput> (sealed class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Parses Limited within the input range consumed by Limiter (via LimitSource).",
+      "dependsOn": [
+        "Parser/Combinators/LimitSource.cs",
+        "Parser/Combinators/Parser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 12,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "LimitParser.cs:53,64,75 wraps source in LimitSource; note LimitSource drops SourceCache",
+        "LimitParser.cs:56 returns ParseResult(-1, default)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar and visitors.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LimitParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ListPrimaryParser.cs",
+      "lines": 36,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ListPrimaryParser<TInput,TOutput> (abstract class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Base class implementing the typed Parse(source,start) on top of the list-output Parse via a pooled List<object>.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.ObjectPool"
+      ],
+      "partialGroup": null,
+      "memberCount": 2,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "ObjectPool",
+        "try/finally"
+      ],
+      "traps": [
+        "ListPrimaryParser.cs:15 static pool (size 50) in generic abstract class: shared per closed type; in Java one static (hold List<Object>) - fine since List<object> is type-independent",
+        "ListPrimaryParser.cs:28 default(TOutput) cast of output[0]: (TOutput)output[0] unchecked cast"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Base class for most rule/forward/produce parsers.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ListPrimaryParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MapParser.cs",
+      "lines": 190,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "MapParser<TInput,TOutput> (sealed class : ResultPrimaryParser)",
+        "MapParser.Node (private class)"
+      ],
+      "purpose": "Trie-based longest-match map from input sequences to produced values (used for keyword/operator tables).",
+      "dependsOn": [
+        "Parsers/ResultPrimaryParser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 14,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "Dictionary",
+        "delegate/Func",
+        "out",
+        "LINQ"
+      ],
+      "traps": [
+        "MapParser.cs:135 Dictionary<TInput,Node> keyed by TInput (LexicalToken or char): requires correct equals/hashCode on LexicalToken, otherwise identity - check LexicalToken.Equals",
+        "MapParser.cs:55 Func<TOutput> bestOutput; values lazily evaluated",
+        "MapParser.cs:90 default(TOutput)",
+        "No dictionary iteration, only lookup - order not observable",
+        "Longest-match semantics: bestLength updated only when node.HasValue"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar tables.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/MapParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MatchParser.cs",
+      "lines": 150,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "MatchParser<TInput> (class : Parser<TInput>)",
+        "MatchParser<TInput,TOutput> (class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Leaf parser consuming input via SourceConsumer; typed variant produces a value via SourceProducer. Predicate ctor matches one item.",
+      "dependsOn": [
+        "Parsers/SourceConsumer.cs",
+        "Parsers/SourceProducer.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 24,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "custom delegate",
+        "delegate/Func",
+        "lambda ctor chaining"
+      ],
+      "traps": [
+        "MatchParser.cs:21,85 ctor-chained lambdas capture predicate/producer",
+        "MatchParser.cs:147 default(TOutput); typed Parse treats length>0 as success whereas list Parse uses length>=0 (:127 vs :138) - preserve",
+        "Overload ambiguity in Java: MatchParser(Func<TInput,bool>) vs MatchParser(SourceConsumer<TInput>) both lambdas of different arity (1 vs 2 params): distinct arity so lambda ok, but SourceConsumer is a custom delegate -> custom functional interface",
+        "SourceConsumer returns negative length = failure incl. ~i encoding"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Leaf of all grammars.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/MatchParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/NotParser.cs",
+      "lines": 61,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "NotParser<TInput> (sealed class : Parser<TInput>)"
+      ],
+      "purpose": "Consumes one input item if the pattern does NOT match at that position.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Consumes 1 item (unlike FailsParser)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/NotParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/OneOrMoreParser.cs",
+      "lines": 91,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "OneOrMoreParser<TInput> (sealed class : Parser<TInput>)"
+      ],
+      "purpose": "Repeats child parser one or more times.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "OneOrMoreParser.cs:57 loop terminates when len<=0 (zero-length-progress guard); Scan mirror similar - keep identical"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/OneOrMoreParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/OptionalParser.cs",
+      "lines": 90,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "OptionalParser<TInput,TOutput> (class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Optional child; on failure succeeds with zero length and producer-supplied default value.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func"
+      ],
+      "traps": [
+        "OptionalParser.cs:70 output.SetCount(originalOutputCount) rollback",
+        "Producer is Func<TOutput> evaluated per miss - may allocate nodes (missing-element placeholders)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by grammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/OptionalParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ProduceParser.cs",
+      "lines": 77,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ProduceParser<TInput,TProducer> (class : ListPrimaryParser)"
+      ],
+      "purpose": "Runs a parser and replaces its outputs (from outputStart) with a single value built by Func<List<object>,int,TProducer>.",
+      "dependsOn": [
+        "Parsers/ListPrimaryParser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func"
+      ],
+      "traps": [
+        "ProduceParser.cs:61,66 SetCount rollbacks",
+        "Func<List<object>,int,T> -> custom BiFunction<List<Object>,Integer,T>; boxing ints"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by Produce/List/OneOrMore helpers in Parsers.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ProduceParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/RequiredParser.cs",
+      "lines": 84,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "RequiredParser<TInput,TOutput> (sealed class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Wraps a parser so failure still succeeds with zero length and a synthesised (missing) value, enabling error recovery.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func"
+      ],
+      "traps": [
+        "RequiredParser.cs:70 SetCount rollback",
+        "Producer gets (Source,int) to compute diagnostics position",
+        "Describer prints '!' for required parsers"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of error-recovering grammar (Required(...)).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/RequiredParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ResultPrimaryParser.cs",
+      "lines": 23,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ResultPrimaryParser<TInput,TOutput> (abstract class : Parser<TInput,TOutput>)"
+      ],
+      "purpose": "Base class implementing list-output Parse via the typed Parse(source,start) result.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Pushes ParseResult.Value into output list when Succeeded"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Base for Convert/Map parsers.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ResultPrimaryParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/RuleParser.cs",
+      "lines": 114,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "RuleParser<TInput,TProducer> (sealed class : ListPrimaryParser)"
+      ],
+      "purpose": "Sequence of parsers whose collected outputs are fed to a producer (ListProducer or ResultProducer); backbone of every grammar Rule(...).",
+      "dependsOn": [
+        "Parsers/ListPrimaryParser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 12,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func"
+      ],
+      "traps": [
+        "RuleParser.cs:100,108 SetCount rollbacks",
+        "ResultProducer: Func<Source,int,ParseResult<T>> optional parameter (default null)",
+        "Parsers.cs Rule(...) lambdas cast list items with (T1)list[start] unchecked - Java unchecked casts"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/RuleParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SequenceParser.cs",
+      "lines": 91,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "SequenceParser<TInput> (sealed class : Parser<TInput>)"
+      ],
+      "purpose": "Matches child parsers in order (And).",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "SequenceParser.cs:61 SetCount rollback; failure length arithmetic"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SequenceParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SourceConsumer.cs",
+      "lines": 12,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "SourceConsumer<TInput> (delegate)"
+      ],
+      "purpose": "Delegate int(Source<TInput>, int start): returns consumed length or negative on failure.",
+      "dependsOn": [
+        "Parser/Combinators/Source.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "custom delegate"
+      ],
+      "traps": [
+        "Java: @FunctionalInterface interface SourceConsumer<TInput> { int consume(Source<TInput>, int) }; file name = delegate name (one file per C# file)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Mirror as functional interface.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SourceConsumer.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SourceProducer.cs",
+      "lines": 17,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "SourceProducer<TInput,TOutput> (delegate)"
+      ],
+      "purpose": "Delegate TOutput(Source<TInput>, int start, int length) producing a value from consumed input.",
+      "dependsOn": [
+        "Parser/Combinators/Source.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "custom delegate"
+      ],
+      "traps": [
+        "Java functional interface with 3 params"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Mirror as functional interface.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SourceProducer.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ZeroOrMoreParser.cs",
+      "lines": 86,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ZeroOrMoreParser<TInput> (sealed class : Parser<TInput>)"
+      ],
+      "purpose": "Repeats child zero or more times (or zero/one when zeroOrOne is set); IsOptional+IsRepetition.",
+      "dependsOn": [
+        "Parser/Combinators/Parser.cs",
+        "Kusto.Language.Utils.Ensure"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "zeroOrOne ctor flag changes semantics",
+        "ZeroOrMoreParser.cs:62,79 loop terminates on len<=0 or ZeroOrOne - keep identical"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ZeroOrMoreParser.java"
+    }
+  ]
+}

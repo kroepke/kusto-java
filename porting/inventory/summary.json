@@ -1,0 +1,343 @@
+{
+ "upstreamCommit": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
+ "perWave": {
+  "0": {
+   "files": 51,
+   "lines": 15451,
+   "javaFiles": 297
+  },
+  "1": {
+   "files": 52,
+   "lines": 7910,
+   "javaFiles": 71
+  },
+  "2": {
+   "files": 6,
+   "lines": 3818,
+   "javaFiles": 5
+  },
+  "3": {
+   "files": 45,
+   "lines": 16340,
+   "javaFiles": 59
+  },
+  "4": {
+   "files": 15,
+   "lines": 14267,
+   "javaFiles": 20
+  },
+  "6": {
+   "files": 24,
+   "lines": 17083,
+   "javaFiles": 13
+  },
+  "7": {
+   "files": 8,
+   "lines": 682,
+   "javaFiles": 8
+  }
+ },
+ "perScope": {
+  "exclude": 124,
+  "buildTime": 4,
+  "include": 180,
+  "stub": 9,
+  "optional": 8
+ },
+ "perStatus": {
+  "excluded": 124,
+  "pending": 191,
+  "stubbed": 9,
+  "generated": 1
+ },
+ "inScopeLines": 75551,
+ "totalJavaFiles": 473,
+ "arityFamilies": [
+  {
+   "namespace": "Kusto.Language",
+   "name": "GlobalStateProperty",
+   "arities": [
+    0,
+    1
+   ],
+   "javaNames": [
+    "GlobalStateProperty",
+    "GlobalStateProperty1"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Parsing",
+   "name": "BestParser",
+   "arities": [
+    1,
+    2
+   ],
+   "javaNames": [
+    "BestParser",
+    "BestParser2"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Parsing",
+   "name": "FirstParser",
+   "arities": [
+    1,
+    2
+   ],
+   "javaNames": [
+    "FirstParser",
+    "FirstParser2"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Parsing",
+   "name": "IfParser",
+   "arities": [
+    1,
+    2
+   ],
+   "javaNames": [
+    "IfParser",
+    "IfParser2"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Parsing",
+   "name": "MatchParser",
+   "arities": [
+    1,
+    2
+   ],
+   "javaNames": [
+    "MatchParser",
+    "MatchParser2"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Parsing",
+   "name": "Parser",
+   "arities": [
+    1,
+    2
+   ],
+   "javaNames": [
+    "Parser",
+    "Parser2"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Parsing",
+   "name": "ParserVisitor",
+   "arities": [
+    1,
+    2,
+    3
+   ],
+   "javaNames": [
+    "ParserVisitor",
+    "ParserVisitor2",
+    "ParserVisitor3"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Syntax",
+   "name": "DefaultSyntaxVisitor",
+   "arities": [
+    0,
+    1
+   ],
+   "javaNames": [
+    "DefaultSyntaxVisitor",
+    "DefaultSyntaxVisitor1"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Syntax",
+   "name": "SeparatedElement",
+   "arities": [
+    0,
+    1
+   ],
+   "javaNames": [
+    "SeparatedElement",
+    "SeparatedElement1"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Syntax",
+   "name": "SyntaxList",
+   "arities": [
+    0,
+    1
+   ],
+   "javaNames": [
+    "SyntaxList",
+    "SyntaxList1"
+   ]
+  },
+  {
+   "namespace": "Kusto.Language.Syntax",
+   "name": "SyntaxVisitor",
+   "arities": [
+    0,
+    1
+   ],
+   "javaNames": [
+    "SyntaxVisitor",
+    "SyntaxVisitor1"
+   ]
+  }
+ ],
+ "multiTypeFiles": [
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode.cs",
+   "topLevelTypes": 17
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
+   "topLevelTypes": 6
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayouts.cs",
+   "topLevelTypes": 6
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+   "topLevelTypes": 5
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TableSymbol.cs",
+   "topLevelTypes": 5
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+   "topLevelTypes": 4
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs",
+   "topLevelTypes": 4
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+   "topLevelTypes": 4
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxVisitor.cs",
+   "topLevelTypes": 4
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CodeGenerator.cs",
+   "topLevelTypes": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/GlobalState.cs",
+   "topLevelTypes": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/KustoCode.cs",
+   "topLevelTypes": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/QueryOperatorParameters.cs",
+   "topLevelTypes": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+   "topLevelTypes": 3
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionPriority.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ApplyParser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/BestParser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FirstParser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/IfParser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MatchParser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeParse.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeScan.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/Combinators/Source.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/QueryParser.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/GraphModelSymbol.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/PatternSymbol.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/SymbolMatch.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Symbols/TableState.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/CustomNode.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SeparatedElement.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxElement.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxList.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ListExtensions.cs",
+   "topLevelTypes": 2
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/TextKeyedDictionary.cs",
+   "topLevelTypes": 2
+  }
+ ],
+ "generatedNodeCount": 225,
+ "unclassified": []
+}

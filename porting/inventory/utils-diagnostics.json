@@ -1,0 +1,864 @@
+{
+  "area": "utils-diagnostics",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/StringExtensions.cs",
+      "lines": 28,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "StringExtensions (class, static, internal)"
+      ],
+      "purpose": "Extension Filter(string, Func<char,bool>) returning the string with only predicate-matching chars (returns same instance if all match).",
+      "dependsOn": [
+        "System.Linq",
+        "System.Text"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Line 14 text.All(...) over chars: Java String.chars()/loop; null text NPE in both",
+        "Predicate receives UTF-16 code units; Java char equivalent, do not use codePoints"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Trivial static helper; used by Kusto code via .Filter(.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/StringExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/DictionaryExtensions.cs",
+      "lines": 59,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "DictionaryExtensions (class, static)"
+      ],
+      "purpose": "Extension helpers on Dictionary: GetOrAdd (value / factory) and three AddOrUpdate overloads.",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "delegate/Func",
+        "ref/out"
+      ],
+      "traps": [
+        "Lines 9,18: TryGetValue+Add; Java Map.computeIfAbsent differs on null values and re-entrancy",
+        "Lines 33-57: AddOrUpdate overloads with differing Func arity (2-arg add/3-arg update with extra value param at 45); keep overload set distinct in Java (static methods taking Map)",
+        "Java HashMap permits null values; .NET Dictionary permits null values but not null keys; Java permits null keys"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Static utility; Java needs static methods taking Map<K,V> (no extension methods). Public in C#.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/DictionaryExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/UniqueNameTable.cs",
+      "lines": 76,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "UniqueNameTable (class, internal)"
+      ],
+      "purpose": "Maintains a set of names and generates unique suffixed names (name1, name2...) on collision.",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ"
+      ],
+      "traps": [
+        "Line 12 Dictionary<string,int> default comparer = ordinal, case-sensitive; Java HashMap<String,Integer> equivalent",
+        "Line 32 string.IsNullOrEmpty: null name allowed in AddName but GetOrAddName(null) throws ArgumentNullException at 46; Java HashMap.get(null) returns null instead",
+        "Line 50 string concat baseName + int suffix uses invariant digits (int.ToString culture-sensitive only for negative sign; suffix always positive)",
+        "Line 54 mutates nameMap[name] inside loop before Add: ordering matters"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Small pure helper used by Binder_Misc, Binder_TablesAndColumns, ProjectionBuilder (binding in scope).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/UniqueNameTable.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/ThreadSafeDictionary.cs",
+      "lines": 70,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "ThreadSafeDictionary<TKey,TValue> (class, internal, generic)"
+      ],
+      "purpose": "Wrapper over ConcurrentDictionary (non-BRIDGE) or plain Dictionary (BRIDGE) exposing TryGetValue/TryAdd/GetOrAdd/AddOrUpdate.",
+      "dependsOn": [
+        "System.Collections.Concurrent",
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "11-37 (#if !BRIDGE / #else branch lines 23-37 is BRIDGE-only)",
+        "62-68 (#if NET472_OR_GREATER || NET || BRIDGE selects native 4-arg AddOrUpdate)"
+      ],
+      "csharpFeatures": [
+        "delegate/Func",
+        "ref/out",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Line 12 ConcurrentDictionary vs Java ConcurrentHashMap: ConcurrentHashMap rejects null keys AND null values; .NET allows null values",
+        "Lines 41-42 Keys/Values return live ICollection views; ordering unspecified in both (do not rely on it)",
+        "Lines 53,63: GetOrAdd(factory) may invoke factory multiple times concurrently in .NET; ConcurrentHashMap.computeIfAbsent invokes once and blocks - semantics differ, document",
+        "Line 56-57 AddOrUpdate(key,value) implemented as 4-arg AddOrUpdate with add=(k,ev)=>ev, update=(k,ev,v)=>v: net effect put-if-absent else overwrite",
+        "Constructor taking IEqualityComparer<TKey> (19,33): Java has no comparer injection for HashMap; need wrapper key or normalised keys for case-insensitive use (check GlobalBindingCache usage)",
+        "#if NET472_OR_GREATER || NET || BRIDGE at 62-68 chooses overload; port only one branch"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by GlobalBindingCache; port the non-BRIDGE ConcurrentDictionary branch with ConcurrentHashMap. Drop Bridge branch.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ThreadSafeDictionary.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/ConnectionInfo.cs",
+      "lines": 103,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "ConnectionInfo (class, internal)"
+      ],
+      "purpose": "Parses a connection string ('Data Source=...;key=\"value\"') into case-insensitive parts; unnamed first value becomes Data Source.",
+      "dependsOn": [
+        "src/Kusto.Language/Parser/TokenParser.cs (Parsing.TokenParser.ScanWhitespace)",
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "ref/out",
+        "string.Format"
+      ],
+      "traps": [
+        "Line 25 StringComparer.OrdinalIgnoreCase for keys: Java TreeMap(String.CASE_INSENSITIVE_ORDER) or lowercase keys; OrdinalIgnoreCase uses invariant upper-casing, differs slightly from Java equalsIgnoreCase on rare chars",
+        "Lines 45,82 depend on TokenParser.ScanWhitespace (char.IsWhiteSpace semantics-- see TokenParser/TextFacts) must be ported identically",
+        "Line 77 and 88 .Trim() trims Unicode whitespace in .NET (char.IsWhiteSpace); Java String.trim() trims only <= U+0020; use strip()-like custom char.IsWhiteSpace-equivalent",
+        "Line 33-34 assignment inside while condition; port carefully",
+        "Line 62 parts[name]=value: last duplicate wins, name is NOT trimmed"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by Binder_Misc (cluster/database lookups) - binding in scope. Depends on TokenParser.ScanWhitespace from Parser area.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ConnectionInfo.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/HashSetExtensions.cs",
+      "lines": 20,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "HashSetExtensions (class, static)"
+      ],
+      "purpose": "AddRange extension for HashSet.",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods"
+      ],
+      "traps": [
+        "Java Set.addAll covers it; keep as static helper only if call sites need identical shape. Unused imports (Linq, Threading) irrelevant"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Trivial; Java Collection.addAll suffices but keep file for 1:1 mirroring.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/HashSetExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/ListExtensions.cs",
+      "lines": 430,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "ListExtensions (class, static)",
+        "ReadOnlyListComparer<T> (class, internal, generic)"
+      ],
+      "purpose": "Large set of IEnumerable/IReadOnlyList helpers: ToReadOnly/ToSafeList/ToHashSetEx/ToDictionaryLast/AddOrUpdate/DistinctFirst/DistinctLast/BinarySearch/IndexOf/FirstIndex/LastIndex/Append/Replace/ReplaceRange/Join/IsEquivalentTo/RemoveAll/SetCount, plus ReadOnlyListComparer for structural list equality.",
+      "dependsOn": [
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+        "src/Kusto.Language/Utils/SafeList.cs",
+        "System.Linq"
+      ],
+      "partialGroup": null,
+      "memberCount": 24,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "LINQ",
+        "delegate/Func",
+        "generic-over-primitive",
+        "pattern-matching",
+        "yield"
+      ],
+      "traps": [
+        "Lines 15-17,39-41: reference compare to EmptyReadOnlyList<T>.Instance and 'list is IReadOnlyList<T> rol && rol.Count==0' - Java has no IReadOnlyList; decide mapping (List<T> / java.util.List with unmodifiable) and keep identity semantic",
+        "Lines 22,46: SafeList type-test; ToReadOnly returns SafeList (copy-on-write append semantic) not an unmodifiable List",
+        "Lines 78-98 ToDictionaryLast: Dictionary insertion order; Java use LinkedHashMap? .NET Dictionary enumeration order = insertion order only if no removals - observable if callers enumerate",
+        "Lines 136-147 Distinct with KeyComparer: LINQ Distinct preserves first-seen order; DistinctLast = Reverse().DistinctFirst().Reverse(); port with LinkedHashMap/Set semantics",
+        "Lines 149-170 KeyComparer GetHashCode uses key?.GetHashCode()??0; EqualityComparer<TKey>.Default - maps to Objects.equals/hashCode; for string keys ordinal case-sensitive",
+        "Lines 178-205 BinarySearch(Func<T,int>) is custom not List.BinarySearch; mid=(l+r)/2 (no overflow guard) returns -1 not ~index",
+        "Lines 210-219 IndexOf extension on IReadOnlyList uses EqualityComparer.Default",
+        "Lines 221-230 RemoveAll(Func) internal extension shadows List.RemoveAll(Predicate) - name clash handling in Java",
+        "Lines 240-253 Join: finalSeparator null appends nothing (StringBuilder.Append(null)); Java StringBuilder.append((String)null) appends 'null' - MUST guard",
+        "Lines 255-278 IsEquivalentTo: null-value handling is lenient (null on either side skips compare)",
+        "Lines 335-374 ReplaceRange returns a mutable List typed as IReadOnlyList (list.ToList()); silently ignores out-of-range start; semantic details at 339,346,368",
+        "Lines 381-430 ReadOnlyListComparer.GetHashCode: unchecked int addition, list[0].GetHashCode() NRE on null element; Java hashCode of objects differs from .NET so any hash-order-dependent output must not be relied upon",
+        "Line 392 ArgumentNullException(nameof(comparer)) -> NullPointerException/IllegalArgumentException",
+        "Line 62 ToHashSetEx exists only for Bridge; Java can use new HashSet<>(...) but HashSet iteration order differs from .NET HashSet (insertion order for .NET w/o removals) - use LinkedHashSet to preserve observable order"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Central helper used across binder/symbols (ToReadOnly, ToSafeList everywhere). Port as static utility class; ReadOnlyListComparer is internal and used by GlobalBindingCache - emit as separate package-private Java class file (ReadOnlyListComparer.java) since Java allows one public top-level type per file; mirror comment ordering.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ListExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/ValueComparer.cs",
+      "lines": 107,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "ValueComparer (class, static, internal)"
+      ],
+      "purpose": "Compares two boxed values for equivalence, coercing numeric types to a common type and strings case-insensitively by default.",
+      "dependsOn": [
+        "System.Convert",
+        "System.TypeCode"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "pattern-matching",
+        "decimal",
+        "unsigned",
+        "ref/out",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Line 26-27 Convert.ChangeType between numeric types, and from non-string to string (culture-sensitive ToString using current culture!)",
+        "Line 31 string.Compare(a,b,ignoreCase) is CULTURE-SENSITIVE (current culture), not ordinal; Java equalsIgnoreCase/compareToIgnoreCase differ (culture collation, e.g. ligatures, ignorable chars)",
+        "Line 35 object.Equals on boxed: Int64 vs Int64, double NaN equality (NaN.Equals(NaN) true in .NET) vs Java Double.equals semantic (also true) but -0.0/0.0 differ: .NET 0.0.Equals(-0.0) true, Java Double.equals false",
+        "Lines 56-76 numeric promotion: double > decimal > float > UInt64 > Int64; unsigned/UInt64 and decimal have no Java primitives -> BigInteger/BigDecimal",
+        "Lines 87-106 TypeCode-based IsNumeric includes SByte/Byte/UInt16/UInt32/UInt64/Decimal",
+        "Convert.ChangeType of negative to UInt64 throws OverflowException; Java must emulate or avoid"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used only by Binder_Misc for literal comparison. Port with a defined Java value model (Long/Double/BigDecimal/BigInteger/String); precise semantics need decision.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ValueComparer.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/MostRecentlyUsedCache.cs",
+      "lines": 83,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "MostRecentlyUsedCache<TKey,TValue> (class, internal, generic)"
+      ],
+      "purpose": "Small thread-safe MRU list cache limited to maxSize entries (default 10) using linear search under lock(this).",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "ref/out",
+        "generic-over-primitive",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Lines 32,59 lock(this): use synchronized(this) in Java",
+        "Line 11 constraint TKey : IEquatable<TKey>; Java uses Object.equals",
+        "Line 66 BUG-LIKE: in AddOrUpdate when key found, 'value = pair.Value' overwrites the NEW value with the OLD one, so update never changes the stored value - mirror faithfully",
+        "Line 25 Count reads _pairs.Count without lock",
+        "Line 49 default(TValue) -> null/0 in Java; TValue generic over primitives needs boxing"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by Binder_FunctionCalls and GlobalBindingCache (binding in scope).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/MostRecentlyUsedCache.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
+      "lines": 117,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "Interlocked (class, static, public)",
+        "CacheLineSeparated<T> (struct, internal, generic)"
+      ],
+      "purpose": "Wrapper helpers for CompareExchange/Exchange (BRIDGE falls back to non-atomic) and an unused cache-line-padded struct copied from .NET runtime.",
+      "dependsOn": [
+        "System.Threading.Interlocked",
+        "System.Runtime.InteropServices"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "21-32, 41-52, 58-64 (#else branches non-atomic fallbacks for BRIDGE; keep only atomic branch)"
+      ],
+      "csharpFeatures": [
+        "Interlocked",
+        "ref/out",
+        "struct",
+        "generic-over-primitive",
+        "unsafe"
+      ],
+      "traps": [
+        "ref parameters (ref T value, ref int) have no Java equivalent: callers use ref to fields (SafeList._isOwner line 52 of SafeList.cs; ObjectPool items[i]); port to AtomicInteger / AtomicReferenceArray / VarHandle and change call sites",
+        "Line 22/42/59 System.Threading.Interlocked on references uses reference equality; Java compareAndSet also reference equality",
+        "Lines 74-114 CacheLineSeparated uses StructLayout, FieldOffset, sizeof(int): grep shows no users outside Interlocked.cs; Bridge-incompatible padding trick",
+        "Lines 93-97 #if TARGET_ARM64 || TARGET_LOONGARCH64 preprocessor constant (conditional compilation)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Port Interlocked semantics via java.util.concurrent.atomic at the use sites (SafeList, ObjectPool); keep a thin Interlocked.java only if useful. Exclude CacheLineSeparated (no references anywhere else; struct layout/padding not meaningful on JVM).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Interlocked.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/SafeList.cs",
+      "lines": 135,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "SafeList<T> (class, public, generic)",
+        "SafeList<T>.Enumerator (struct, nested)"
+      ],
+      "purpose": "Immutable-looking list over a shared mutable List with single-owner append-in-place and copy-on-contention semantics, using Interlocked ownership flag.",
+      "dependsOn": [
+        "src/Kusto.Language/Utils/Interlocked.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 14,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "Interlocked",
+        "struct",
+        "yield",
+        "generic-over-primitive",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Line 52,72 Interlocked.CompareExchange(ref _isOwner,0,1): use AtomicIntegerFieldUpdater/VarHandle on int field or AtomicInteger",
+        "Line 13 implements IReadOnlyList<T>, IEnumerable<T>: map to java.util.AbstractList / RandomAccess read-only List<T>; Count => size()",
+        "Lines 98-128 custom struct Enumerator (boxing-avoidance); Java use Iterator, non-struct",
+        "Line 37 IndexOutOfRangeException -> IndexOutOfBoundsException",
+        "Line 15,22 _list snapshot with _length: readers see only first _length elements while owner may append concurrently; List<T> reads concurrent with Add may be unsafe in .NET; in Java ArrayList concurrent read during growth is unsafe - consider a volatile array strategy or document",
+        "Line 117 Current returns default(T) out of range (null for refs)",
+        "Line 133 static readonly Empty with isOwner:false",
+        "Line 80 AddItems copies length items (capacity _length) then AddRange; line 60 capacity length+1"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core immutable-list type used by ToReadOnly/ToSafeList across symbols; port as java.util.AbstractList subclass.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/SafeList.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/StringTable.cs",
+      "lines": 97,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "StringTable (class, internal)"
+      ],
+      "purpose": "Interning table of strings that supports lookup by (string,start,length) range without allocating substrings.",
+      "dependsOn": [
+        "src/Kusto.Language/Utils/TextKeyedDictionary.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "yield",
+        "ref/out"
+      ],
+      "traps": [
+        "Line 87-90 enumerates map.Values - order = Dictionary enumeration order (insertion order when no removals); use LinkedHashMap in TextKeyedDictionary to keep deterministic",
+        "Line 37 lambda captures substring only when range is not whole string (keeps original instance - reference identity of interned string may be observable)",
+        "Line 73 Contains(string) delegates to ContainsKey(text,0,len) which returns false for empty string (length<1 check in TextKeyedDictionary.cs:529)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by TokenParser and parser combinators for token text interning.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/StringTable.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/ArgumentCheckers.cs",
+      "lines": 59,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "ArgumentCheckers (class, static, internal)"
+      ],
+      "purpose": "Extension guard helpers: CheckArgumentNull, CheckArgumentNullOrEmpty, CheckArgumentNullOrElementNull, CheckArgumentNullOrEmptyOrElementNull.",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "generic-over-primitive",
+        "string.Format"
+      ],
+      "traps": [
+        "Throws ArgumentNullException/ArgumentException; map to NullPointerException (Objects.requireNonNull) / IllegalArgumentException - tests may assert exception types",
+        "Line 35,52 'where T : class' constraint irrelevant in Java",
+        "Line 54-55 order: element-null check runs before empty check",
+        "Interpolated message strings (27,43) must be copied verbatim"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Widely used guard helpers in symbols/signatures constructors (~18 files).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ArgumentCheckers.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/TextKeyedDictionary.cs",
+      "lines": 222,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "TextKeyedDictionary<TValue> (class, internal, generic)",
+        "TextKeyedDictionary<TValue>.Key (struct, private nested)",
+        "TextKeyedDictionaryExtensions (class, static, internal)"
+      ],
+      "purpose": "Dictionary keyed by (string,start,length) ranges using a FNV-1a hash, avoiding substring allocations; plus ToTextKeyedDictionary extension.",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 14,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "extension-methods",
+        "delegate/Func",
+        "unsigned",
+        "static-ctor",
+        "ref/out",
+        "LINQ"
+      ],
+      "traps": [
+        "Line 583 FnvOffsetBias = unchecked((int)2166136261) and line 602 unchecked int multiply/xor with char: Java int arithmetic wraps identically; keep as int; xor with char promoted to int (char zero-extended in both)",
+        "Line 595-606 hash over UTF-16 code units; Java String.charAt same",
+        "Lines 609-626 Equals compares hash, length, then chars ordinal (case-sensitive)",
+        "Line 529 ContainsKey returns false for length<1 (empty string never contained), while TryGetValue/GetOrAddValue do not check range or length",
+        "Line 485 map.Add after TryGetValue; key struct holds reference to original (possibly large) text - memory retention",
+        "Line 538-541 enumerator exposes Values in Dictionary order: use LinkedHashMap to keep insertion order",
+        "Key struct as HashMap key: Java needs final class with equals/hashCode (allocation per lookup; acceptable)",
+        "Lines 636-652 extension with first-wins semantics (GetOrAddValue) for duplicate keys"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by StringTable, SyntaxFacts, CodeScript(Editor) - needed for lexing/keyword tables. Nested/private types stay nested; extensions class is internal so can go in same file as package-private class.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/TextKeyedDictionary.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/StringAndNumberComparer.cs",
+      "lines": 130,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "StringAndNumberComparer (class, internal)"
+      ],
+      "purpose": "IComparer<string> that orders embedded digit runs numerically (natural sort), with Ordinal and OrdinalIgnoreCase variants.",
+      "dependsOn": [
+        "System.StringComparison"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "ref/out",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Line 31,32,93,94,125 char.IsDigit accepts all Unicode decimal digits (category Nd); Java Character.isDigit(char) is similar but not identical across Unicode versions; ASCII-only in practice",
+        "Line 52 string.Compare(x,xStart,y,yStart,len,comparison) with Ordinal/OrdinalIgnoreCase: ordinal UTF-16 code-unit order; Java String.compareTo is also code-unit, but returns difference rather than -1/0/1 (.NET returns the difference too for ordinal in .NET Framework but sign only guaranteed); OrdinalIgnoreCase uppercases (invariant) before compare, differs from Java compareToIgnoreCase (which folds upper then lower)",
+        "Line 114 string.Compare(x,xStart,y,yStart,length) has NO StringComparison => CULTURE-SENSITIVE comparison of digit substrings (current culture); for pure digits equals ordinal in practice but mirror as ordinal comparison",
+        "Line 63 returns raw char difference when one segment is digit and other not; return value magnitude is observable only by sign",
+        "Line 117 returns xLength - yLength (length diff), not clamped",
+        "Public static fields (not readonly) Ordinal/OrdinalIgnoreCase lines 18-22"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by Binder_Projection to order generated column names. Port as java.util.Comparator<String> implementation.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/StringAndNumberComparer.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/ObjectPool.cs",
+      "lines": 60,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "ObjectPool<T> (class, internal, generic)"
+      ],
+      "purpose": "Fixed-size lock-free pool of reusable objects using Interlocked exchange on array slots.",
+      "dependsOn": [
+        "src/Kusto.Language/Utils/Interlocked.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "Interlocked",
+        "ref/out",
+        "delegate/Func",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Lines 29,52 Interlocked.Exchange/CompareExchange(ref this.items[i], ...) on array elements: Java AtomicReferenceArray<T>.getAndSet/compareAndSet",
+        "Line 19 T[] items generic array creation: Java needs Object[]/AtomicReferenceArray",
+        "Pooled objects (parsers, builders, lists) are reused: reset correctness (resetter) is critical; pool usage sites in Binder_Misc, Binder_NodeBinder, Combinators, TypeFacts, etc. Consider replacing with ThreadLocal or no pooling but keep API",
+        "Line 44 resetter called before returning to pool even if pool full"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Referenced by ~15 files across parser/binder. Port with AtomicReferenceArray; semantic parity matters only for thread-safety.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/ObjectPool.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/SubstringMap.cs",
+      "lines": 211,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "SubstringMap<TValue> (class, public, generic)",
+        "SubstringMap<TValue>.Node (class, private nested)",
+        "Node.CharMap (abstract class, private nested)",
+        "Node.SingleCharMap (class, private nested)",
+        "Node.ArrayCharMap (class, private nested)",
+        "Node.DictionaryMap (class, private nested)"
+      ],
+      "purpose": "Trie keyed by chars that finds the longest key matching at a position of another string (used for operator/punctuation lexing).",
+      "dependsOn": [
+        "src/Kusto.Language/Parser/TokenParser.cs (consumer)",
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 22,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "generic-over-primitive",
+        "ref/out",
+        "static-ctor"
+      ],
+      "traps": [
+        "Lines 273-296 ArrayCharMap(3).Add condition '_length < _pairs.Length - 1' (=2): third distinct child triggers conversion to DictionaryMap(_pairs) built from the 3-slot array, which includes an unused default KeyValuePair<char,Node>('\\0', null) slot, inserting key '\\0' -> null into the map (line 323). Harmless for lookup but mirror or simplify behavior-equivalently",
+        "Line 264 SingleCharMap.Add always builds ArrayCharMap(3) then adds two entries",
+        "Line 175 NoValue returns KeyValuePair(\"\", default) when nothing matches: Java needs a Map.Entry/record; default(TValue) = null",
+        "Line 233 duplicate key overwrites node.Value (last wins)",
+        "Line 330 DictionaryMap.Add uses Dictionary.Add which throws on duplicate char; not reachable because Get checked first",
+        "Line 160 GetSubNode(text[pos]) char-by-char UTF-16 ordinal; case-sensitive",
+        "Line 212 foreach over pair.Key chars; empty key sets value on root"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by TokenParser for longest-match punctuation lexing; lexing is in scope.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/SubstringMap.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+      "lines": 9,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "EmptyReadOnlyList<T> (class, static, public, generic)"
+      ],
+      "purpose": "Provides a shared empty IReadOnlyList<T> instance.",
+      "dependsOn": [
+        "System.Collections.Generic"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Line 8 Instance is a public static FIELD (not readonly) wrapping new List<T>().AsReadOnly(); identity compared with == in ListExtensions.cs:16,40; Java generic static singleton must return a typed unmodifiable list (Collections.emptyList() identity is shared across T, which is fine and matches the identity check)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Trivial singleton, needed by ListExtensions.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/EmptyReadOnlyList.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/Ensure.cs",
+      "lines": 66,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "Ensure (class, static, public)"
+      ],
+      "purpose": "Debug-only assertions ([Conditional(\"DEBUG\")]) that throw InvalidOperationException/ArgumentNullException.",
+      "dependsOn": [
+        "System.Diagnostics.ConditionalAttribute"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "string.Format"
+      ],
+      "traps": [
+        "[Conditional(\"DEBUG\")] removes calls entirely in Release builds, including argument evaluation; Java has no equivalent - decide: always-on, gated by a static final flag or by 'assert'. 14 call sites in Combinators plus SyntaxFacts.cs, SyntaxParsers.cs",
+        "Line 19 AreEqual<T> where T: IEquatable<T>; uses object.Equals",
+        "Line 62 interpolated message $\"{listName}[{i}] is null\""
+      ],
+      "proposedStatus": "ported",
+      "justification": "Port with a static final boolean DEBUG-like switch (default off) to match Release behavior.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Ensure.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/Cancellation.cs",
+      "lines": 40,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "CancellationToken (struct, public)"
+      ],
+      "purpose": "Kusto-specific cancellation token wrapper: BRIDGE uses Func<bool>; otherwise wraps System.Threading.CancellationToken with implicit conversion.",
+      "dependsOn": [
+        "System.Threading.CancellationToken"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "9-21 (#if BRIDGE branch, Func<bool> based)"
+      ],
+      "csharpFeatures": [
+        "struct",
+        "operator-overload",
+        "delegate/Func"
+      ],
+      "traps": [
+        "ThrowIfCancellationRequested throws OperationCanceledException; Java has no standard equivalent (java.util.concurrent.CancellationException is unchecked and closest) - define Kusto-specific exception",
+        "Default(CancellationToken) struct value is non-cancelable; Java needs a null-safe/NONE singleton since structs can't be defaulted",
+        "Implicit conversion from System.Threading.CancellationToken (30-33) has no Java counterpart; offer constructors taking BooleanSupplier"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Referenced by Binder_API, SyntaxNode_Semantics and (outside scope) CodeService; used for cooperative cancellation in binding. Port non-BRIDGE semantics using a BooleanSupplier/volatile flag.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/CancellationToken.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Utils/Optional.cs",
+      "lines": 21,
+      "namespace": "Kusto.Language.Utils",
+      "types": [
+        "Optional<T> (struct, internal, generic)"
+      ],
+      "purpose": "Value wrapper distinguishing 'not provided' from null/default, with implicit conversion from T.",
+      "dependsOn": [
+        "none"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct",
+        "operator-overload",
+        "nullable-value-type",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Line 17 implicit conversion operator has no Java equivalent: call sites must wrap explicitly (Optional.of / constructor); users: ColumnSymbol, FunctionSymbol, CommandGrammar, Combinators, QuickInfoOptions",
+        "default(Optional<T>) = HasValue false; Java immutable class with static EMPTY/none factory",
+        "Name clash with java.util.Optional - use fully qualified or rename (e.g. KustoOptional) while keeping file mapping documented"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Small struct used in symbols and combinators; port as final class, note java.util.Optional name collision.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/utils/Optional.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Properties/AssemblyInfo.cs",
+      "lines": 4,
+      "namespace": "(global)",
+      "types": [],
+      "purpose": "Declares InternalsVisibleTo(\"Kusto.Language.UT\") for the unit test assembly.",
+      "dependsOn": [
+        "Kusto.Language.UT (test assembly)"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "No Java analogue: Java tests in the same package get package-private access; mirror internal types as package-private and keep tests in same package"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Assembly metadata only; no runtime behavior.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/(none)"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+      "lines": 238,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Diagnostic (class, sealed, public)",
+        "DiagnosticCategory (class, static, public)",
+        "DiagnosticSeverity (class, static, public)",
+        "DiagnosticLocationKind (enum, public)"
+      ],
+      "purpose": "Immutable diagnostic (code, category, severity, description, message, location) with With* copy methods, equality, and category/severity/location-kind constants.",
+      "dependsOn": [
+        "src/Kusto.Language/Syntax/SyntaxElement.cs (WithLocation(SyntaxElement) uses TextStart and Width)",
+        "IEquatable<Diagnostic>"
+      ],
+      "partialGroup": null,
+      "memberCount": 36,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "nullable-value-type",
+        "operator-overload",
+        "static-ctor",
+        "string.Format"
+      ],
+      "traps": [
+        "Lines 111-118 With(): condition compares 'category != this.Code' (typo for this.Category) so With always allocates a new Diagnostic whenever category differs from Code (practically always); identity of returned instance is thus not preserved - mirror faithfully",
+        "Line 99-100 With uses -1 sentinel for start/length, so WithLocation(-5,..) falls back to current start; constructor clamps negatives to 0 (63-64)",
+        "Lines 111-117 string != compares by value (ordinal); Java must use equals not !=",
+        "Lines 170-176 Equals(Diagnostic other) dereferences other without null check (NRE on null); requires HasLocation on both - two relative diagnostics are never equal, even to themselves",
+        "Lines 181-184 GetHashCode uses string.GetHashCode (randomized per-process in .NET Core, not stable): do not mirror numerically; use String.hashCode; mutually consistent with Equals only for same code/message/start",
+        "Line 168 NoDiagnostics is public static (mutable) field typed IReadOnlyList<Diagnostic>=new Diagnostic[0]",
+        "Lines 189-191 DiagnosticCategory fields are static NON-const strings (nameof) while DiagnosticSeverity uses const (199-219): matters for switch/case use in Java (static final String in both fine)",
+        "Line 9 [DebuggerDisplay] attribute: drop",
+        "Line 7 'using Syntax' placed inside namespace; Diagnostic depends on SyntaxElement (Syntax area)",
+        "Four public types in one C# file: Java requires one public top-level type per file => split into Diagnostic.java, DiagnosticCategory.java, DiagnosticSeverity.java, DiagnosticLocationKind.java (document as unavoidable deviation)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of diagnostics output; in scope. Splits to 4 Java files due to the one-public-type-per-file rule; keep member order and comments.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Diagnostic.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs",
+      "lines": 1126,
+      "namespace": "Kusto.Language",
+      "types": [
+        "DiagnosticFacts (class, static, public)"
+      ],
+      "purpose": "Static factory of ~205 Diagnostic instances (codes KS001-KS273, KS300) with their message text, mostly parameterless or string-parameterized.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+        "src/Kusto.Language/Symbols (Symbol, TypeSymbol .Name)",
+        "src/Kusto.Language/Syntax (SyntaxKind, SyntaxKind.GetText())",
+        "src/Kusto.Language/KustoFacts.cs (GetBracketedName, lines 80, 95, 889)",
+        "src/Kusto.Language/Utils/ListExtensions.cs (Join at 231,249,457,470,489)"
+      ],
+      "partialGroup": null,
+      "memberCount": 205,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "GetMissingCommand (KS300, line 1121-1124) - command diagnostics region 1120-1125"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "string.Format",
+        "LINQ",
+        "extension-methods",
+        "delegate/Func",
+        "generic-over-primitive",
+        "pattern-matching"
+      ],
+      "traps": [
+        "Interpolated strings $\"...{x}...\" throughout: use String.format/concat; message text must be copied verbatim (tests likely assert exact messages)",
+        "Lines 218-252 overloads with 'params TypeSymbol[]' vs IReadOnlyList<TypeSymbol>: Java varargs + List overloads; overload resolution ambiguity with varargs of generic types",
+        "Lines 449-478 GetExpressionMustHaveValue<T> / MustNotHaveValue<T>: values.Select(v=>v.ToString()) and '{values[0]}' use current-culture ToString for numbers/enums/bools; Java String.valueOf differs for bool (True vs true!), double formatting, enums; verify which T are used at call sites (likely string/long/bool)",
+        "Lines 480-498 GetExpressionMustHaveType<S> where S : Symbol uses .Name",
+        "Lines 48-56 GetTokenExpected(SyntaxKind[]) uses extension kind.GetText() from SyntaxFacts",
+        "Lines 43 string.Join(\", \", terms)",
+        "Lines 231,249,489 Join(\", \", \" and \") custom with final separator; 'a, b and c' composition: final separator replaces the LAST separator only",
+        "Lines 80,95,889 depend on KustoFacts.GetBracketedName for message text",
+        "Duplicate/shared codes: KS005 used twice (35-44), KS006 many (68-100), KS140 used by both Must/MustNot variants (449-472) -- codes are not unique per method",
+        "Line 1120 #region command diagnostics with KS300 (GetMissingCommand): command grammar related but single trivial entry",
+        "Large file: mostly mechanical; can be partly generated mechanically, but must preserve order and names"
+      ],
+      "proposedStatus": "ported",
+      "justification": "All parser/binder diagnostics flow through this file; needs full port. Includes one command-related diagnostic (KS300) that is harmless to keep.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/DiagnosticFacts.java"
+    }
+  ]
+}

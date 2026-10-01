@@ -1,0 +1,1096 @@
+{
+  "area": "binder",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_API.cs",
+      "lines": 870,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)",
+        "BinderAvailabilityContext (nested class, private, line 749)"
+      ],
+      "purpose": "Binder entry points: fields, private ctor, TryBind, TryBindCalledFunctionBody, GetComputedReturnType, GetReferencedSymbol, GetRowScope, GetSymbolsInScope and the scope/function enumeration used by tooling. Takes a lock on the global binding cache for each public entry.",
+      "dependsOn": [
+        "src/Kusto.Language/Aggregates.cs [Aggregates]",
+        "src/Kusto.Language/GlobalState.cs [GlobalState]",
+        "src/Kusto.Language/KustoCode.cs [IncludeFunctionKind]",
+        "src/Kusto.Language/Options.cs [Options]",
+        "src/Kusto.Language/PlugIns.cs [PlugIns]",
+        "src/Kusto.Language/Symbols/ClusterSymbol.cs [ClusterSymbol]",
+        "src/Kusto.Language/Symbols/CustomAvailabilityContext.cs [CustomAvailabilityContext]",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs [DatabaseSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs [EntityGroupElementSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/PatternSymbol.cs [PatternSymbol]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolKind.cs [SymbolKind]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs [TupleSymbol]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]",
+        "src/Kusto.Language/Syntax/SyntaxTree.cs [SyntaxTree]",
+        "src/Kusto.Language/Utils/Cancellation.cs [CancellationToken]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 45,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching"
+      ],
+      "traps": [
+        "Binder_API.cs:98,103,149 Dictionary<FunctionDeclaration,LocalScope>/Dictionary<string,DatabaseSymbol>: use HashMap/LinkedHashMap; iteration order not observed here",
+        "Binder_API.cs:170,289,316,351,385 lock(bindingCache) -> synchronized(bindingCache); bindingCache is GlobalBindingCache instance",
+        "Binder_API.cs:124,162 CancellationToken (default(CancellationToken)) -> need Java equivalent (custom CancellationToken type or null)",
+        "Binder_API.cs:429-583 GetSymbolsInContext is IntelliSense-oriented (GetSymbolsInScope/GetReferencedSymbol public API); used by completion but also by Binder callers: candidate for stubbed if completion out of scope; check callers before cutting",
+        "Binder_API.cs:444-464 uses IsInsideControlCommandProper (command-aware code path)",
+        "Binder_API.cs:749 nested class derives CustomAvailabilityContext (Symbols)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core binder entry file; TryBind/TryBindCalledFunctionBody/GetComputedReturnType required by the in-scope binding. GetSymbolsInScope/GetReferencedSymbol/GetRowScope/GetSymbolsInContext/GetFunctionsInScope family (lines 310-839) serve editor services; keep signatures but they may be ported late. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs",
+      "lines": 63,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "AsContextBuilder (nested class, internal, extends DefaultSyntaxVisitor, line 13)"
+      ],
+      "purpose": "Nested visitor that finds \"as\" operator definitions before a position and adds them to the local scope; used by ContextBuilder when reconstructing scope for a node.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]",
+        "src/Kusto.Language/Syntax/SyntaxVisitor.cs [DefaultSyntaxVisitor]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 2,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "pattern-matching"
+      ],
+      "traps": [
+        "Binder_AsContextBuilder.cs:13 nested class inside partial Binder; Java: static nested class inside Binder.java"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by ContextBuilder, which is used by GetSymbolsInScope/GetReferencedSymbol (position-based binding). Small. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_ContextBuilder.cs",
+      "lines": 565,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "ContextBuilder (nested class, internal, extends DefaultSyntaxVisitor, line 21)"
+      ],
+      "purpose": "Walks the syntax tree upward from a position to rebuild the Binder scope state that existed during full binding; 35 Visit overrides. Contains command-context handling (VisitCommandBlock, VisitPartialCommand, VisitCustomCommand, SetCommandContext).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs [EntityGroupElementSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs [EntityGroupSymbol]",
+        "src/Kusto.Language/Symbols/Parameter.cs [Parameter]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Directive,Name,NameReference,NamedParameter]",
+        "src/Kusto.Language/Syntax/SyntaxToken.cs [SyntaxToken]",
+        "src/Kusto.Language/Syntax/SyntaxVisitor.cs [DefaultSyntaxVisitor]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 36,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "CommandBlock",
+        "Command",
+        "PartialCommand",
+        "CustomCommand"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "pattern-matching",
+        "lambda",
+        "LINQ"
+      ],
+      "traps": [
+        "Binder_ContextBuilder.cs:256-270,474-490 depends on command syntax nodes (CommandBlock, Command, PartialCommand, CustomCommand) from the command grammar",
+        "Used only for position-based queries (GetSymbolsInScope etc.), not full-tree TryBind"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Used by editor-facing position queries. Port the non-command visits; command visits (lines 256-270, 474-490) can be stubbed if control commands are out of scope but node types still exist in Syntax. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_FunctionCalls.cs",
+      "lines": 2766,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)",
+        "BinderCallContext (nested class, private sealed, extends CustomReturnTypeContext, line 625)"
+      ],
+      "purpose": "Binding of function calls, patterns, cluster()/database()/table()/external_table()/materialized_view()/entity_group()/graph() special functions, overload resolution (signature scoring, ParameterMatchKind), return-type computation, call-site result/expansion caching, function body facts, and inline expansion of user/database function bodies.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic,DiagnosticSeverity]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/FunctionBodyFacts.cs [FunctionBodyFacts]",
+        "src/Kusto.Language/GlobalState.cs [GlobalState]",
+        "src/Kusto.Language/Parser/Combinators/Source.cs [Source]",
+        "src/Kusto.Language/Parser/QueryParser.cs [QueryParser]",
+        "src/Kusto.Language/Properties.cs [Properties]",
+        "src/Kusto.Language/Symbols/ArgumentKind.cs [ArgumentKind]",
+        "src/Kusto.Language/Symbols/ClusterSymbol.cs [ClusterSymbol]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/CombineKind.cs [CombineKind]",
+        "src/Kusto.Language/Symbols/Conversion.cs [Conversion]",
+        "src/Kusto.Language/Symbols/CustomReturnTypeContext.cs [CustomReturnTypeContext]",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs [DatabaseSymbol]",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs [DynamicSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs [EntityGroupSymbol]",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs [ErrorSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GraphSymbol.cs [GraphSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/Parameter.cs [Parameter]",
+        "src/Kusto.Language/Symbols/ParameterSymbol.cs [ParameterSymbol]",
+        "src/Kusto.Language/Symbols/ParameterTypeKind.cs [ParameterTypeKind]",
+        "src/Kusto.Language/Symbols/PatternSymbol.cs [PatternSignature,PatternSymbol]",
+        "src/Kusto.Language/Symbols/ReturnTypeKind.cs [ReturnTypeKind]",
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs [ScalarSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [StoredQueryResultSymbol,TableSymbol]",
+        "src/Kusto.Language/Symbols/TypeFacts.cs [TypeFacts]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [LiteralExpression,Name,NameReference]",
+        "src/Kusto.Language/Syntax/SyntaxToken.cs [IdentifierToken,SyntaxToken]",
+        "src/Kusto.Language/Syntax/ValueInfo.cs [ValueInfo]",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs [EmptyReadOnlyList]",
+        "src/Kusto.Language/Utils/MostRecentlyUsedCache.cs [MostRecentlyUsedCache]",
+        "Utils/ObjectPool/UniqueNameTable etc via Utils namespace"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 75,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "2684-2713 is \"#if false\" (dead), not BRIDGE"
+      ],
+      "csharpFeatures": [
+        "out/ref",
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching",
+        "generic-method",
+        "tuple",
+        "string.Format"
+      ],
+      "traps": [
+        "Binder_FunctionCalls.cs:30-... 53 out/ref usages (TryGet*): Java needs holder types or return Optional/records",
+        "Binder_FunctionCalls.cs:696 TryGetLiteralValue<T>(Expression,out T) generic out",
+        "Binder_FunctionCalls.cs:740 name.Contains(\"*\") ordinal (C# string.Contains(string) is ordinal)",
+        "Binder_FunctionCalls.cs:2367,2370 StartsWith/EndsWith with StringComparison.Ordinal (OK)",
+        "Binder_FunctionCalls.cs:238 LiteralValue?.ToString() culture-sensitive for numeric literal values: use Locale.ROOT/invariant formatting",
+        "Binder_FunctionCalls.cs:274 sig.PathValue.ToString()",
+        "Binder_FunctionCalls.cs:1459 CompareSignatureMatch ordering feeds best-signature selection: any sort must be stable and mirror C# semantics",
+        "Binder_FunctionCalls.cs:2030 lock(this._globalBindingCache) in deferred expansion (Func<FunctionCallExpansion>)",
+        "Binder_FunctionCalls.cs:2019 GetDeferredFunctionCallExpansion returns Func<FunctionCallExpansion> -> java.util.function.Supplier",
+        "Binder_FunctionCalls.cs:2684-2713 #if false dead code (GetReferencedParameter older version): do not port, preserve as comment",
+        "Binder_FunctionCalls.cs:2130,2193 non-private methods without accessor (default private in C#)",
+        "Binder_FunctionCalls.cs:1605 public static GetParameterMatchKind huge switch on parameter ArgumentKind (ParameterMatchKind enum ordering matters: comparison by ordinal)",
+        "Binder_FunctionCalls.cs:12 using static Symbols.TypeFacts -> Java static imports of TypeFacts members"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of function binding; required for binding any call. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_Misc.cs",
+      "lines": 2803,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)"
+      ],
+      "purpose": "Grab bag of Binder members in 8 regions: semantic info accessors, open cluster/database/table/column caches, column unification caches, shared ObjectPool fields, static literal SemanticInfo instances, declaration helpers (let, parameters, columns, scan steps, graph-match), directives (#connect), scope selection for arguments, type resolution from type expressions, and the large Check* family of argument/operand validation helpers plus CheckSignature/CheckArgument.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic,DiagnosticSeverity]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/Editor/ClientDirectiveArgument.cs [ClientDirectiveArgument]",
+        "src/Kusto.Language/Parser/TokenParser.cs [TokenParser]",
+        "src/Kusto.Language/QueryOperatorParameters.cs [QueryOperatorParameter,QueryOperatorParameterValueKind]",
+        "src/Kusto.Language/Symbols/ArgumentKind.cs [ArgumentKind]",
+        "src/Kusto.Language/Symbols/ClusterSymbol.cs [ClusterSymbol]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/Conversion.cs [Conversion]",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs [DatabaseSymbol]",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs [DynamicPrimitiveSymbol,DynamicSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs [EntityGroupElementSymbol]",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs [ErrorSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GraphSymbol.cs [GraphSymbol]",
+        "src/Kusto.Language/Symbols/OperatorKind.cs [OperatorKind]",
+        "src/Kusto.Language/Symbols/Parameter.cs [Parameter]",
+        "src/Kusto.Language/Symbols/ParameterSymbol.cs [ParameterSymbol]",
+        "src/Kusto.Language/Symbols/ParameterTypeKind.cs [ParameterTypeKind]",
+        "src/Kusto.Language/Symbols/PatternSymbol.cs [PatternSignature]",
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs [ScalarSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolKind.cs [SymbolKind]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs [TupleSymbol]",
+        "src/Kusto.Language/Symbols/TypeFacts.cs [TypeFacts]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Symbols/VoidSymbol.cs [VoidSymbol]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [CompoundStringLiteralExpression,Directive,DynamicExpression,LiteralExpression,Name,NameDeclaration,NameReference,NamedParameter,TokenName]",
+        "src/Kusto.Language/Syntax/SyntaxToken.cs [SyntaxToken]",
+        "src/Kusto.Language/Utils/ConnectionInfo.cs [ConnectionInfo]",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs [EmptyReadOnlyList]",
+        "src/Kusto.Language/Utils/ObjectPool.cs [ObjectPool]",
+        "src/Kusto.Language/Utils/UniqueNameTable.cs [UniqueNameTable]",
+        "src/Kusto.Language/Utils/ValueComparer.cs [ValueComparer]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 180,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "Editor.ClientDirectiveArgument (Binder_Misc.cs:781)"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "none (line 2800 comment only)"
+      ],
+      "csharpFeatures": [
+        "out/ref",
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching",
+        "generic-method",
+        "static-fields",
+        "ObjectPool"
+      ],
+      "traps": [
+        "Binder_Misc.cs:41-160 Dictionary<...,Dictionary<string,...>> open-symbol caches; _openTableInferredColumns map values are enumerated at line 169 (columns.AddRange(columnMap.Values)) -> Dictionary order observable; use LinkedHashMap to preserve insertion order",
+        "Binder_Misc.cs:216 Dictionary<TableSymbol,TupleSymbol> keyed by reference identity/equality of TableSymbol",
+        "Binder_Misc.cs:377-426 static ObjectPool<T> fields (Utils.ObjectPool); Java can use simple pool or drop pooling but keep semantics (Clear callbacks)",
+        "Binder_Misc.cs:736,747 arg.Text.StartsWith(\"cluster\") / StartsWith(\"@\") culture-sensitive in C# (default current culture); use plain startsWith in Java",
+        "Binder_Misc.cs:750 ConnectionInfo.Parse (Utils/ConnectionInfo.cs) connection-string parser",
+        "Binder_Misc.cs:764 text.IndexOf(prefix,start) culture-sensitive string IndexOf in C#; Java indexOf is ordinal. Use ordinal semantics intentionally and note",
+        "Binder_Misc.cs:762 out int end param",
+        "Binder_Misc.cs:781 Editor.ClientDirectiveArgument parameter type (Editor/ClientDirectiveArgument.cs): move type or replace with plain string",
+        "Binder_Misc.cs:2170 LiteralValue?.ToString() culture",
+        "Binder_Misc.cs:2237,2253 values.Select(v=>v.ToString()) for diagnostics: object.ToString formatting of boxed values (bool -> \"True\" in C#, \"true\" in Java!)",
+        "Binder_Misc.cs:2262-2266 Contains(values,value,caseSensitive) uses ValueComparer.AreEquivalent",
+        "Binder_Misc.cs:1530 method named CheckIsScalasr (typo in upstream, mirror), 1580 CheckIsBooleanlLiteral (typo, mirror)",
+        "Binder_Misc.cs:1872,1885 generic IsAnyType<T>/CheckIsAnyType<T>",
+        "Binder_Misc.cs:2800 comment \"keep line for BRIDGE.NET bug\" before #endregion",
+        "Binder_Misc.cs:1310 HashSet<string> param"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Largest shared member file; ~180 methods in region order. Member order must be preserved within region. Directives region (654-793) touches Editor.ClientDirectiveArgument. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_Names.cs",
+      "lines": 866,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)"
+      ],
+      "purpose": "Name binding: BindName and per-scope variants (aggregate, option, plug-in, normal), CanBindName, matching-symbol collection in normal scope, result construction (GetMatchingSymbolResult), create-function / control-command context detection, wildcard and distinct helpers.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/Editor/CompletionHint.cs [CompletionHint]",
+        "src/Kusto.Language/KustoCode.cs [IncludeFunctionKind]",
+        "src/Kusto.Language/PlugIns.cs [PlugIns]",
+        "src/Kusto.Language/Symbols/ClusterSymbol.cs [ClusterSymbol]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs [DatabaseSymbol]",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs [DynamicBagSymbol,DynamicSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs [EntityGroupElementSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs [EntityGroupSymbol]",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs [ErrorSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs [TupleSymbol]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Syntax/CustomNode.cs [CustomNode]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs [EmptyReadOnlyList]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 27,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "Editor.CompletionHint (Binder_Names.cs:853-857)",
+        "SyntaxElement.GetCompletionHint (Syntax/SyntaxElement.cs:306)"
+      ],
+      "referencesCommands": [
+        "Command (Binder_Names.cs:361)",
+        "CustomNode (create-function command detection, 315-357)"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "pattern-matching",
+        "lambda"
+      ],
+      "traps": [
+        "Binder_Names.cs:785 name.StartsWith(\"__\") culture-sensitive in C#; Java startsWith is ordinal (acceptable, note)",
+        "Binder_Names.cs:799 GetWildcardSymbols uses pattern matching util (wildcard match): verify case-sensitivity in KustoFacts/Utils",
+        "Binder_Names.cs:409 MakeDistinct(List<Symbol>) preserves first-occurrence order; mirror exactly",
+        "Binder_Names.cs:851-857 Editor.CompletionHint via SyntaxElement.GetCompletionHint(index) used in IsInTabularContext",
+        "Binder_Names.cs:227-380 control command / create-function context detection (Command, CustomNode)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for every name lookup. IsInTabularContext (813-) depends on Editor.CompletionHint and GetCompletionHint on SyntaxElement (Syntax/SyntaxElement.cs:306): CompletionHint enum must be ported (or moved to Syntax) if kept. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
+      "lines": 4681,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, internal partial)",
+        "NodeBinder (nested class, private, extends SyntaxVisitor<SemanticInfo>, line 17)",
+        "JoinColumnPair (nested class of NodeBinder, private, line 2758)"
+      ],
+      "purpose": "The NodeBinder visitor: one Visit* override per syntax node kind (212 overrides) computing SemanticInfo. Organised in regions: declarations, literals, scalar operators, names and paths, function calls, other nodes, query operators (lines 1248-4303, about 3000 lines), clauses, statements, commands, directives.",
+      "dependsOn": [
+        "src/Kusto.Language/Aggregates.cs [Aggregates]",
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/KustoCode.cs [IncludeFunctionKind]",
+        "src/Kusto.Language/Properties.cs [Properties]",
+        "src/Kusto.Language/QueryOperatorParameters.cs [QueryOperatorParameter,QueryOperatorParameters]",
+        "src/Kusto.Language/Symbols/ClusterSymbol.cs [ClusterSymbol]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/Conversion.cs [Conversion]",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs [DatabaseSymbol]",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs [DynamicArraySymbol,DynamicBagSymbol,DynamicSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs [EntityGroupElementSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs [EntityGroupSymbol]",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs [ErrorSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GraphSymbol.cs [GraphSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/OperatorKind.cs [OperatorKind]",
+        "src/Kusto.Language/Symbols/Parameter.cs [Parameter]",
+        "src/Kusto.Language/Symbols/ParameterSymbol.cs [ParameterSymbol]",
+        "src/Kusto.Language/Symbols/PatternSymbol.cs [PatternSignature,PatternSymbol]",
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs [ScalarSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolKind.cs [SymbolKind]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs [TupleSymbol]",
+        "src/Kusto.Language/Symbols/TypeFacts.cs [TypeFacts]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VoidSymbol.cs [VoidSymbol]",
+        "src/Kusto.Language/Syntax/CustomNode.cs [CustomNode]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxFacts.cs [SyntaxFacts]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [BracedName,BracketedName,BracketedWildcardedName,CompoundStringLiteralExpression,Directive,DynamicExpression,LiteralExpression,Name,NameDeclaration,NameReference,NamedParameter,TokenName,TypeOfLiteralExpression,WildcardedName]",
+        "src/Kusto.Language/Syntax/SyntaxVisitor.cs [SyntaxVisitor]",
+        "src/Kusto.Language/Utils/ObjectPool.cs [ObjectPool]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 213,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "CommandWithValueClause",
+        "BadCommand",
+        "CommandBlock",
+        "CustomCommand",
+        "PartialCommand",
+        "UnknownCommand",
+        "GlobalState.GetCommand"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "pattern-matching",
+        "out/ref",
+        "lambda",
+        "HashSet",
+        "string.Format-interpolated-exceptions",
+        "generic-visitor"
+      ],
+      "traps": [
+        "Binder_NodeBinder.cs:17 SyntaxVisitor<SemanticInfo> generic visitor: Java SyntaxVisitor<R> must exist; 212 Visit overrides need exact node class set from Syntax",
+        "Binder_NodeBinder.cs:183,205 LiteralValue?.ToString() culture",
+        "Binder_NodeBinder.cs:275,362,375 throw new InvalidOperationException($\"...\") interpolated",
+        "Binder_NodeBinder.cs:1406,1438 HashSet<string> built from column names (membership only)",
+        "Binder_NodeBinder.cs:1877 string.Equals(..., StringComparison.OrdinalIgnoreCase) -> equalsIgnoreCase approx (differs for non-ASCII; note)",
+        "Binder_NodeBinder.cs:3929,3941,4010,4022 HashSet<string> in graph-match binding",
+        "Binder_NodeBinder.cs:2758 nested JoinColumnPair helper",
+        "Binder_NodeBinder.cs:3571 CreateColumnsFromRowSchema out columns",
+        "Binder_NodeBinder.cs:4605-4652 command visits (VisitCommandWithValueClause, VisitBadCommand, VisitCommandBlock, VisitCustomCommand, VisitPartialCommand, VisitUnknownCommand) use _binder._globals.GetCommand(node.CommandKind)",
+        "Binder_NodeBinder.cs:4653 Directives region"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Largest and most central file (4681 lines). Region order and Visit method order must be preserved. Command visits (4605-4652) are retained as thin implementations since SyntaxVisitor requires all abstract overrides unless Java uses default methods. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_Operators.cs",
+      "lines": 304,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)"
+      ],
+      "purpose": "Scalar operator binding: GetBinaryOperatorInfo/GetUnaryOperatorInfo/GetOperatorInfo overloads resolving OperatorSymbol signatures, GetOperatorKind(SyntaxKind) mapping, result type computation.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs [DynamicSymbol]",
+        "src/Kusto.Language/Symbols/OperatorKind.cs [OperatorKind]",
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs [ScalarSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Syntax/FakeExpression.cs [FakeExpression]",
+        "src/Kusto.Language/Syntax/SyntaxElement.cs [IncludeTrivia]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Binder_Operators.cs:164-285 large switch SyntaxKind -> OperatorKind; relies on enum values/names in both",
+        "Binder_Operators.cs:138 location.ToString(IncludeTrivia.Interior) used in diagnostic text"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Small and required for operator expressions. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_Projection.cs",
+      "lines": 839,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)",
+        "ProjectionStyle (nested enum, private, line 21)",
+        "ColumnOrdering (nested enum, private, line 428)"
+      ],
+      "purpose": "Projection column creation for project/extend/summarize/etc. (CreateProjectionColumns), result-column naming (GetExpressionResultName, GetFunctionResultName, GetGraphExpressionResultName), column ordering, default column names with numeric suffixes.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/Parser/Combinators/Source.cs [Source]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs [ErrorSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/ResultNameKind.cs [ResultNameKind]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs [TupleSymbol]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [DynamicExpression,Name,NameReference]",
+        "src/Kusto.Language/Utils/StringAndNumberComparer.cs [StringAndNumberComparer]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 19,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "pattern-matching",
+        "string interpolation",
+        "nested enums"
+      ],
+      "traps": [
+        "Binder_Projection.cs:462-468 OrderBy/OrderByDescending with StringComparer.OrdinalIgnoreCase and Utils StringAndNumberComparer.OrdinalIgnoreCase: LINQ OrderBy is a STABLE sort; Java sort of List is stable too, but comparer must replicate ordinal-ignore-case (C# upper-cases, Java String.CASE_INSENSITIVE_ORDER differs for some chars) and natural number ordering",
+        "Binder_Projection.cs:511 mutable field _defaultColumnNameSuffix interleaved with methods (member order)",
+        "Binder_Projection.cs:595 HashSet<string> declaredNames duplicate detection (case-sensitive ordinal)",
+        "Binder_Projection.cs:719 LiteralValue.ToString() culture",
+        "Binder_Projection.cs:730,749,836 $\"{left}_{right}\" interpolation",
+        "Binder_Projection.cs:836 string.IsNullOrWhiteSpace -> uses Unicode whitespace; Java isBlank is similar but not identical",
+        "Binder_Projection.cs:403 ConstantValue is string pattern"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Required for column naming in result schemas, which tests assert on. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs",
+      "lines": 105,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "SearchPredicateBinder (nested class, private, extends DefaultSyntaxVisitor, line 18)"
+      ],
+      "purpose": "Nested visitor handling the special predicate binding for search/find operators (names bind to columns of the tables in scope).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/OperatorKind.cs [OperatorKind]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [LiteralExpression,NameReference]",
+        "src/Kusto.Language/Syntax/SyntaxVisitor.cs [DefaultSyntaxVisitor]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "lambda",
+        "pattern-matching"
+      ],
+      "traps": [
+        "Binder_SearchPredicateBinder.cs:18 nested class in partial Binder; 5 Visit overrides"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Required by SearchOperator/FindOperator binding. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs",
+      "lines": 571,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "Binder (class, sealed partial, internal)"
+      ],
+      "purpose": "Table and column helpers: collecting tables/columns from symbols, find/search table resolution, implied tables, referenced tables/columns, and unification/uniquifying utilities (UnifyColumnsWithSameName[AndType], MakeColumnNamesUnique, GetCommonColumns, CreateColumnsFromRowSchema).",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/Conversion.cs [Conversion]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TypeFacts.cs [TypeFacts]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name,NameReference]",
+        "src/Kusto.Language/Utils/UniqueNameTable.cs [UniqueNameTable]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 20,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "out/ref",
+        "LINQ",
+        "Dictionary",
+        "static-internal"
+      ],
+      "traps": [
+        "Binder_TablesAndColumns.cs:316-364 MakeColumnNamesUnique uses a Dictionary nameToIndexMap and nameTable.AddNames(nameToIndexMap.Keys) (line 334): Keys order is observable -> use LinkedHashMap",
+        "Binder_TablesAndColumns.cs:204,264 Unify* depend on ColumnMap (ColumnMap.cs) whose enumeration order depends on dictionary insertion",
+        "Binder_TablesAndColumns.cs:366,387 overloaded GetCommonColumns with List<Symbol> vs List<ColumnSymbol> out lists: same erasure in Java! Overloads with List<Symbol>/List<ColumnSymbol> clash after erasure; rename or change signature",
+        "Binder_TablesAndColumns.cs:475 UniqueNameTable (Utils)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by tabular operator binding. Note Java generic erasure clash at lines 366/387. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
+      "lines": 1211,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "TreeBinder (nested class, private, extends DefaultSyntaxVisitor, line 16)"
+      ],
+      "purpose": "Nested visitor orchestrating top-down scope setup and bottom-up invocation of NodeBinder across the whole tree; 42 Visit overrides including command handling.",
+      "dependsOn": [
+        "src/Kusto.Language/Aggregates.cs [Aggregates]",
+        "src/Kusto.Language/QueryOperatorParameters.cs [QueryOperatorParameters]",
+        "src/Kusto.Language/Symbols/ArgumentKind.cs [ArgumentKind]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/CombineKind.cs [CombineKind]",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs [DatabaseSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs [EntityGroupElementSymbol]",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs [EntityGroupSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/GroupSymbol.cs [GroupSymbol]",
+        "src/Kusto.Language/Symbols/Parameter.cs [Parameter]",
+        "src/Kusto.Language/Symbols/PatternSymbol.cs [PatternSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs [TupleSymbol]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]",
+        "src/Kusto.Language/Syntax/CustomNode.cs [CustomNode]",
+        "src/Kusto.Language/Syntax/SeparatedElement.cs [SeparatedElement]",
+        "src/Kusto.Language/Syntax/SyntaxKind.cs [SyntaxKind]",
+        "src/Kusto.Language/Syntax/SyntaxList.cs [SyntaxList]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [DynamicExpression,Name,NameReference]",
+        "src/Kusto.Language/Syntax/SyntaxVisitor.cs [DefaultSyntaxVisitor]"
+      ],
+      "partialGroup": "Binder",
+      "memberCount": 43,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "Command",
+        "CommandBlock"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "pattern-matching",
+        "LINQ",
+        "HashSet"
+      ],
+      "traps": [
+        "Binder_TreeBinder.cs:973 HashSet<ColumnSymbol> membership only",
+        "Binder_TreeBinder.cs:1011-1050 IsCommandButNotQueryPart, VisitCommandBlock use Command / CommandBlock nodes",
+        "Binder_TreeBinder.cs:751 node.OrderByClause?.Accept(this) null-conditional"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Drives TryBind; required. Uses top-of-file fully qualified usings (Kusto.Language.Symbols / Syntax) instead of nested usings. Partial group Binder (merged into Binder.java). Suggested merge order follows file order: Binder_API, Binder_AsContextBuilder, Binder_ContextBuilder, Binder_FunctionCalls, Binder_Misc, Binder_Names, Binder_NodeBinder, Binder_Operators, Binder_Projection, Binder_SearchPredicateBinder, Binder_TablesAndColumns, Binder_TreeBinder (C# has no defined cross-file order; within-file order must be preserved; nested classes become static nested classes in Binder.java).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/CallSiteInfo.cs",
+      "lines": 87,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "CallSiteInfo (class, internal, implements IEquatable<CallSiteInfo>)"
+      ],
+      "purpose": "Identifies a function call site (Signature, Parameters, Values) as a cache key; implements value equality and hashing.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Parameter.cs [Parameter]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs [EmptyReadOnlyList]"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "IEquatable",
+        "LINQ",
+        "string interpolation"
+      ],
+      "traps": [
+        "CallSiteInfo.cs:41-46 ToString uses $\"\" interpolation with object.ToString on boxed values",
+        "CallSiteInfo.cs:48-80 Equals: TableSymbol values compared by TableSymbol.AreResultEquivalent, others by object.Equals (boxed value equality: Java Objects.equals differs for Integer vs Long)",
+        "CallSiteInfo.cs:82 GetHashCode returns only Signature.GetHashCode() (hash collisions intentional)",
+        "CallSiteInfo.cs:38 Debug.Assert -> assert"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Cache key for function-call result and expansion caches.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/CallSiteInfo.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/ColumnMap.cs",
+      "lines": 301,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "ColumnMap (class, internal)"
+      ],
+      "purpose": "Map from column name to column, column list, or per-type dictionary, used for unifying columns with the same name (optionally unifying dynamic types).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs [DynamicSymbol]",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs [ScalarTypes]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs [EmptyReadOnlyList]"
+      ],
+      "partialGroup": null,
+      "memberCount": 15,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "out/ref",
+        "yield",
+        "Dictionary",
+        "pattern-matching",
+        "LINQ"
+      ],
+      "traps": [
+        "ColumnMap.cs:15,20 Dictionary<string,object> _nameMap enumerated by callers: C# Dictionary enumerates in insertion order only absent removals; use LinkedHashMap",
+        "ColumnMap.cs:66,83,88,137,148,180,212,235,274 Dictionary<TypeSymbol,object> keyed by TypeSymbol equality; iteration at 237 order observable (foreach kvp in dict) -> LinkedHashMap",
+        "ColumnMap.cs:150 dict.Keys.ToReadOnly()",
+        "ColumnMap.cs:243,248,256,261 yield return -> Java must build a List or Iterator/Iterable (lazy semantics lost)",
+        "ColumnMap.cs: value stored as object that is ColumnSymbol | List<ColumnSymbol> | Dictionary<...>: Java Object + instanceof"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by UnifyColumns* in Binder_TablesAndColumns.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ColumnMap.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/FunctionCallExpansion.cs",
+      "lines": 18,
+      "namespace": "Kusto.Language",
+      "types": [
+        "FunctionCallExpansion (class, internal, extends SyntaxTree)"
+      ],
+      "purpose": "A SyntaxTree representing the evaluated body of a called function expanded inline at the call site.",
+      "dependsOn": [
+        "src/Kusto.Language/Syntax/SyntaxTree.cs [SyntaxTree]"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "FunctionCallExpansion.cs:3 namespace is Kusto.Language (NOT Kusto.Language.Binding) -> Java package org.graylog.kusto.language, not binding"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Trivial subclass of SyntaxTree; lives outside the Binding namespace.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/FunctionCallExpansion.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/FunctionCallInfo.cs",
+      "lines": 99,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "FunctionCallInfo (class, internal)"
+      ],
+      "purpose": "Extended info about a bound function call: the call-site expansion (lazy via Func) and related facts.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic,DiagnosticSeverity]",
+        "src/Kusto.Language/FunctionBodyFacts.cs [FunctionBodyFacts]"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "LINQ",
+        "nullable-value-type",
+        "pattern-matching"
+      ],
+      "traps": [
+        "FunctionCallInfo.cs:18,50-57 lazy Expansion getter invokes Func<FunctionCallExpansion> _expander (-> Supplier) unsynchronized and caches in _expansion",
+        "FunctionCallInfo.cs:19,22 bool? _hasErrors nullable value type (HasErrors getter lines 59-71) -> Boolean or tri-state",
+        "FunctionCallInfo.cs:73-95 Diagnostics lazily relocates expansion diagnostics via root.GetPositionInOriginalTree and Diagnostic.WithLocation",
+        "FunctionCallInfo.cs:3 System.Collections.ObjectModel"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Carried on SemanticInfo.CalledFunctionInfo.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/FunctionCallInfo.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/FunctionCallResult.cs",
+      "lines": 40,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "FunctionCallResult (struct, internal)"
+      ],
+      "purpose": "Value pair of result TypeSymbol and optional FunctionCallInfo.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "struct"
+      ],
+      "traps": [
+        "FunctionCallResult.cs:17 struct -> Java final class or record (no value semantics/allocation avoidance); default(FunctionCallResult) has null Type and Info"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Tiny struct used by overload resolution.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/FunctionCallResult.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/GlobalBindingCache.cs",
+      "lines": 33,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "GlobalBindingCache (class, internal)"
+      ],
+      "purpose": "Cross-binder cache (shared via GlobalState) of unified-column tables, call-site result types/expansions, and database function body facts, using ThreadSafeDictionary and MostRecentlyUsedCache.",
+      "dependsOn": [
+        "src/Kusto.Language/FunctionBodyFacts.cs [FunctionBodyFacts]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/TableSymbol.cs [TableSymbol]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Utils/ListExtensions.cs [ReadOnlyListComparer]",
+        "src/Kusto.Language/Utils/MostRecentlyUsedCache.cs [MostRecentlyUsedCache]",
+        "src/Kusto.Language/Utils/ThreadSafeDictionary.cs [ThreadSafeDictionary]"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-collections"
+      ],
+      "traps": [
+        "GlobalBindingCache.cs:15-31 ThreadSafeDictionary<IReadOnlyList<TableSymbol>,TableSymbol> with ReadOnlyListComparer<TableSymbol>.Default: Java needs list wrapper key with element-reference-equality hashing",
+        "GlobalBindingCache.cs:24,27 MostRecentlyUsedCache<CallSiteInfo,...> (Utils)",
+        "Binder_API lock(bindingCache) synchronizes on instances of this class"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for correctness-preserving caches; could be simplified but mirror rule says keep.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/GlobalBindingCache.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/LocalBindingCache.cs",
+      "lines": 28,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "LocalBindingCache (class, internal)"
+      ],
+      "purpose": "Per-binding-session caches: signatures currently computing expansion, call-site maps, non-database function body facts, expansion counts.",
+      "dependsOn": [
+        "src/Kusto.Language/FunctionBodyFacts.cs [FunctionBodyFacts]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "Dictionary"
+      ],
+      "traps": [
+        "LocalBindingCache.cs:13-26 HashSet/Dictionary keyed by Signature and CallSiteInfo (custom Equals/GetHashCode)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Simple holder.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/LocalBindingCache.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/LocalScope.cs",
+      "lines": 233,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "LocalScope (class, internal)"
+      ],
+      "purpose": "Nested scoping for let variables and function parameters with outer and shared-symbol scopes.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs [SymbolMatch]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]"
+      ],
+      "partialGroup": null,
+      "memberCount": 18,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "out/ref",
+        "Dictionary",
+        "LINQ",
+        "tuple-lite"
+      ],
+      "traps": [
+        "LocalScope.cs:15,146 Dictionary<string,Symbol> _symbols lazily created",
+        "LocalScope.cs:69,192 iterates _symbols.Values (HasSymbol(match), GetSymbols): order observable -> LinkedHashMap",
+        "LocalScope.cs: name comparison is default (ordinal, case-sensitive) via Dictionary<string,...>"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core scope structure.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/LocalScope.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/ParameterMatchKind.cs",
+      "lines": 97,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "ParameterMatchKind (enum, internal)"
+      ],
+      "purpose": "Ordered enum describing how well an argument matches a parameter (None, Unknown, ... better = later); order is semantically significant.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 2,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "ParameterMatchKind.cs:8 enum member declaration order defines comparison (CompareParameterMatch in Binder_FunctionCalls.cs:1490): Java enum ordinal order must be identical"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Enum with doc comments.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ParameterMatchKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/ProjectionBuilder.cs",
+      "lines": 225,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "ProjectionBuilder (class, internal)"
+      ],
+      "purpose": "Builds a list of projection columns, avoiding duplicates and tracking declared names and column indices.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic]",
+        "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs [DiagnosticFacts]",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs [ColumnSymbol]",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs [Name]",
+        "src/Kusto.Language/Utils/UniqueNameTable.cs [UniqueNameTable]"
+      ],
+      "partialGroup": null,
+      "memberCount": 15,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "out/ref",
+        "Dictionary",
+        "HashSet"
+      ],
+      "traps": [
+        "ProjectionBuilder.cs:23,28,33 HashSet<ColumnSymbol>, Dictionary<string,int>, HashSet<string> (membership/index lookups; order from list)",
+        "Instances pooled via ObjectPool in Binder_Misc.cs:416-417 so Clear/reset must fully reset state"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by CreateProjectionColumns.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ProjectionBuilder.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/ScopeKind.cs",
+      "lines": 34,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "ScopeKind (enum, internal)"
+      ],
+      "purpose": "Scope lookup kind: Normal, Aggregate, PlugIn, Option.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Simple enum.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/ScopeKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Binder/SemanticInfo.cs",
+      "lines": 244,
+      "namespace": "Kusto.Language.Binding",
+      "types": [
+        "SemanticInfo (class, sealed, internal)"
+      ],
+      "purpose": "Immutable semantic information attached to a SyntaxNode: referenced symbol/signature, result type, constness, diagnostics, called function info, alternates; With* copy methods and static Empty.",
+      "dependsOn": [
+        "src/Kusto.Language/Diagnostics/Diagnostic.cs [Diagnostic]",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs [EntityGroupSymbol]",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs [FunctionSymbol]",
+        "src/Kusto.Language/Symbols/Signature.cs [Signature]",
+        "src/Kusto.Language/Symbols/Symbol.cs [Symbol]",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs [TypeSymbol]",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs [VariableSymbol]"
+      ],
+      "partialGroup": null,
+      "memberCount": 24,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-readonly",
+        "nullable-ref"
+      ],
+      "traps": [
+        "SemanticInfo.cs:22-60 ReferencedSymbol/ReferencedSignature getters derive from single _referencedSymbolOrSignature object field via type tests (Signature, FunctionSymbol with 1 signature, VariableSymbol of function type, EntityGroupSymbol)",
+        "SemanticInfo.cs:242 public static readonly SemanticInfo Empty = new SemanticInfo((TypeSymbol)null) -> static final; cast disambiguates overloads (Java overloads with null need cast too)",
+        "SemanticInfo.cs:110-150 overloaded constructors with optional parameters -> Java overloads/builder"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Central result type of binding.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/binding/SemanticInfo.java"
+    }
+  ]
+}

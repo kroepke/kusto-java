@@ -1,0 +1,679 @@
+{
+  "area": "syntax",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt",
+      "lines": 14,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [],
+      "purpose": "T4 template that includes Kusto.Language.Generators CodeGenerator.cs, SyntaxNodeGenerator.cs, SyntaxNodeInfos.cs and emits GeneratedSyntaxNodes.cs by calling SyntaxNodeGenerator.Generate(SyntaxNodeInfos.All, SyntaxNodeInfos.KnownTypes). The output .cs is NOT checked in (gitignored via 'Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt' pattern region; no GeneratedSyntaxNodes.cs exists in the submodule), so the node classes (~223 SyntaxNodeInfo entries: Expression, Statement, QueryOperator, Name, clauses, etc.), the SyntaxVisitor/DefaultSyntaxVisitor Visit<Node> methods and the partial members they pair with live only in generator input.",
+      "dependsOn": [
+        "src/Kusto.Language.Generators/CodeGenerator.cs",
+        "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
+        "src/Kusto.Language.Generators/SyntaxNodeInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs + SyntaxNodeInfos.cs (driven by this .tt)",
+      "referencesEditor": [
+        "CompletionHint",
+        "CompletionKind (via KnownTypes mapping in SyntaxNodeGenerator.cs L292-293)"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "T4 template 'compilerOptions=/d:T4' line 1; includes at lines 12-14 resolve ..\\..\\..\\Kusto.Language.Generators\\*.cs; Bridge csproj (src/Kusto.Language.Bridge/Kusto.Language.Bridge.csproj ~L32-40) excludes Syntax\\CodeGen\\*.cs and compiles the T4 output from obj"
+      ],
+      "proposedStatus": "generated",
+      "justification": "Template only; not portable. Java side must either (a) write a Java generator that reads SyntaxNodeInfos.cs (3343 lines, 223 node infos) / run the C# generator once and transliterate, or (b) emit one Java file per node class. NOTE: 'one Java file per C# file' cannot hold for the ~223 generated node classes: recommend one Java file per node class under syntax/ plus Visitor files. Must resolve before porting parser. The generated output must be produced by running the T4/SyntaxNodeGenerator (needs dotnet) or by porting SyntaxNodeGenerator to Java/Python.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/CustomNode.cs",
+      "lines": 236,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "CustomNode (class)",
+        "CustomElementDescriptor (class)"
+      ],
+      "purpose": "SyntaxNode with a runtime-defined shape (list of CustomElementDescriptor) and element list; used by the parser to build ad-hoc nodes, mainly for command grammars. CustomElementDescriptor carries per-child name, optional flag and CompletionHint.",
+      "dependsOn": [
+        "Syntax/SyntaxNode.cs",
+        "Syntax/SyntaxElement.cs",
+        "Syntax/SyntaxVisitor.cs",
+        "Editor/CompletionHint.cs",
+        "Utils/EmptyReadOnlyList.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 19,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionHint"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "delegate/Func",
+        "extension-methods"
+      ],
+      "traps": [
+        "CustomElementDescriptor.WithIsOptional (L215-220) has an upstream bug: it passes this.IsOptional instead of isOptional, so it never changes the flag; mirror exactly",
+        "CustomElementDescriptor.Default is a public static NON-readonly field (L233) initialised after the class; ordering of static init matters in Java (use static final)",
+        "ctor with params SyntaxElement[] (L~58-62) calls GetDefaultShape(elements.Length); Java varargs equivalent",
+        "CloneCore (L~126) drops diagnostics when includeDiagnostics is true? It clones children with diagnostics but constructs new CustomNode(shape, clonedElements) without the node's own SyntaxDiagnostics",
+        "IReadOnlyList<CustomElementDescriptor> shape compared by reference; IsDefault uses == (reference) OR value check (L224-231)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Needed because Parser builds CustomNode; GetCompletionHint/CompletionHint can be minimal. CustomNode is wired to SyntaxKind.CustomNode and command grammars; port class but CompletionHint dependency is Editor (keep tiny enum only).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/CustomNode.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/FakeExpression.cs",
+      "lines": 27,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "FakeExpression (static class)"
+      ],
+      "purpose": "Factory for synthetic LiteralExpression/SimpleNamedExpression nodes with pre-set semantic info of a given TypeSymbol; used by binder/function-call evaluation to model arguments.",
+      "dependsOn": [
+        "Syntax/SyntaxToken.cs",
+        "Syntax/SyntaxKind.cs",
+        "Symbols/TypeSymbol",
+        "Binder/Binder.cs (DefaultSetSemanticInfo)",
+        "Binder/SemanticInfo.cs",
+        "generated nodes LiteralExpression, SimpleNamedExpression, NameDeclaration, TokenName"
+      ],
+      "partialGroup": null,
+      "memberCount": 2,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods"
+      ],
+      "traps": [
+        "Depends on generated node types and Binder.DefaultSetSemanticInfo; creates a Missing IdentifierToken inside a TokenLiteralExpression (L14) - mirror verbatim"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Small static factory; used by binder. Port after generated nodes and binder exist.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/FakeExpression.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SeparatedElement.cs",
+      "lines": 86,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SeparatedElement (abstract class)",
+        "SeparatedElement<TElement> (sealed class, generic)"
+      ],
+      "purpose": "Node pairing a list element with an optional separator token; element type of SeparatedList-style SyntaxList<SeparatedElement<T>>.",
+      "dependsOn": [
+        "Syntax/SyntaxNode.cs",
+        "Syntax/SyntaxToken.cs",
+        "Syntax/SyntaxVisitor.cs",
+        "Editor/CompletionHint.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 8,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionHint"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive (generic class with constraint)"
+      ],
+      "traps": [
+        "SeparatedElement<TElement>.Empty() (L85) passes null element which Attach() rejects (non-optional) -> throws ArgumentNullException at runtime; upstream quirk",
+        "'new TElement Element' hides base member (L~65); Java must use covariant accessor or differently named getter (e.g. Element() override with generic cast)",
+        "GetCompletionHint switch uses CompletionHint.Inherit/Syntax (L~40-48)",
+        "Generic erasure: (TElement) casts are unchecked in Java; type-driven ElementType not used here"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core syntax infrastructure.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SeparatedElement.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxCategory.cs",
+      "lines": 46,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxCategory (enum)"
+      ],
+      "purpose": "Enum classifying SyntaxKind into Keyword, Identifier, Punctuation, Operator, Literal, List, Node, Other.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Trivial enum; explicit values None=0 then implicit sequential.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxCategory.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxElement.cs",
+      "lines": 1218,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxElement (abstract class, partial)",
+        "SyntaxElement.Flags (private enum, short)",
+        "SyntaxElement.ExtendedData (internal class)",
+        "IncludeTrivia (enum)"
+      ],
+      "purpose": "Base class of tree: parent/tree link, flags, extended data (syntax diagnostics + SemanticInfo), child navigation, ancestor/descendant search, iterative walkers (WalkElements/WalkNodes), token navigation, GetTokenAt/GetNodeAt, lazily/eagerly computed TriviaStart/FullWidth/Width, Clone, ToString(IncludeTrivia). Full-fidelity: FullWidth = trivia+text; TextStart = TriviaStart+TriviaWidth.",
+      "dependsOn": [
+        "Syntax/SyntaxNode.cs",
+        "Syntax/SyntaxToken.cs",
+        "Syntax/SyntaxTree.cs",
+        "Syntax/SyntaxNode_Semantics.cs",
+        "Syntax/SyntaxKind.cs",
+        "Diagnostics/Diagnostic.cs",
+        "Binder/SemanticInfo.cs",
+        "Utils/EmptyReadOnlyList.cs",
+        "Utils/ListExtensions (ToReadOnly)",
+        "Editor/CompletionHint.cs"
+      ],
+      "partialGroup": "SyntaxElement",
+      "memberCount": 52,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionHint"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func",
+        "Interlocked",
+        "LINQ",
+        "extension-methods",
+        "pattern-matching",
+        "static-ctor"
+      ],
+      "traps": [
+        "Interlocked.CompareExchange(ref this.extendedData...) L196: use AtomicReferenceFieldUpdater/VarHandle; extendedData is a lock-free lazy init",
+        "_triviaStart caches: InitializeTriviaStarts L1069-1078 sets eagerly; ComputeTriviaStart L1080-1101 fallback; stored int fields written without sync - benign race, mirror",
+        "goto retry in GetTokenAt (L1016-1031): rewrite as labeled loop in Java",
+        "Recursion: HasMissingChildren (L316-331) is recursive (TODO comment) - stack depth",
+        "GetNodeAt (L1044-1055) dereferences GetTokenAt result without null check",
+        "GetCommonAncestor (L379-405): only returns when parents are equal; semantics unusual, port as-is",
+        "IsMissing default (L213) = Width==0 && ContainsSyntaxDiagnostics",
+        "Flags enum is 'short' with only ContainsDiagnostics",
+        "SyntaxDiagnostics for tokens: SyntaxElement ctor SetDiagnostics (L141-150) uses diagnostics.ToReadOnly()",
+        "'new' hiding: SyntaxNode.Clone/SyntaxToken.Clone hide SyntaxElement.Clone with covariant returns - Java covariant overrides",
+        "#if DEBUG block L277-291 (Children property) debug-only: drop",
+        "#if false block L347-355 dead: keep as comment",
+        "DebuggerDisplay attribute L15: drop/comment",
+        "ToString(IncludeTrivia, maxLength) L1171-1190: StringBuilder.Length truncation = setLength; includeTrivia passed through token.Write using initial TriviaStart",
+        "Nullable-free: Attach(optional) throws ArgumentNullException with a message (L87) - mirror as NullPointerException/IllegalArgumentException consistently"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Central type; must be mirrored exactly. Partial class with SyntaxNode_Semantics.cs (SyntaxElement.GetContainedDiagnostics etc.): merge both into SyntaxElement.java. Internal members (SetTree, GetExtendedData, InitializeTriviaStarts) become package-private.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxElement.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxExtensions.cs",
+      "lines": 56,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxExtensions (static class)"
+      ],
+      "purpose": "Extension methods on SyntaxList<NamedParameter> to find a parameter by QueryOperatorParameter (name or alias) and read its literal/name value.",
+      "dependsOn": [
+        "Syntax/SyntaxList.cs",
+        "QueryOperatorParameters.cs (QueryOperatorParameter)",
+        "generated NamedParameter, NameDeclaration, NameReference, LiteralExpression, CompoundStringLiteralExpression"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "LINQ",
+        "pattern-matching",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "GetParameterLiteralValue<TValue> (L18-28): 'lit.ConstantValue is TValue value' - boxed value type test; in Java need Class<TValue> token or unchecked cast, and int vs Integer/long vs Long boxing differences (ConstantValue may be Integer or Long)",
+        "string comparison np.Name.SimpleName == parameter.Name uses ordinal == (L12): Java equals",
+        "parameter.Aliases.Contains: Aliases is IReadOnlyList<string> -> List.contains (ordinal)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Binder/semantic helpers use it; static helper class -> final class with static methods taking SyntaxList<NamedParameter> as first arg.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxFacts.cs",
+      "lines": 929,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxFacts (static class)",
+        "SyntaxFacts.SyntaxData (private class)"
+      ],
+      "purpose": "Static table mapping every SyntaxKind (605 SyntaxData entries) to fixed text, SyntaxCategory, OperatorKind, canBeIdentifier and isType; text->kind lookup via TextKeyedDictionary. Also GetText/GetCategory/IsKeyword/... extension methods and Keywords/Punctuation/Operators enumerations.",
+      "dependsOn": [
+        "Syntax/SyntaxKind.cs",
+        "Syntax/SyntaxCategory.cs",
+        "Symbols/OperatorKind",
+        "Utils/TextKeyedDictionary.cs",
+        "Utils/Ensure.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 16,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "static-ctor",
+        "yield",
+        "LINQ",
+        "delegate/Func",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Static ctor L43-819 builds table; Java: static initializer block. Must keep entry text EXACT (e.g. '3Dchart', 'assert-schema', 'commands-and-queries').",
+        "data.Sort((d1,d2)=>string.Compare(d1.Text,d2.Text)) L773: culture-sensitive compare AND List.Sort is unstable introsort; harmless for non-empty texts (verified no duplicate non-empty texts via grep) but GetOrAddValue(d.Text, d.Kind) for text \"\" (L792) keeps FIRST entry, and many entries have \"\" -> TryGetKind(\"\") result depends on sort order; do not rely on it. In Java use stable ordinal sort; ensure TryGetKind of empty string returns same as C# (inspect with a C# run if needed)",
+        "kindToDataMap sized by Enum.GetValues<SyntaxKind>().Length (L775-780, #if NET5_0_OR_GREATER); indexes by (int)kind so enum ordinals must be dense and start at 0 => Java enum ordinal() works only if declaration order == C# order (SyntaxKind.cs is implicitly-valued)",
+        "GetKinds(category) / GetKindsWithFixedText yield in enum order (L867-889) - observable via Keywords/Punctuation/Operators (L915-929); keep enum order",
+        "TextKeyedDictionary lookup by (string,offset,length) - ordinal, case-sensitive? Check Utils/TextKeyedDictionary.cs (internal); parser uses TryGetKind(text, offset, length)",
+        "#if DEBUG validation block L799-817: Debugger.Break/Debug.Fail - drop or convert to assertion",
+        "OperatorKind dependency lives in Symbols namespace (Symbols/Operator*.cs) - cross-area dependency",
+        "LINQ Select(GetText) method-group conversion L915-929 -> Java stream map(SyntaxFacts::getText) (extension method call style differs)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Pure data table; critical for lexer/parser. Port verbatim; consider generating Java entries by script from this file to avoid typos. Keep static method form: Java cannot do extension methods, so GetText(SyntaxKind) becomes SyntaxFacts.getText(kind) and optionally SyntaxKind.getText() delegating (adds API but keep SyntaxFacts as authoritative).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxKind.cs",
+      "lines": 734,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxKind (enum : short)"
+      ],
+      "purpose": "Enum of all token kinds (keywords, scalar type keywords, punctuation, literals, identifier, pseudo tokens) and all node kinds (expressions, query operators, statements, commands, clauses); ~690 value lines. Comment mandates a matching SyntaxFacts entry.",
+      "dependsOn": [
+        "Syntax/SyntaxFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 690,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Underlying type short and implicit sequential values from 0 (None=0): Java enum ordinal order must be identical; SyntaxFacts.kindToDataMap uses (int)kind (L15,792)",
+        "Names with leading underscores/digits: __CrossClusterKeyword, _3DChartKeyword valid in Java",
+        "Enum includes command/IntelliSense-only node kinds (Command*, ExternalDataUri*, InlineExternalTable* L79-83/L449-459, commands L718-726) that cannot be dropped without breaking Facts table or generated nodes",
+        "Section comment markers (// keywords L15, // scalar type keyword tokens L295, // punctuation tokens L325, // literal tokens L359, // identifier L371, // other tokens L374, // pseudo tokens L379, // nodes L388 ...) must be preserved per mirror rules",
+        "Some kinds are not unique-per-node: Contains_CsKeyword vs ContainsCsKeyword, BinLegacy lacks 'Keyword' suffix - mirror exactly"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Straight enum port; keep declaration order identical. Command-related kinds stay (needed by SyntaxFacts table and generated node infos) even though command grammar is out of scope.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxList.cs",
+      "lines": 141,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxList (abstract class)",
+        "SyntaxList<TElement> (sealed class, generic)"
+      ],
+      "purpose": "Node holding an ordered list of SyntaxElements (SyntaxKind.List); typed generic wrapper implements IReadOnlyList<TElement>.",
+      "dependsOn": [
+        "Syntax/SyntaxNode.cs",
+        "Syntax/SyntaxVisitor.cs",
+        "Utils (using Utils)"
+      ],
+      "partialGroup": null,
+      "memberCount": 13,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "LINQ",
+        "ref/out"
+      ],
+      "traps": [
+        "Constructor mutates its own array: this.elements[i] = Attach(elements[i]) (L21-26); params array passed straight in (L77-80) is aliased and mutated - caller's array is modified; Java varargs identical aliasing semantic",
+        "SyntaxList<T>.Kind is SyntaxKind.List (shared); ElementType returns typeof(TElement) (L88): Java generics erased - need a Class<TElement> field or drop and special-case callers (ElementType usage elsewhere: grep Parser/Binder)",
+        "CloneCore (L123-136) ignores includeDiagnostics and drops the list's own diagnostics",
+        "Private static Copy method L90-98 unused",
+        "Indexer 'new TElement this[int]' hides base indexer (L107): Java get(int) overload with covariant generics",
+        "Implements IReadOnlyList<TElement> -> Java: implement java.util.List? Prefer Iterable<TElement> + size()/get(i) to avoid mutable List contract; decide once for whole port",
+        "Empty() allocates a new list each call (L140) - keep (identity matters because Attach requires a single parent)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core container type; used everywhere.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxList.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode.cs",
+      "lines": 296,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxNode (abstract class, partial)",
+        "SyntaxNodeExtensions (static class)",
+        "(partial extensions of generated classes) Expression, LiteralExpression, CompoundStringLiteralExpression, TypeOfLiteralExpression, DynamicExpression, NameDeclaration, NameReference, Name, TokenName, BracketedName, BracedName, WildcardedName, BracketedWildcardedName, NamedParameter, Directive"
+      ],
+      "purpose": "SyntaxNode abstract non-terminal (fullWidth caching, Clone, Accept visitors, WalkNodes, GetOriginalNode, GetPositionInOriginalTree), CopyAsFragment extension, and hand-written partial members (literal info, SimpleName, directive parsing cache) merged into generated node classes.",
+      "dependsOn": [
+        "Syntax/SyntaxElement.cs",
+        "Syntax/SyntaxVisitor.cs",
+        "Syntax/SyntaxTree.cs",
+        "Syntax/ValueInfo.cs",
+        "Syntax/SyntaxToken.cs",
+        "Syntax/SyntaxKind.cs",
+        "Editor/ClientDirective.cs (ClientDirective, ClientDirectiveArgument)",
+        "Editor/CompletionHint.cs",
+        "Symbols/SymbolMatch",
+        "Parser/TextFacts.cs",
+        "generated nodes (Expression, LiteralExpression, Name*, NamedParameter, Directive, DynamicExpression, TypeOfLiteralExpression, CompoundStringLiteralExpression)"
+      ],
+      "partialGroup": "SyntaxNode",
+      "memberCount": 28,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionHint",
+        "ClientDirective",
+        "ClientDirectiveArgument"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "Interlocked",
+        "pattern-matching",
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "GetOriginalNode L54-70: while(node.Tree?.Original != null) loops FOREVER if GetNodeAt returns null (no else/break) - upstream hang; mirror with a note or guard",
+        "Interlocked.CompareExchange(ref _lazyClientDirective, info, null) L289 (Directive.Info): use AtomicReferenceFieldUpdater or VarHandle; _lazyClientDirective is not volatile; note it is declared AFTER use in file",
+        "Missing 'using System.Threading': Interlocked resolves via Kusto.Language.Utils? (SyntaxElement.cs has none either); confirm import source when porting",
+        "CompoundStringLiteralExpression.LiteralValueInfo L133-153 and DynamicExpression L162-190: lazy unsynchronised cache of ValueInfo (benign race)",
+        "string.Concat(this.Tokens.Select(t => t.ValueText)) L145 (LINQ over generated Tokens property)",
+        "DynamicExpression.LiteralValueInfo L173: tests this.Kind == SyntaxKind.NullLiteralExpression, which likely never holds for DynamicExpression -> else branch always taken; mirror",
+        "NameReference ctor L206-210 passes Symbols.SymbolMatch.Default; NameDeclaration ctor builds TokenName",
+        "NamedParameter.GetCompletionHint (index==2 -> ExpressionHint) L247-259 depends on generated property ExpressionHint (SyntaxNodeInfos.cs L727)",
+        "Partial members must merge into generated classes: since generated files are produced by the Java generator, hand-written partials need either a generator hook (extra-members map) or subclass/inheritance workaround. Decision needed in porting plan.",
+        "WalkNodes instance method delegates to static SyntaxElement.WalkNodes (L38-42)",
+        "CopyAsFragment<T> generic extension L92-103: creates new SyntaxTree(cloned, node.Tree, node.TriviaStart); 'var _ =' discards result but constructor has side effects (SetTree) - keep",
+        "TextStart/TriviaStart reads from original tree: node.TextStart used with Original.Root.GetNodeAt"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Main class straightforward; but ~15 hand-written partial extensions of generated node classes require the generator to inject these members (or inline into generated Java files). Status 'partial' reflects that the partial-extension section depends on generated output.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxNode.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+      "lines": 280,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxNode (abstract class, partial)",
+        "SyntaxElement (abstract class, partial)",
+        "Expression (abstract class, partial)",
+        "DiagnosticsInclude (enum, [Flags])"
+      ],
+      "purpose": "Semantic-info accessors on SyntaxNode (ReferencedSymbol, ReferencedSignature, CalledFunctionBody/Facts/Diagnostics, Alternates, SemanticDiagnostics), SyntaxElement.GetContainedDiagnostics/GatherDiagnostics (syntactic, semantic, expansion, alternates), Expression result type/constant accessors.",
+      "dependsOn": [
+        "Syntax/SyntaxElement.cs",
+        "Syntax/SyntaxNode.cs",
+        "Binder/SemanticInfo.cs",
+        "Binder/Binder.cs",
+        "Symbols/*",
+        "FunctionBodyFacts.cs",
+        "Diagnostics/Diagnostic.cs, DiagnosticFacts.cs",
+        "Utils/ObjectPool.cs",
+        "Parser/TextFacts.cs",
+        "Syntax/ValueInfo.cs",
+        "generated nodes Expression, FunctionCallExpression, NamedParameter"
+      ],
+      "partialGroup": "SyntaxNode",
+      "memberCount": 18,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "LINQ",
+        "pattern-matching",
+        "delegate/Func",
+        "nullable-value-type"
+      ],
+      "traps": [
+        "[Obsolete(error:true)] GetExpansion L22-26: attribute error=true -> omit or @Deprecated; keep method for mirror",
+        "[Flags] DiagnosticsInclude L92-97 binary literals 0b0001: Java int constants/EnumSet; bit tests (include & X)!=0",
+        "GetContainedDiagnostics L110-119: list.Distinct() relies on Diagnostic reference/Equals semantics (check Diagnostic.Equals) then ToReadOnly; Distinct preserves first occurrence order",
+        "GatherDiagnostics L121-204: uses CancellationToken (default) - Java: replace with a cancellation interface or Thread interrupt; ThrowIfCancellationRequested",
+        "ObjectPool<List<Diagnostic>> static field L206-207 (internal Utils) used with try/finally allocation; thread-safety of pool",
+        "Lambda closures capturing 'include' and mutating 'diagnostics' inside fnBefore/fnAfter L130-195; diagnostics.SetCount(originalCount) extension (ListExtensions) = list truncation",
+        "Mutation order observable: syntax diagnostics added before semantic per element; expansion/alternate diagnostics added in fnAfter; result order must be preserved",
+        "TextFacts.HasLineBreaks(next.Trivia) L220: char-class dependent; next.TextStart - token.End < 2 L219",
+        "Expression.ResultType L242-259 uses TupleSymbol.IsReducibleToScalar and EntityGroupElementSymbol.UnderlyingSymbol",
+        "ConstantValueInfo L275-278 chained ?:  with 'is VariableSymbol v && v.IsConstant' pattern",
+        "Depends on Binder.SemanticInfo (CalledFunctionInfo.Expansion/Facts/Diagnostics/HasErrors) - binder area"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Semantic accessors depend on SemanticInfo/FunctionBodyFacts from binder; port the accessors now (they are thin) and gate CalledFunction*/Alternates behind binder availability; merge into SyntaxElement.java/SyntaxNode.java/Expression (generated) respectively. Expression partial part must be injected into generated Expression.java.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxNode.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxToken.cs",
+      "lines": 770,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxToken (abstract class)",
+        "SyntaxToken.IdentifierToken (private sealed)",
+        "SyntaxToken.KindToken (private sealed)",
+        "SyntaxToken.TextAndKindToken (private sealed)",
+        "SyntaxToken.LiteralToken (private sealed)",
+        "SyntaxToken.MissingToken (public class)"
+      ],
+      "purpose": "Terminal element: Trivia (leading whitespace/comments), Text, Value, ValueText, Prefix; static factories (From(LexicalToken), Keyword, Identifier, Punctuation, Operator, Literal, Other, Missing). LiteralToken lazily parses typed values (bool,int,long,double,decimal,TimeSpan,DateTime,Guid,string). ToString with trivia reproduces the source; Write() implements IncludeTrivia modes (All/Interior/Minimal/SingleLine). MissingToken has zero width.",
+      "dependsOn": [
+        "Syntax/SyntaxElement.cs",
+        "Syntax/SyntaxKind.cs",
+        "Syntax/SyntaxFacts.cs",
+        "Syntax/SyntaxCategory.cs",
+        "Parser/LexicalToken.cs",
+        "Parser/TextFacts.cs",
+        "Parser/TokenParser.cs (ScanStringLiteral)",
+        "Parser/KustoFacts.cs (GetStringLiteralValue)",
+        "Diagnostics/Diagnostic.cs",
+        "Utils (ToReadOnly)"
+      ],
+      "partialGroup": null,
+      "memberCount": 41,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "641-647 (#if !BRIDGE ... #endif around TimeSpan.TryParse; Java must take the non-BRIDGE path)"
+      ],
+      "csharpFeatures": [
+        "delegate/Func",
+        "extension-methods",
+        "nullable-value-type",
+        "decimal",
+        "ref/out",
+        "LINQ",
+        "string.Format",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "TimeSpan.TryParse(valueText, out result) L643 (#if !BRIDGE L641-647): .NET culture-sensitive parser accepting d.hh:mm:ss[.fffffff] and 'hh:mm' forms; Java has no equivalent - needs hand-written parser replicating invariant-ish .NET rules; this runs BEFORE the unit-suffix switch",
+        "TimeSpan.MinValue/MaxValue L651-654 and result type: .NET TimeSpan = 100ns ticks long; Java Duration lacks tick precision and min/max; define Kusto-specific TimeSpan (ticks) class or use long ticks",
+        "Double.TryParse(numberText, out number) L667 culture-sensitive (current culture!), also accepts 'Infinity', thousands sep, exponent, leading/trailing whitespace; Java Double.parseDouble differs (accepts 'NaN','1d','0x' hex float)",
+        "Double.TryParse L616, Int32.TryParse L584, Int64.TryParse L600, Decimal.TryParse L632, DateTime.TryParse L731, Guid.TryParse L740: result defaults to 0 on failure (out var is default) - mirror: failures return 0/0L/0.0/default decimal/DateTime.MinValue/Guid.Empty not exceptions",
+        "GetIntValue returns int? (L573-587) but always non-null on non-error path; boxed as object; 'min'/'max' literal values",
+        "Decimal: System.Decimal (96-bit, scale) vs BigDecimal; Decimal.MinValue/MaxValue L626-629 need explicit BigDecimal constants (+/-79228162514264337593543950335)",
+        "DateTime.MinValue/MaxValue L725-728 and DateTime.TryParse culture/time-zone behaviour (kind Unspecified, parses many formats); Java: need own DateTime type (ticks since 0001-01-01) or ZonedDateTime/LocalDateTime w/ custom parser",
+        "Guid.TryParse accepts N/D/B/P/X formats; Java UUID.fromString only D, lenient oddities; reimplement",
+        "string.Compare(text, start, \"null\", 0, length) == 0 L552 culture-sensitive substring compare (CurrentCulture, case-sensitive) - Java: regionMatches / equals, ordinal; careful about length semantics: Compare(strA,indexA,strB,indexB,length) compares at most length chars of both, so 'nul' vs 'null' mismatch lengths: compares min(length, remaining)... verify with 'nu' prefix cases",
+        "string.Compare(text,start,\"true\",0,length,ignoreCase:true) L559,563: CurrentCulture ignore-case, same prefix-compare semantics: a text 'tr' (length 2) compares equal to prefix of 'true'? Actually Compare uses at most `length` chars of each, so 'tr' vs 'true' (length 2) -> 0 => returns true. Replicate EXACTLY, test with C# if possible",
+        "char.IsLetter(valueText[split]) L658: Unicode letter category (UTF-16 code unit based); Java Character.isLetter(char) comparable but code unit vs codepoint issue",
+        "TextFacts.IsLetter/IsWhitespace L485,509,518: custom char predicates in Parser/TextFacts.cs (not .NET): port those, not Character.isLetter",
+        "text.EndsWith(\")\") L512: culture-sensitive EndsWith(string) in .NET Framework/ordinal-ish difference on .NET5+ ICU; use endsWith",
+        "text.Trim() L541: trims Unicode whitespace (char.IsWhiteSpace); Java String.trim() trims <= U+0020 only -> use custom/strip() with Character.isWhitespace differences",
+        "this.Trivia.Contains(\"\\n\") L113: ordinal Contains",
+        "Lazy value caches: LiteralToken.value L373-386 and valueText L422-435 use null as 'not computed' sentinel; Value legitimately returns null for 'null' literals (L390-394) so it recomputes every call; mirror (benign) but note perf",
+        "IsNull(text) L549-553 applies to ALL literal kinds except string: 'null' text -> Value null; for Int/Long/Real etc. returned as null object",
+        "Switch on valueText string 'min'/'max' L576-585 etc: ordinal; wordText switch L669-713 case-sensitive: units like 'Seconds' not matched (fall through to 0 seconds)",
+        "Micro/nano conversion uses FromSeconds(number / 1_000_000.0) L703,709: TimeSpan.FromSeconds rounds to nearest millisecond in .NET Framework/Core<3.0 and to tick in .NET Core 3.0+; result differs by runtime; define precisely (tick rounding)",
+        "TimeSpan.FromMilliseconds/FromMinutes/FromHours/FromDays likewise rounding (Core 3.0+: rounds to tick; older: to ms); (long)number cast for ticks L712 truncates toward zero",
+        "Missing 'using Syntax.Diagnostics' - Diagnostic type from Kusto.Language namespace",
+        "Destringify L539-547 uses TokenParser.ScanStringLiteral (Parser area) then KustoFacts.GetStringLiteralValue",
+        "From(LexicalToken) L154-178: dx.Concat(...).ToReadOnly(); category switch with default folded into Other",
+        "CheckCategory L240-246: category.ToString().ToLower() culture-sensitive (use Locale.ROOT) in exception message",
+        "Private nested classes: Java nested static classes; MissingToken is public",
+        "MissingToken ctor stores trivia without null-coalescing (L754-759) unlike others",
+        "FullWidth virtual overrides with cached field, TriviaWidth => Trivia.Length (L47); Text.Length is UTF-16 code units - Java String.length() is same, good",
+        "#if !BRIDGE L641-647: BRIDGE build lacks TimeSpan.TryParse; Java port is NON-bridge behavior (include the TryParse branch)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core terminal type. Full-fidelity confirmed: tokens own leading Trivia string; MissingToken has Trivia but empty Text and carries diagnostics. Highest risk file for value parsing: needs a Java TimeSpan/DateTime/Decimal/Guid strategy before porting LiteralToken (mark a decision item). The private nested token classes mirror as nested static classes in SyntaxToken.java.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxToken.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxTree.cs",
+      "lines": 76,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxTree (class)"
+      ],
+      "purpose": "Holds the root SyntaxNode, optional Original tree and OffsetInOriginal for fragments; sets root's tree and initializes trivia starts; computes max depth via iterative walk; IsSafeToRecurse(GlobalState).",
+      "dependsOn": [
+        "Syntax/SyntaxElement.cs (WalkNodes, SetTree, InitializeTriviaStarts)",
+        "GlobalState.cs",
+        "Properties.cs (Properties.MaxAnalysisDepth)"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func"
+      ],
+      "traps": [
+        "Constructor has side effects: root.SetTree(this); root.InitializeTriviaStarts() L28-29 (throws if root already has parent/tree)",
+        "_depth lazily computed with -1 sentinel, no sync (benign race)",
+        "IsSafeToRecurse is internal and reads GlobalState.GetProperty(Properties.MaxAnalysisDepth) L50-51: binder/GlobalState dependency",
+        "ComputeMaxDepth L56-72 counts node depth via fnBefore/fnAfter closures that mutate captured locals: Java needs int[]/AtomicInteger or an explicit class"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Small; depends on GlobalState (in scope).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxTree.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/SyntaxVisitor.cs",
+      "lines": 62,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "SyntaxVisitor (abstract partial class)",
+        "DefaultSyntaxVisitor (abstract partial class)",
+        "SyntaxVisitor<TResult> (abstract partial class)",
+        "DefaultSyntaxVisitor<TResult> (abstract partial class)"
+      ],
+      "purpose": "Hand-written part of visitor classes: VisitCustom, VisitList, VisitSeparatedElement abstract + default forwarding to DefaultVisit. The ~220 Visit<NodeName> methods and DefaultVisit declarations are emitted by SyntaxNodeGenerator.cs (WriteVisitorsImpl L309-380) into the other partial.",
+      "dependsOn": [
+        "Syntax/SyntaxNode.cs",
+        "Syntax/CustomNode.cs",
+        "Syntax/SyntaxList.cs",
+        "Syntax/SeparatedElement.cs",
+        "generated GeneratedSyntaxNodes.cs"
+      ],
+      "partialGroup": "SyntaxVisitor",
+      "memberCount": 12,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Partial classes: Java file must be union of this file and generated visitor methods; since generated side is output of generator, plan: generator emits the full Java visitor and includes these three hand-written methods",
+        "Generic SyntaxVisitor<TResult> returns TResult; value types need boxing in Java (Boolean/Integer) - decide null-handling for primitive TResult",
+        "DefaultSyntaxVisitor<TResult>'s parent 'SyntaxVisitor<TResult>' appears only in generated partial (L364); this file's partial declaration omits base class (valid in C# since partials merge)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Hand-written portion is trivial; real content is generated. Merge with generated visitor into SyntaxVisitor.java, DefaultSyntaxVisitor.java, and generic variants; generics in Java force separate files (SyntaxVisitor<T> is same name, same file? Java cannot have two top-level types of the same name: C# has non-generic SyntaxVisitor and generic SyntaxVisitor<TResult>. Rename generic ones e.g. SyntaxVisitorOf<TResult>/DefaultSyntaxVisitorOf<TResult> or make them nested; deviation required from mirror rule).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxVisitor.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Syntax/ValueInfo.cs",
+      "lines": 31,
+      "namespace": "Kusto.Language.Syntax",
+      "types": [
+        "ValueInfo (class)"
+      ],
+      "purpose": "Immutable holder of a literal's CLR Value, ValueText (unescaped/interior) and RawText.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Value is System.Object: Java Object; boxed types (Integer/Long/Double/BigDecimal/TimeSpan/DateTime/UUID/String) must match C# CLR types chosen in SyntaxToken",
+        "internal ctor (L22): package-private"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Trivial data class.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/syntax/ValueInfo.java"
+    }
+  ],
+  "notes": {
+    "generatedFiles": "GeneratedSyntaxNodes.cs is NOT present in the submodule. src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt (14 lines) is the T4 template; it includes src/Kusto.Language.Generators/{CodeGenerator.cs,SyntaxNodeGenerator.cs,SyntaxNodeInfos.cs} and calls SyntaxNodeGenerator.Generate(SyntaxNodeInfos.All, SyntaxNodeInfos.KnownTypes). Output (not committed) defines ~223 node classes (SyntaxNodeInfos.All has 223 'Name =' entries, ~10 command-related) plus partial SyntaxVisitor/DefaultSyntaxVisitor/generic variants. The Java port must run or port this generator. Bridge project excludes Syntax\\CodeGen\\*.cs and generates under obj.",
+    "fullFidelity": "Yes. Trivia is stored as a string on each SyntaxToken (SyntaxToken.Trivia, SyntaxToken.cs L25); FullWidth = Trivia.Length+Text.Length (L52); SyntaxElement.ToString() defaults to IncludeTrivia.All (SyntaxElement.cs L1161-1164) which concatenates Trivia+Text of all tokens, reproducing input. MissingToken (SyntaxToken.cs L745-767) has Text \"\" and IsMissing=true; SyntaxElement.IsMissing default = Width==0 && ContainsSyntaxDiagnostics (L213). Trivia is whitespace/comments as a single string per token (no trivia node structure). EndOfTextToken carries trailing trivia.",
+    "filesNotInArea": "No SyntaxNodes.cs in Syntax/ directory: only 15 .cs files + 1 .tt (5002 lines total). Java nested-name collision: C# has SyntaxVisitor and SyntaxVisitor<TResult>, DefaultSyntaxVisitor and DefaultSyntaxVisitor<TResult>, SyntaxList and SyntaxList<T>, SeparatedElement and SeparatedElement<T> - Java cannot have same-named top-level types: SyntaxList/SeparatedElement generics can be a single generic class if the non-generic base is abstract and renamed (decision needed).",
+    "versionPin": "upstream Kusto.Language version.txt = 12.4.1",
+    "externalDeps": [
+      "Editor/CompletionHint.cs (CompletionHint enum used in SyntaxElement.GetCompletionHint, CustomNode, SeparatedElement)",
+      "Editor/ClientDirective.cs (used by Directive partial in SyntaxNode.cs L262-295)",
+      "Utils/*: ObjectPool, EmptyReadOnlyList, ListExtensions.ToReadOnly/SetCount, TextKeyedDictionary, Ensure",
+      "Parser/TextFacts.cs, TokenParser.ScanStringLiteral, KustoFacts.GetStringLiteralValue, LexicalToken",
+      "Binder/SemanticInfo.cs, Binder.DefaultSetSemanticInfo, FunctionBodyFacts.cs, Symbols/*",
+      "GlobalState.cs, Properties.cs"
+    ]
+  }
+}

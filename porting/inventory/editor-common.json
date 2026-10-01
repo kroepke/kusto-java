@@ -1,0 +1,1529 @@
+{
+ "area": "editor-common",
+ "files": [
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/AnalyzerInfo.cs",
+   "lines": 27,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AnalyzerInfo (class)"
+   ],
+   "purpose": "Result holder pairing an analyzer name with its diagnostics.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only referenced by CodeService/KustoAnalyzer editor services; no in-scope code uses it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AnalyzerInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/BrackettingStyle.cs",
+   "lines": 28,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "BrackettingStyle (enum)"
+   ],
+   "purpose": "Formatting option enum for bracket alignment.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "pattern-matching"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only used by FormattingOptions/KustoFormatter; formatting is out of scope.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/BrackettingStyle.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClassificationKind.cs",
+   "lines": 136,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClassificationKind (enum)"
+   ],
+   "purpose": "Enum of lexical/syntactic classification categories for syntax highlighting.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/ClientParameter.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 25,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClientParameter"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "operator-overload"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only used by classifier/quickinfo editor services.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClassificationKind.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClassificationResult.cs",
+   "lines": 22,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClassificationInfo (class)"
+   ],
+   "purpose": "Declares ClassificationInfo, a list wrapper of ClassifiedRange (file name differs from type name).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/ClassifiedRange.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClassifiedRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Classification is an editor service; no in-scope references. Note: file name differs from type ClassificationInfo.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClassificationResult.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClassifiedRange.cs",
+   "lines": 41,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClassifiedRange (class)"
+   ],
+   "purpose": "A classified span (kind, start, length) for highlighting.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/ClassificationKind.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 5,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClassificationKind"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only editor services reference it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClassifiedRange.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientDirective.cs",
+   "lines": 219,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClientDirective (class)"
+   ],
+   "purpose": "Parses a client directive line (#name args) into name, argument text and typed arguments (double/long/string).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/ClientDirectiveArgument.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Parser/TokenParser.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 8,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClientDirectiveArgument",
+    "EditString"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out"
+   ],
+   "traps": [
+    "culture-sensitive parse (use invariant/explicit) (lines 178, 189)",
+    "TryParse passes EditString to Parsing.TokenParser.ScanTrivia/ScanIdentifier/ScanWhitespace/ScanRealLiteral/ScanLongLiteral and TextFacts.GetLineEnd/GetNextLineStart/IsWhitespace (string params, via implicit conversion).",
+    "ClientDirectiveArgument.Value is object holding boxed double/long/string/null; port as Object with Double/Long boxing.",
+    "Real/long parsing uses double.TryParse(argText out) on EditString-implicit string with current culture and ignores failure (value defaults to 0); Java Double.parseDouble throws and is invariant-culture - emulate default 0."
+   ],
+   "proposedStatus": "ported",
+   "justification": "Referenced from Syntax/SyntaxNode.cs:282-295 (DirectiveExpression lazy parse) and ClientDirectiveArgument from Binder/Binder_Misc.cs:781. Forces its EditString dependency.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClientDirective.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientDirectiveArgument.cs",
+   "lines": 30,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClientDirectiveArgument (class)"
+   ],
+   "purpose": "Name/text/value triple for a parsed client directive argument.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "ported",
+   "justification": "Used by Binder/Binder_Misc.cs:781 GetDirectiveArgumentStringValue and Syntax/SyntaxNode.cs:277.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClientDirectiveArgument.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientDirectiveInfo.cs",
+   "lines": 64,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClientDirectiveInfo (class)"
+   ],
+   "purpose": "Breaks a text block into leading client directives plus remaining text.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/ClientDirective.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Parser/TokenParser.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 5,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClientDirective",
+    "EditString"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out"
+   ],
+   "traps": [
+    "Trim() uses Unicode whitespace set (differs from Java trim/strip) (lines 59)"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "No references anywhere except itself; not needed by parser/binder (SyntaxNode uses ClientDirective directly).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClientDirectiveInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClientParameter.cs",
+   "lines": 42,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClientParameter (class)"
+   ],
+   "purpose": "SyntaxReference subclass for a client parameter reference (name, optional index) in text.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/SyntaxReference.cs",
+    "src/Kusto.Language/Editor/TextRange.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 7,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "SyntaxReference",
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "nullable-value-type",
+    "string.Format"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only used by CodeService/KustoCodeService (editor).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClientParameter.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/ClusterReference.cs",
+   "lines": 19,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ClusterReference (class)"
+   ],
+   "purpose": "SyntaxReference subclass naming a referenced cluster.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/SyntaxReference.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 2,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "SyntaxReference"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only used by editor code services and KustoReferenceFinder.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ClusterReference.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeAction.cs",
+   "lines": 425,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeAction (class, abstract)",
+    "ApplyAction (class, abstract)",
+    "SingleAction (class)",
+    "MultiAction (class)",
+    "MenuAction (class)",
+    "CodeActionInfo (class)",
+    "CodeActionOptions (class)",
+    "ResultAction (class, abstract)",
+    "ChangeTextAction (class, sealed)",
+    "MoveCaretAction (class, sealed)",
+    "RenameAction (class, sealed)",
+    "CodeActionResult (class, sealed)"
+   ],
+   "purpose": "Code action/fix model: CodeAction, ApplyAction, SingleAction, MultiAction, MenuAction, CodeActionInfo, CodeActionOptions, ResultAction.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/DisabledDiagnostics.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 66,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "DisabledDiagnostics",
+    "EditString",
+    "FormattingOptions",
+    "TextEdit"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Quick fixes/code actions are out of scope; only Editor/Kusto fixers/actors/analyzers reference it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeAction.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeBlock.cs",
+   "lines": 56,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeBlock (class, sealed)"
+   ],
+   "purpose": "A block within a CodeScript with a start offset and wrapped code service.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeService.cs",
+    "src/Kusto.Language/Editor/OffsetCodeService.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 9,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CodeService",
+    "OffsetCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only CodeScript/CodeAction reference it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeBlock.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeKinds.cs",
+   "lines": 33,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeKinds (class, static)"
+   ],
+   "purpose": "String constants Query/Command/Directive/Unknown identifying kind of code.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "pattern-matching"
+   ],
+   "traps": [
+    "String constants initialised with nameof; Java must write literal strings, switch-on-constant in KustoCode.cs:120-133,210-215 maps to Java switch on constants."
+   ],
+   "proposedStatus": "ported",
+   "justification": "Used by KustoCode.cs:25,120-133,210-215,329-358 to select parse path (forced by dependency graph).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeKinds.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeScript.cs",
+   "lines": 272,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeScript (class, sealed)",
+    "BlockSeparator (delegate)"
+   ],
+   "purpose": "Splits a script into independent CodeBlocks, each with a CodeService (editor script model).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeBlock.cs",
+    "src/Kusto.Language/Editor/CodeServiceFactory.cs",
+    "src/Kusto.Language/Editor/UnknownCodeService.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 21,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CodeBlock",
+    "CodeServiceFactory",
+    "UnknownCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only referenced by CodeBlock; depends on ScriptFacts block-splitting but nothing in-scope depends on CodeScript.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeScript.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeService.cs",
+   "lines": 202,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeService (class, abstract)"
+   ],
+   "purpose": "Abstract base of editor feature API (diagnostics, completion, quick info, formatting, outlining, etc).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/AnalyzerInfo.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/ClassificationResult.cs",
+    "src/Kusto.Language/Editor/ClientParameter.cs",
+    "src/Kusto.Language/Editor/ClusterReference.cs",
+    "src/Kusto.Language/Editor/CompletionInfo.cs",
+    "src/Kusto.Language/Editor/CompletionOptions.cs",
+    "src/Kusto.Language/Editor/DatabaseReference.cs",
+    "src/Kusto.Language/Editor/DisabledDiagnostics.cs",
+    "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+    "src/Kusto.Language/Editor/FormattedText.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/MinimalTextKind.cs",
+    "src/Kusto.Language/Editor/OutlineInfo.cs",
+    "src/Kusto.Language/Editor/OutliningOptions.cs",
+    "src/Kusto.Language/Editor/QuickInfo.cs",
+    "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+    "src/Kusto.Language/Editor/RelatedInfo.cs",
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 24,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "AnalyzerInfo",
+    "ApplyAction",
+    "ClassificationInfo",
+    "ClientParameter",
+    "ClusterReference",
+    "CodeActionInfo",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "CompletionInfo",
+    "CompletionOptions",
+    "DatabaseReference",
+    "DisabledDiagnostics",
+    "FindRelatedOptions",
+    "FormattedText",
+    "FormattingOptions",
+    "MinimalTextKind",
+    "OutlineInfo",
+    "OutliningOptions",
+    "QuickInfo",
+    "QuickInfoOptions",
+    "RelatedInfo",
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "pattern-matching"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor service abstraction; no in-scope code references it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeService.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeServiceFactory.cs",
+   "lines": 99,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeServiceFactory (class, abstract)",
+    "AggregateCodeServiceFactory (class)"
+   ],
+   "purpose": "Abstract factory for CodeService instances.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeService.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 8,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "pattern-matching"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor service infrastructure only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeServiceFactory.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CodeServiceFeatures.cs",
+   "lines": 24,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CodeServiceFeatures (class, static)"
+   ],
+   "purpose": "String constants naming code service features.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/QuickInfo.cs",
+    "Kusto.Language.Syntax (namespace)",
+    "Kusto.Language.Utils (namespace)"
+   ],
+   "partialGroup": null,
+   "memberCount": 10,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "QuickInfo"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only CodeService/KustoCodeService use it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CodeServiceFeatures.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CommonCodeService.cs",
+   "lines": 389,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CommonCodeService (class, abstract)"
+   ],
+   "purpose": "CodeService with default (empty) implementations of each feature.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/AnalyzerInfo.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/ClassificationResult.cs",
+    "src/Kusto.Language/Editor/ClassificationKind.cs",
+    "src/Kusto.Language/Editor/ClassifiedRange.cs",
+    "src/Kusto.Language/Editor/ClientParameter.cs",
+    "src/Kusto.Language/Editor/ClusterReference.cs",
+    "src/Kusto.Language/Editor/CodeService.cs",
+    "src/Kusto.Language/Editor/CompletionInfo.cs",
+    "src/Kusto.Language/Editor/CompletionOptions.cs",
+    "src/Kusto.Language/Editor/DatabaseReference.cs",
+    "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+    "src/Kusto.Language/Editor/FormattedText.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/MinimalTextKind.cs",
+    "src/Kusto.Language/Editor/OutlineInfo.cs",
+    "src/Kusto.Language/Editor/OutlineRange.cs",
+    "src/Kusto.Language/Editor/OutliningOptions.cs",
+    "src/Kusto.Language/Editor/QuickInfo.cs",
+    "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+    "src/Kusto.Language/Editor/RelatedInfo.cs",
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "Kusto.Language.Syntax (namespace)",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Parser/TokenParser.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 27,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "AnalyzerInfo",
+    "ApplyAction",
+    "ClassificationInfo",
+    "ClassificationKind",
+    "ClassifiedRange",
+    "ClientParameter",
+    "ClusterReference",
+    "CodeActionInfo",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "CodeService",
+    "CompletionInfo",
+    "CompletionOptions",
+    "DatabaseReference",
+    "FindRelatedOptions",
+    "FormattedText",
+    "FormattingOptions",
+    "MinimalTextKind",
+    "OutlineInfo",
+    "OutlineRange",
+    "OutliningOptions",
+    "QuickInfo",
+    "QuickInfoOptions",
+    "RelatedInfo",
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "nullable-value-type"
+   ],
+   "traps": [
+    "string.IndexOf(string) is culture-sensitive in .NET; Java String.indexOf is ordinal (lines 351)"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Editor service only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CommonCodeService.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionDisplay.cs",
+   "lines": 103,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionDisplay (class, static)"
+   ],
+   "purpose": "Static helpers generating completion list display text for symbols (tables, functions, patterns).",
+   "dependsOn": [
+    "Kusto.Language.Symbols (namespace)",
+    "src/Kusto.Language/Symbols/Symbol.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "string.Format"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only KustoCompleter uses it; depends on Symbols but not vice versa.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionDisplay.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionHint.cs",
+   "lines": 174,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionHint (enum)"
+   ],
+   "purpose": "[Flags] enum describing the category of syntax element expected at a syntax position (column, table, scalar, etc).",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 32,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "operator-overload",
+    "flags-enum"
+   ],
+   "traps": [
+    "[Flags] enum: None=0, Inherit=1 ... GraphSnapshot=1<<30 (31 flag members; fits int). Verified by counting the 32 initialised members.",
+    "Flag combinations are used in PredefinedRuleParsers.cs:237-315 (Database | Table), so Java needs int constants/EnumSet-like bitmask, not a plain enum; Binder_Names.cs:853-857 compares with ==."
+   ],
+   "proposedStatus": "ported",
+   "justification": "Heavily used by grammar and syntax tree: Syntax/SyntaxElement.cs:304-311, SyntaxNode.cs:249, SeparatedElement.cs:43-48, CustomNode.cs:108-234, Parser/PredefinedRuleParsers.cs:179-315, SyntaxParsers.cs:142-144, QueryParser.cs:3409-3417, CommandGrammar.cs:12,710-716, Binder/Binder_Names.cs:851-857.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionHint.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionInfo.cs",
+   "lines": 43,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionInfo (class)"
+   ],
+   "purpose": "Completion result: items plus edit start/length.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CompletionItem.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 5,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CompletionItem"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor service only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionItem.cs",
+   "lines": 434,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionItem (class)"
+   ],
+   "purpose": "Immutable completion list entry (kind, display/match/order text, apply texts, rank, priority).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CompletionKind.cs",
+    "src/Kusto.Language/Editor/CompletionPriority.cs",
+    "src/Kusto.Language/Editor/CompletionText.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 32,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CompletionKind",
+    "CompletionPriority",
+    "CompletionRank",
+    "CompletionText"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "attributes"
+   ],
+   "traps": [
+    "Rank/Priority are internal, but Parser (same assembly) passes rank:/priority: named args; Java must expose package-private/public accessors reachable from the parser package (different package: org.graylog.kusto.language.parsing), so make public.",
+    "Obsolete members EditText/WithEditText (lines 100, 340ish) may be dropped.",
+    "Lazy string caching _beforeText/_afterText without locks (benign race)."
+   ],
+   "proposedStatus": "ported",
+   "justification": "Parser grammar attaches CompletionItem annotations: Parser/SyntaxParsers.cs:105-409,664, QueryGrammar.cs:578-626, CommandGrammar.cs:190. Needed as annotation type.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionItem.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionKind.cs",
+   "lines": 154,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionKind (enum)"
+   ],
+   "purpose": "Enum of completion item kinds.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 29,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "operator-overload"
+   ],
+   "traps": [],
+   "proposedStatus": "ported",
+   "justification": "Used by Parser/SyntaxParsers.cs, QueryGrammar.cs:432-475, CommandGrammar.cs:13,749-773.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionKind.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionOptions.cs",
+   "lines": 91,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionOptions (class, sealed)",
+    "OptionFlags (enum)"
+   ],
+   "purpose": "Immutable completion options with flags and IncludeFunctionKind.",
+   "dependsOn": [
+    "src/Kusto.Language/Symbols/Symbol.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 26,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "flags-enum"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor service only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionOptions.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionPriority.cs",
+   "lines": 35,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionRank (enum)",
+    "CompletionPriority (enum)"
+   ],
+   "purpose": "Declares CompletionRank and CompletionPriority enums (file name differs from first type).",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 16,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "ported",
+   "justification": "CompletionPriority used in Parser/SyntaxParsers.cs:105+; CompletionRank in QueryGrammar.cs:578-626 and CompletionItem. Note: java files for CompletionRank/CompletionPriority are mirrored in one file per C# file rule; Java requires one public top-level type per file, so split into CompletionRank.java and CompletionPriority.java (deviation).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionPriority.java (+ CompletionRank.java)"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/CompletionText.cs",
+   "lines": 101,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CompletionText (class)"
+   ],
+   "purpose": "Segment of completion apply text with caret/select flags and marker parser.",
+   "dependsOn": [
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 10,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "attributes"
+   ],
+   "traps": [
+    "string.IndexOf(string) is culture-sensitive in .NET; Java String.indexOf is ordinal (lines 63, 76)"
+   ],
+   "proposedStatus": "ported",
+   "justification": "Required by CompletionItem (ApplyTexts); small, forced dependency.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CompletionText.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/DatabaseReference.cs",
+   "lines": 25,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "DatabaseReference (class)"
+   ],
+   "purpose": "SyntaxReference subclass naming a referenced database/cluster.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/SyntaxReference.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "SyntaxReference"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor services only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/DatabaseReference.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/DisabledDiagnostics.cs",
+   "lines": 217,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "DisabledDiagnostics (class)",
+    "Builder (class)"
+   ],
+   "purpose": "Parses and queries a user-specified set of disabled diagnostic codes/severities.",
+   "dependsOn": [
+    "src/Kusto.Language/KustoCode.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 31,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [
+    "StartsWith/EndsWith(string) culture-sensitive in .NET (lines 23, 24)",
+    "LINQ OrderBy: stable sort (Java: List.sort/Arrays.sort on objects is stable too); check key type for string culture comparer (lines 43)",
+    "HashSet enumeration order observable (lines 9, 10, 12, 23, 24, 97, 103, 127...)",
+    "Trim() uses Unicode whitespace set (differs from Java trim/strip) (lines 22)",
+    "string.Join; check separator/element formatting (lines 43)",
+    "string.Split with RemoveEmptyEntries semantics (lines 22)"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Only editor CodeService/CodeAction/QuickInfoOptions use it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/DisabledDiagnostics.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/EditString.cs",
+   "lines": 826,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "EditString (class)",
+    "Edit (struct)"
+   ],
+   "purpose": "Immutable string that tracks edits against original text, with position mapping.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/PositionBias.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "Kusto.Language.Parsing (namespace)",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 48,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "PositionBias",
+    "TextEdit",
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "struct",
+    "ref/out",
+    "LINQ",
+    "operator-overload",
+    "pattern-matching",
+    "attributes"
+   ],
+   "traps": [
+    "string.Compare(str,i,str,j,len) is culture-sensitive; Java should use regionMatches (ordinal) (lines 293, 811)",
+    "string.IndexOf(string) is culture-sensitive in .NET; Java String.indexOf is ordinal (lines 67, 256)",
+    "LINQ OrderBy: stable sort (Java: List.sort/Arrays.sort on objects is stable too); check key type for string culture comparer (lines 363)",
+    "OrderBy at line 363 sorts TextEdit by int Start and the comment (line 362) relies on stability; Java List.sort is stable, so equal-Start edits keep order.",
+    "Nested private struct Edit (line 622) must become a private static final nested class/record; TextEdit is a public struct (value semantics, default(TextEdit) is valid) - Java record loses default-instance semantics.",
+    "Implicit conversions to/from string (lines 72-80) have no Java equivalent; callers (ClientDirective.TryParse, TokenParser/TextFacts calls) must call toString()/new EditString explicitly or overloads must accept CharSequence.",
+    "string.Compare(text,i,newValue,0,len)!=0 with culture rules (lines 293, 811) should be regionMatches; for ordinal-equal comparison culture could differ only for ignorable chars."
+   ],
+   "proposedStatus": "ported",
+   "justification": "Forced by ClientDirective (Text/ArgumentsText types); transitively TextEdit, PositionBias, TextRange. Parser TokenParser/TextFacts receive it via implicit string conversion (EditString.cs:72-80).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/EditString.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+   "lines": 22,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "FindRelatedOptions (enum)"
+   ],
+   "purpose": "[Flags] enum for find-related-elements options.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 2,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "flags-enum"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/FindRelatedOptions.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/FormattedText.cs",
+   "lines": 21,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "FormattedText (class)"
+   ],
+   "purpose": "Result of formatting: new text and caret position.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Formatting out of scope.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/FormattedText.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/FormattingOptions.cs",
+   "lines": 675,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "FormattingOptions (class, sealed)"
+   ],
+   "purpose": "Large immutable formatting options bag.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/BrackettingStyle.cs",
+    "src/Kusto.Language/Editor/SpacingStyle.cs",
+    "src/Kusto.Language/Editor/PlacementStyle.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 79,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "BrackettingStyle",
+    "DualSpacingStyle",
+    "PlacementStyle",
+    "SpacingStyle"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "operator-overload",
+    "nullable-value-type"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Formatting out of scope.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/FormattingOptions.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/MinimalTextKind.cs",
+   "lines": 22,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "MinimalTextKind (enum)"
+   ],
+   "purpose": "Enum for minimal-text extraction modes.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/MinimalTextKind.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OffsetCodeService.cs",
+   "lines": 266,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "OffsetCodeService (class)"
+   ],
+   "purpose": "CodeService decorator shifting positions by a fixed offset.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/AnalyzerInfo.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/ClassificationResult.cs",
+    "src/Kusto.Language/Editor/ClassifiedRange.cs",
+    "src/Kusto.Language/Editor/ClientParameter.cs",
+    "src/Kusto.Language/Editor/ClusterReference.cs",
+    "src/Kusto.Language/Editor/CodeService.cs",
+    "src/Kusto.Language/Editor/CompletionInfo.cs",
+    "src/Kusto.Language/Editor/CompletionOptions.cs",
+    "src/Kusto.Language/Editor/DatabaseReference.cs",
+    "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+    "src/Kusto.Language/Editor/FormattedText.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/MinimalTextKind.cs",
+    "src/Kusto.Language/Editor/OutlineInfo.cs",
+    "src/Kusto.Language/Editor/OutlineRange.cs",
+    "src/Kusto.Language/Editor/OutliningOptions.cs",
+    "src/Kusto.Language/Editor/QuickInfo.cs",
+    "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+    "src/Kusto.Language/Editor/RelatedInfo.cs",
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 26,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "AnalyzerInfo",
+    "ApplyAction",
+    "ClassificationInfo",
+    "ClassifiedRange",
+    "ClientParameter",
+    "ClusterReference",
+    "CodeActionInfo",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "CodeService",
+    "CompletionInfo",
+    "CompletionOptions",
+    "DatabaseReference",
+    "FindRelatedOptions",
+    "FormattedText",
+    "FormattingOptions",
+    "MinimalTextKind",
+    "OutlineInfo",
+    "OutlineRange",
+    "OutliningOptions",
+    "QuickInfo",
+    "QuickInfoOptions",
+    "RelatedElement",
+    "RelatedInfo",
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/OffsetCodeService.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OutlineInfo.cs",
+   "lines": 21,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "OutlineInfo (class, sealed)"
+   ],
+   "purpose": "List of OutlineRange.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/OutlineRange.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "OutlineRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/OutlineInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OutlineRange.cs",
+   "lines": 27,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "OutlineRange (class, sealed)"
+   ],
+   "purpose": "Collapsible outline range with collapsed text.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/OutlineRange.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/OutliningOptions.cs",
+   "lines": 78,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "OutliningOptions (class, sealed)"
+   ],
+   "purpose": "Outlining option bag.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 9,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "nullable-value-type"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/OutliningOptions.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/PlacementStyle.cs",
+   "lines": 20,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "PlacementStyle (enum)"
+   ],
+   "purpose": "Formatting placement enum.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Formatting out of scope.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/PlacementStyle.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/PositionBias.cs",
+   "lines": 19,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "PositionBias (enum)"
+   ],
+   "purpose": "Enum Left/Right used when mapping positions across edits.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 2,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "ported",
+   "justification": "Required by EditString.GetCurrentPosition/GetOriginalPosition.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/PositionBias.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/QuickInfo.cs",
+   "lines": 273,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "QuickInfo (class)",
+    "QuickInfoItem (class)",
+    "QuickInfoKind (enum)",
+    "ClassifiedText (class)"
+   ],
+   "purpose": "Declares QuickInfo, QuickInfoItem, QuickInfoKind, ClassifiedText hover model.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/ClassificationKind.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/Extensions.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 41,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClassificationKind"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "operator-overload"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/QuickInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+   "lines": 80,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "QuickInfoOptions (class)"
+   ],
+   "purpose": "Options for quick info.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/DisabledDiagnostics.cs",
+    "Kusto.Language.Utils (namespace)"
+   ],
+   "partialGroup": null,
+   "memberCount": 9,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "DisabledDiagnostics"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/QuickInfoOptions.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/RelatedInfo.cs",
+   "lines": 136,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "RelatedInfo (class)",
+    "RelatedElementKind (enum)",
+    "RelatedElement (class)"
+   ],
+   "purpose": "Declares RelatedInfo, RelatedElementKind, RelatedElement for find-related.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "Kusto.Language.Utils (namespace)",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 21,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/RelatedInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/SpacingStyle.cs",
+   "lines": 53,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "SpacingStyle (enum)",
+    "DualSpacingStyle (enum)"
+   ],
+   "purpose": "Declares SpacingStyle and DualSpacingStyle formatting enums.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 8,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "operator-overload",
+    "pattern-matching"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Formatting out of scope.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/SpacingStyle.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/SyntaxReference.cs",
+   "lines": 38,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "SyntaxReference (class)"
+   ],
+   "purpose": "Base class of range-based references (TextRange).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/TextRange.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 6,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "TextRange"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only ClusterReference/DatabaseReference/ClientParameter use it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/SyntaxReference.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/TextEdit.cs",
+   "lines": 65,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "TextEdit (struct)"
+   ],
+   "purpose": "Struct for a single insert/delete/replace edit.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 7,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "struct",
+    "attributes"
+   ],
+   "traps": [],
+   "proposedStatus": "ported",
+   "justification": "Required by EditString (public API, ordering, application).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/TextEdit.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/TextRange.cs",
+   "lines": 56,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "TextRange (struct)"
+   ],
+   "purpose": "Struct (start, length) with overlap helpers.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 8,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "struct"
+   ],
+   "traps": [
+    "Struct with value equality semantics by default is NOT defined (no Equals override); Java record would add equals - acceptable but note Empty static field (line 36)."
+   ],
+   "proposedStatus": "ported",
+   "justification": "Used directly by Parser/ScriptFacts.cs:90-145 (invalid block start ranges) and by EditString.GetChangeRange.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/TextRange.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/UnknownCodeService.cs",
+   "lines": 15,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "UnknownCodeService (class)"
+   ],
+   "purpose": "CodeService for unknown code kind.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CommonCodeService.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 2,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CommonCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor only.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/UnknownCodeService.java"
+  }
+ ],
+ "summary": {
+  "ported": [
+   "src/Kusto.Language/Editor/ClientDirective.cs",
+   "src/Kusto.Language/Editor/ClientDirectiveArgument.cs",
+   "src/Kusto.Language/Editor/CodeKinds.cs",
+   "src/Kusto.Language/Editor/CompletionHint.cs",
+   "src/Kusto.Language/Editor/CompletionItem.cs",
+   "src/Kusto.Language/Editor/CompletionKind.cs",
+   "src/Kusto.Language/Editor/CompletionPriority.cs",
+   "src/Kusto.Language/Editor/CompletionText.cs",
+   "src/Kusto.Language/Editor/EditString.cs",
+   "src/Kusto.Language/Editor/PositionBias.cs",
+   "src/Kusto.Language/Editor/TextEdit.cs",
+   "src/Kusto.Language/Editor/TextRange.cs"
+  ],
+  "excludedCount": 35
+ }
+}

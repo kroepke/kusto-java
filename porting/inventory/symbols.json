@@ -1,0 +1,1594 @@
+{
+  "area": "symbols",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ArgumentKind.cs",
+      "lines": 67,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ArgumentKind (enum)"
+      ],
+      "purpose": "Enum describing how a function argument is interpreted (expression, star, aggregate, column, literal, constant).",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Pure enum used by Parameter and binder; no dependencies.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ArgumentKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+      "lines": 182,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ClusterSymbol (class)"
+      ],
+      "purpose": "Symbol for a cluster holding database members, with name/alternate-name lookup and immutable add/update/remove helpers.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+        "src/Kusto.Language/Utils/SafeList.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 18,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "Interlocked",
+        "delegate/Func",
+        "static-ctor"
+      ],
+      "traps": [
+        "Dictionary lookup in GetDatabase (lines 88-114) is ordinal case-sensitive and last-writer-wins on duplicate Name/AlternateName; Java HashMap.put semantics match but keep insertion of Name before AlternateName",
+        "Interlocked.CompareExchange lazy init (line 109) -> volatile/AtomicReference or benign race in Java",
+        "Private ctor (line 14ish) takes IEnumerable<Symbol>; public ctor casts IEnumerable<DatabaseSymbol> via (IReadOnlyList<Symbol>) (line ~29) - covariance cast, Java needs List<? extends Symbol> copy",
+        "RemoveDatabases uses LINQ Except (line 172): reference-equality set semantic, distinct-ified result order; Java must preserve first-occurrence order and dedupe",
+        "ClusterSymbol.Unknown (line 179) built with named args members:null,isOpen:true; also Signature.cs:489 uses new ClusterSymbol(\"\", null, isOpen:true) - null overload ambiguity in Java, add explicit factory",
+        "SafeList<T> from Utils is required (members.ToSafeList(), AddItem, Concat)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for GlobalState and schema input.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ClusterSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+      "lines": 223,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ColumnSymbol (class)"
+      ],
+      "purpose": "Symbol for a table/tuple column: name, type, description, original-column lineage, source syntax node, examples; immutable With* copies and Combine of column sets.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Symbols/CombineKind.cs",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs",
+        "src/Kusto.Language/Utils/Optional.cs",
+        "src/Kusto.Language/Binder/Binder_Columns*.cs (Binder.UnifyColumnsWithSameNameAndType/UnifyColumnsWithSameName/MakeColumnNamesUnique)"
+      ],
+      "partialGroup": null,
+      "memberCount": 18,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "nullable-value-type",
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "With() (lines ~72-100) uses Optional<T> struct (Utils/Optional.cs) to distinguish 'not provided' from explicit null; and compares by reference (!=) for Type/OriginalColumns/Examples/Source - Java must use == identity for lists and strings-by-value (C# string != is value equality, Java needs equals)",
+        "Constructor coerces null/error type to ScalarTypes.Unknown (line 55) - triggers ScalarTypes static init",
+        "GetTrulyOriginalColumns returns the input list instance when all lack originals (reference identity observable via With)",
+        "Combine() (lines ~190-215) calls into Binding.Binder statics: dependency cycle Symbols <-> Binder",
+        "Examples uses ToReadOnly() on possibly-null list (Utils extension must tolerate null)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core to every schema; depends on Binder statics so must be ported with/after binder helper methods.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ColumnSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/CombineKind.cs",
+      "lines": 26,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "CombineKind (enum)"
+      ],
+      "purpose": "Enum selecting how ColumnSymbol.Combine unifies column sets.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Pure enum.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CombineKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/CommandSymbol.cs",
+      "lines": 71,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "CommandSymbol (class)"
+      ],
+      "purpose": "Symbol for a management command with lazily converted result schema string/TableSymbol and construction text.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/SchemaDisplay.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "CommandSymbol"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Lazy ResultSchema/ResultType (lines ~14-45) non-thread-safe racy caches; benign",
+        "'()' / '(*)' special-cased to open empty table (line ~35)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Management/control commands are out of scope but GlobalState.cs references CommandSymbol and SymbolKind.Command exists; port the tiny class so GlobalState compiles, populate nothing.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CommandSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/Conversion.cs",
+      "lines": 38,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "Conversion (enum)"
+      ],
+      "purpose": "Ordered enum of allowed type conversions (None < Promotable < Dynamic < Compatible < Any).",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Declaration order is semantically significant: comparisons use <= and >= on enum values (TypeFacts.cs:313, Symbol.cs AreAssignable). Java enum must keep order and use ordinal()/compareTo"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Pure enum; ordinal ordering is semantic (TypeFacts.cs:313 uses <=, Symbol.cs uses >=).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Conversion.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/CustomAvailabilityContext.cs",
+      "lines": 15,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "CustomAvailabilityContext (abstract class)"
+      ],
+      "purpose": "Context passed to a CustomAvailability predicate; exposes the syntax node Location.",
+      "dependsOn": [
+        "src/Kusto.Language/Syntax/SyntaxNode.cs",
+        "src/Kusto.Language/Symbols/CustomAvailabilty.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Referenced by FunctionSymbol.CustomAvailability; tiny.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomAvailabilityContext.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/CustomAvailabilty.cs",
+      "lines": 7,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "CustomAvailability (delegate)"
+      ],
+      "purpose": "Delegate type bool CustomAvailability(CustomAvailabilityContext).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/CustomAvailabilityContext.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func"
+      ],
+      "traps": [
+        "Filename misspelling vs type name: Java file must be named after the type (CustomAvailability.java) - one deliberate deviation from file-name mirroring"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Map to a @FunctionalInterface; note upstream file name is misspelled (CustomAvailabilty.cs) but type is CustomAvailability.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomAvailability.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/CustomReturnType.cs",
+      "lines": 7,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "CustomReturnType (delegate)"
+      ],
+      "purpose": "Delegate TypeSymbol CustomReturnType(CustomReturnTypeContext) used for functions with computed return types.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/CustomReturnTypeContext.cs",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func"
+      ],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Map to @FunctionalInterface; heavily used by the Functions catalog.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomReturnType.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/CustomReturnTypeContext.cs",
+      "lines": 142,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "CustomReturnTypeContext (abstract class)"
+      ],
+      "purpose": "Abstract context given to custom return-type callbacks: arguments, argument types/parameters, row scope, signature, globals, current cluster/db/function; helper GetArgument(s).",
+      "dependsOn": [
+        "src/Kusto.Language/Syntax/Expression.cs",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs",
+        "src/Kusto.Language/GlobalState.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 18,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ"
+      ],
+      "traps": [
+        "IndexOf on IReadOnlyList<Parameter> (line 97) is an extension in Utils using EqualityComparer default = reference equality here; Java List.indexOf uses equals - Parameter must NOT override equals",
+        "GetArguments(Parameter) (lines ~118-135) returns shared EmptyReadOnlyList instance when none found"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by every custom-return-type function in the built-in catalog.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/CustomReturnTypeContext.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+      "lines": 319,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "DatabaseSymbol (class)"
+      ],
+      "purpose": "Symbol for a database: members, typed lazy views (tables, external tables, materialized views, functions, entity groups, stored query results, graph models), lookup helpers and With/Add copies.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
+        "src/Kusto.Language/Symbols/GraphModelSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 32,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "Lazy<T>"
+      ],
+      "traps": [
+        "BUG to mirror: Contains() (lines 301-313) fills _symbolSet with 'symbol' (the argument) instead of 'member' (line 307) - so Contains returns true only if the set is non-empty and... mirror verbatim; HashSet<Symbol> default equality = reference",
+        "Lookups use == on string (ordinal, case-sensitive): GetMember/GetTable/etc. lines ~190-250; Java must use equals not ==",
+        "FirstOrDefault returns first match in member order - Java stream findFirst on ordered list",
+        "Unknown (line 316) = new DatabaseSymbol(\"\", members:null, isOpen:true); Signature.cs:492 uses new DatabaseSymbol(\"\", null, isOpen:true) -> overload ambiguity (string alternateName vs IEnumerable members) in Java",
+        "OfType<T> filtering (lines 88-150) = instanceof filters; _tables excludes subclasses ExternalTableSymbol/MaterializedViewSymbol/StoredQueryResultSymbol",
+        "Lazy caches are racy-but-benign unsynchronised field writes"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of schema input.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/DatabaseSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/DebugDisplay.cs",
+      "lines": 199,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "DebugDisplay (static class, internal)"
+      ],
+      "purpose": "Builds debugger-display text for symbols, signatures and parameters (used by DebuggerDisplay attributes).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Parser/KustoFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "string.Format",
+        "LINQ",
+        "pattern-matching"
+      ],
+      "traps": [
+        "Pattern-match switch (lines 14-95) is order dependent: PrimitiveSymbol/DynamicAnySymbol cases come after TupleSymbol etc.; if ported, use if/instanceof chain in same order",
+        "Uses interpolated strings with embedded string.Join"
+      ],
+      "proposedStatus": "stubbed",
+      "justification": "Only consumed by [DebuggerDisplay] DebugText properties; no runtime semantics. Port as toString() helper only if useful for test diagnostics, otherwise omit. Not observable via public API.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/DebugDisplay.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+      "lines": 169,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "DynamicSymbol (abstract class)",
+        "DynamicAnySymbol (sealed class)",
+        "DynamicPrimitiveSymbol (sealed class)",
+        "DynamicArraySymbol (sealed class)",
+        "DynamicBagSymbol (sealed class)"
+      ],
+      "purpose": "Scalar 'dynamic' type family: any, primitive-wrapping, array of element type, and bag with named properties.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs",
+        "src/Kusto.Language/Utils/Interlocked(System.Threading)"
+      ],
+      "partialGroup": null,
+      "memberCount": 21,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "Interlocked",
+        "static-ctor"
+      ],
+      "traps": [
+        "BUG to mirror: AddOrUpdateProperty (line 146) maps `p == existingProperty ? property : existingProperty` - replaces every other property with existingProperty; mirror verbatim",
+        "DynamicBagSymbol.Empty (line 167) is a mutable public static (not readonly); ScalarTypes.DynamicBag aliases it at class-init",
+        "DynamicAnySymbol.Instance static (line 34); name for ALL dynamic subclasses is the literal 'dynamic' so Name cannot discriminate types",
+        "Property map Dictionary built with last-writer-wins tmp[prop.Name]=prop (line 107) + Interlocked.CompareExchange",
+        "WithProperties compares IEnumerable by reference (line ~130)",
+        "Ctor DynamicBagSymbol(IEnumerable) is internal and (params ColumnSymbol[]) public - Java needs both a List and varargs overload; `new DynamicBagSymbol()` with zero args picks params",
+        "Static-init: DynamicSymbol subclasses reference ScalarSymbol only; ScalarTypes depends on DynamicAnySymbol.Instance and DynamicBagSymbol.Empty"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by ScalarTypes and the binder.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/DynamicSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/EmptyScope.cs",
+      "lines": 18,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "EmptyScope (class)"
+      ],
+      "purpose": "Scope implementation that returns no symbols; singleton Instance.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Scope.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 2,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor"
+      ],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Trivial.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/EmptyScope.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs",
+      "lines": 67,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "EntityGroupElementSymbol (sealed class)"
+      ],
+      "purpose": "Symbol representing an element of an entity group, resolved to the first entity with members; exposes $current_database/$current_cluster_endpoint special members.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 10,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "static-ctor"
+      ],
+      "traps": [
+        "Constructor (lines 14-45) dereferences entityGroup.Members in the Debug.Assert branch even when entityGroup may be null (line 37) - asserts are compiled out in release only; Java: skip assert or null-guard",
+        "SpecialMembers static array (line 60) built at class init using ScalarTypes.String -> triggers ScalarTypes init",
+        "Members always returns SpecialMembers, not the underlying symbol's members"
+      ],
+      "proposedStatus": "ported",
+      "justification": "",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/EntityGroupElementSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
+      "lines": 96,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "EntityGroupSymbol (sealed class)"
+      ],
+      "purpose": "Symbol for an entity group defined either by a definition string (turned into an 'entity_group [...]' Signature body) or an explicit member list.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Tabularity.cs",
+        "src/Kusto.Language/Parser/KustoFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "string.Format",
+        "static-ctor"
+      ],
+      "traps": [
+        "Culture-sensitive string.StartsWith(string)/EndsWith(string) (lines 64, 72, 80): C# default is current culture; use Java startsWith/endsWith (ordinal) only after confirming no culture-sensitive difference for ASCII prefixes - note 'entity_group' and brackets/quotes are ASCII so safe",
+        "Empty (line 94) = new EntityGroupSymbol() runs ctor that calls new Signature(this) -> Signature class init -> ScalarTypes.Unknown (static init chain)",
+        "Tabularity override returns Tabularity.None (line ~88), odd but intentional",
+        "Two ctors both call this.Signature.Symbol = this (internal setter) - Java needs package-private setter",
+        "GetBodyFromDefinition (line 56) depends on KustoFacts.GetStringLiteralValue (Parser area)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by GlobalState/Database.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/EntityGroupSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ErrorSymbol.cs",
+      "lines": 25,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ErrorSymbol (sealed class)"
+      ],
+      "purpose": "Singleton error type symbol (IsError true, Tabularity.None).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor"
+      ],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Trivial but ubiquitous.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ErrorSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+      "lines": 420,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "FunctionSymbol (sealed class)"
+      ],
+      "purpose": "Symbol for a function with one or more Signatures plus flags (hidden/foldable/view), result-name rules, obsolescence info and custom availability; many constructors and With* copy methods.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Symbols/ReturnTypeKind.cs",
+        "src/Kusto.Language/Symbols/CustomReturnType.cs",
+        "src/Kusto.Language/Symbols/CustomAvailabilty.cs",
+        "src/Kusto.Language/Symbols/ResultNameKind.cs",
+        "src/Kusto.Language/Symbols/Tabularity.cs",
+        "src/Kusto.Language/Syntax/FunctionBody (generated syntax)",
+        "src/Kusto.Language/GlobalState.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 45,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "delegate/Func",
+        "nullable-value-type",
+        "string.Format",
+        "static-ctor"
+      ],
+      "traps": [
+        "Constructor mutates each Signature: signature.Symbol = this (line ~52). With() copies reuse the SAME Signature objects so Symbol is re-pointed to the newest copy (Hide(), ConstantFoldable(), Obsolete() etc.) - observable aliasing; mirror exactly",
+        "Large constructor overload set differing by (string body / FunctionBody / ReturnTypeKind / CustomReturnType / TypeSymbol) with params Parameter[] vs IReadOnlyList<Parameter>: Java varargs vs List overloads can collide; consider static factories + keep ctors",
+        "With() (lines ~140-190) uses Optional<T> and reference comparison of IEnumerable<Signature>/CustomAvailability delegate (!= on delegates = delegate equality in C#)",
+        "Obsolete() = WithIsObsolete(true, alt).Hide(); IsObsolete is Alternative != null; WithIsObsolete(false) sets null (line ~230: `isObsolete ? alternative ?? \"\" : null`)",
+        "IsHidden override ORs flag with base.IsHidden (name starts with '__', ordinal)",
+        "Min/MaxArgumentCount use -1 sentinel (lines ~385-418) - first signature seeds the min/max",
+        "Tabularity => Signatures[0].Tabularity (throws if empty; ctor guards via CheckArgumentNullOrEmptyOrElementNull)",
+        "Private enum FunctionFlags [Flags] -> Java int bitmask or EnumSet",
+        "Bridge note: none"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core to built-in function catalog.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/FunctionSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/GraphModelSymbol.cs",
+      "lines": 119,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "GraphModelSymbol (sealed class)",
+        "GraphSnapshotSymbol (class)"
+      ],
+      "purpose": "Symbol for a graph model with edge/node Signatures and snapshots; GraphSnapshotSymbol is a named snapshot back-referencing its model.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/GraphSymbol.cs",
+        "src/Kusto.Language/Utils/Interlocked(System.Threading)"
+      ],
+      "partialGroup": null,
+      "memberCount": 16,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "Interlocked",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Ctor mutates edge.Symbol/node.Symbol/snapshot.Model (lines ~28-45); Snapshots.ToReadOnly() on possibly-null input (string ctor passes null) - Utils.ToReadOnly must return empty list for null",
+        "ToDictionaryLast (line 97) is a Utils/extension: last duplicate wins; the dictionary is not iterated so order unobservable",
+        "Overloads (string name, IEnumerable<string>..., ) vs (string name, string edge, string node, IEnumerable<string>) collide on null literal arguments in Java",
+        "`internal GraphSymbol ComputedGraphSymbol {get;set;}` is a mutable cache set by the binder",
+        "Tabularity.None"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Graph is in the Kusto grammar; keep for binder.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/GraphModelSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/GraphSymbol.cs",
+      "lines": 156,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "GraphSymbol (class)"
+      ],
+      "purpose": "Symbol for a graph value with an edge-shape table and optional node-shape table; Merge/From/With helpers.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/CombineKind.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 18,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor"
+      ],
+      "traps": [
+        "BUG to mirror: WithNodeShape (line 96) tests `this.NodeShape != null` instead of comparing with nodeShape, so it returns a copy only when a node shape already exists",
+        "Many constructor overloads with default args and nulls: (string,TableSymbol,TableSymbol), (string,TableSymbol,IReadOnlyList), (string,IReadOnlyList,IReadOnlyList), (string,string,string) -> overload ambiguity with literal null in Java",
+        "Empty (line 153) = new GraphSymbol(\"\", TableSymbol.Empty, TableSymbol.Empty) -> depends on TableSymbol.Empty static init",
+        "Tabularity.Other"
+      ],
+      "proposedStatus": "ported",
+      "justification": "",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/GraphSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/GroupSymbol.cs",
+      "lines": 35,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "GroupSymbol (sealed class)"
+      ],
+      "purpose": "Symbol holding a group of symbols (overload resolution results); Tabularity from first member.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ"
+      ],
+      "traps": [
+        "Tabularity uses Members[0] (throws on empty group)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by Symbol.GetResultType and binder.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/GroupSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/OperatorKind.cs",
+      "lines": 78,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "OperatorKind (enum)"
+      ],
+      "purpose": "Enum of unary/binary operators (arithmetic, string, relational, logical, in/between).",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 77,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "OperatorSymbol.cs:25 base(kind.ToString()) - enum name text is observable"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Pure enum; OperatorSymbol name uses kind.ToString() so Java enum constant names must match exactly (PascalCase) - use name() with PascalCase constants.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/OperatorKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/OperatorSymbol.cs",
+      "lines": 46,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "OperatorSymbol (class)"
+      ],
+      "purpose": "Symbol for an operator with a set of Signatures.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/OperatorKind.cs",
+        "src/Kusto.Language/Symbols/Signature.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ"
+      ],
+      "traps": [
+        "Ctor assigns signature.Symbol = this (line ~28)",
+        "`Result` property declared but never assigned in this file",
+        "Third ctor creates new Signature(resultType) with zero parameters"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by the Operators catalog.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/OperatorSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/OptionSymbol.cs",
+      "lines": 43,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "OptionSymbol (sealed class)"
+      ],
+      "purpose": "Symbol describing a query option (name, description, allowed scalar types, examples).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 8,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Overloads (string, string, IReadOnlyList<ScalarSymbol>, IReadOnlyList<string>) vs (string, string, ScalarSymbol, IReadOnlyList<string>) with default args - Java needs explicit overloads"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by Options.cs catalog.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/OptionSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/Parameter.cs",
+      "lines": 356,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "Parameter (class)"
+      ],
+      "purpose": "Describes a function/operator parameter: name, type kind, declared types, argument kind, occurrence bounds, allowed values/examples, default value; factories from syntax and declaration text helpers.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ParameterTypeKind.cs",
+        "src/Kusto.Language/Symbols/ArgumentKind.cs",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/ParameterSymbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+        "src/Kusto.Language/Syntax/Expression.cs",
+        "src/Kusto.Language/Syntax/FunctionParameter(s) (generated syntax)",
+        "src/Kusto.Language/Binder/Binder.cs (Binder.GetDeclaredType)",
+        "src/Kusto.Language/Parser/QueryParser.cs (ParseFunctionParameters)",
+        "src/Kusto.Language/Parser/KustoFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 29,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "string.Format",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Four public ctors with 11 defaulted args differing in 2nd arg type (ParameterTypeKind / TypeSymbol / TypeSymbol[]) - Java: use a builder or static factories; null 2nd arg ambiguity",
+        "Values is IReadOnlyList<object>: heterogeneous boxed values (string/long/int/bool) compared elsewhere - Java Object equality of Integer vs Long differs from C# boxed equality",
+        "MinOccurring/MaxOccurring forced to 0/1 when defaultValue != null (lines 64-65)",
+        "DeclaredTypes ctor param null-check only when TypeKind==Declared; `type ?? ScalarTypes.Unknown`",
+        "GetDeclaration/GetParameterListDeclaration build text with interpolation; DefaultValue.ToString(IncludeTrivia.Interior) depends on syntax tree printing",
+        "ParseList(string) calls QueryParser.ParseFunctionParameters at runtime: catalog definitions parse at static init -> hidden dependency of Functions on the parser",
+        "Parameter must keep reference identity equality (used with IndexOf)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of signatures.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Parameter.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayout.cs",
+      "lines": 108,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ParameterLayout (abstract class)"
+      ],
+      "purpose": "Abstract strategy for mapping call arguments onto parameters, next-possible-parameter computation and argument-count validation; uses pooled lists and fake expressions.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Syntax/FakeExpression.cs",
+        "src/Kusto.Language/Utils/ObjectPool.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "Interlocked"
+      ],
+      "traps": [
+        "Static ObjectPools (lines 94-98) shared across threads; ObjectPool is internal in Utils - port as simple thread-safe pool or drop pooling",
+        "Do-while loop at lines ~74-82 uses nextParam.MinOccurring == 0 && paramIndex < Count-1 after increment (off-by-one semantics: mirror)",
+        "Overloaded GetArgumentParameters(Signature, IReadOnlyList<Expression>, ...) vs (\u2026IReadOnlyList<TypeSymbol>, \u2026): erasure clash in Java (both List<...>) -> must rename (e.g. GetArgumentParametersFromTypes) - deviation required"
+      ],
+      "proposedStatus": "ported",
+      "justification": "",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterLayout.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayouts.cs",
+      "lines": 495,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ParameterLayoutBuilder (delegate)",
+        "ParameterLayouts (static class)",
+        "NonRepeatingParameterLayout (internal class)",
+        "RepeatingParameterLayout (internal class)",
+        "BlockRepeatingParameterLayout (internal class)",
+        "CustomParameterLayout (internal class)"
+      ],
+      "purpose": "Predefined parameter layouts (Fixed, Repeating, RepeatingSkipping, BlockRepeating, Custom) with the complex repeat/optional matching algorithms that consult the Binder for parameter match kinds.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ParameterLayout.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Syntax/SimpleNamedExpression (generated syntax)",
+        "src/Kusto.Language/Binder/Binder_Functions*.cs (Binder.GetParameterMatchKind)",
+        "src/Kusto.Language/Binder/ParameterMatchKind.cs",
+        "src/Kusto.Language/Utils/ObjectPool.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 20,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "ref/out",
+        "delegate/Func",
+        "LINQ",
+        "static-ctor"
+      ],
+      "traps": [
+        "ref int iCurrentParameter / iCurrentParameterCount (lines ~43, 160-260) -> Java needs int[] holders or a small mutable state class",
+        "Binding.ParameterMatchKind enum is compared with >= (line 185): declaration order of the enum matters",
+        "Math.Min/Max (line 357) fine",
+        "Static init order: Fixed/Repeating/... instantiate internal classes (lines 26-47); Signature ctor reads ParameterLayouts.Fixed/Repeating -> cyclic with Signature static init",
+        "Several internal classes in a single file: Java package-private top-level classes in one file are allowed only for one public type per file - keep public ParameterLayouts first",
+        "Static ObjectPools at line 228-231",
+        "AllowsNamedArguments calls GlobalState.Default.IsBuiltInFunction (Signature.cs:335)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for correct argument binding.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterLayouts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ParameterSymbol.cs",
+      "lines": 29,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ParameterSymbol (sealed class)"
+      ],
+      "purpose": "Symbol for a function parameter variable inside a function body (name, type, description).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Small; used by Symbol.GetResultType and binder.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ParameterTypeKind.cs",
+      "lines": 156,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ParameterTypeKind (enum)"
+      ],
+      "purpose": "Enum of parameter type constraint kinds (Any, Declared, Scalar, Tabular, Integer, Common*, ...).",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 28,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Pure enum; ordinal values may matter for sorting in tests.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ParameterTypeKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/PatternSymbol.cs",
+      "lines": 118,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "PatternSymbol (sealed class)",
+        "PatternSignature (class)"
+      ],
+      "purpose": "Symbol for a query pattern (declare pattern) with parameters, optional path parameter, and signatures that lazily build a Signature from body text or syntax.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/Signature.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Syntax/FunctionBody (generated syntax)"
+      ],
+      "partialGroup": null,
+      "memberCount": 15,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "Interlocked"
+      ],
+      "traps": [
+        "PatternSignature.Signature (lines ~100-117) lazily builds Signature and uses Interlocked.CompareExchange; note it returns _signature after the CAS, not sig (loser's value discarded)",
+        "Concat(...).ToList() of parameters to append PathParameter (line ~108)",
+        "Symbol property has internal setter assigned in PatternSymbol ctor"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by binder for pattern declarations.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/PatternSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ResultNameKind.cs",
+      "lines": 59,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ResultNameKind (enum)"
+      ],
+      "purpose": "Enum describing how a function derives its result column name; Default = None alias.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Enum has alias `Default = None` -> duplicate ordinal; Java enum cannot alias, expose Default as static final field / constant mapping to NONE"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Pure enum.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ResultNameKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ReturnTypeKind.cs",
+      "lines": 138,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ReturnTypeKind (enum)"
+      ],
+      "purpose": "Enum of return-type strategies for signatures (Declared, Computed, Custom, ParameterN, Common, Widest, Parameter0Table ...).",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 23,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Pure enum.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ReturnTypeKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+      "lines": 120,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ScalarSymbol (abstract class)",
+        "PrimitiveSymbol (sealed class)",
+        "ScalarFlags (enum)"
+      ],
+      "purpose": "Base class for scalar types with capability predicates (IsNumeric, IsOrderable...), alias list and widening; PrimitiveSymbol implements flags-based primitives; ScalarFlags bit enum.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Utils/Extensions (ToReadOnly/CheckArgumentNullOrElementNull)"
+      ],
+      "partialGroup": null,
+      "memberCount": 22,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "static-ctor"
+      ],
+      "traps": [
+        "ScalarSymbol.From(string) static (line ~38) is hidden by `public static new TupleSymbol From` in TupleSymbol.cs:42 - Java static hiding requires compatible return type (TupleSymbol is a subtype: OK)",
+        "Private static None = new string[0] (line 25) initialises before subclasses",
+        "ScalarFlags uses binary literals 0b0001_0000 and All composite - Java int constants",
+        "IsWiderThan loops over _widerThan with reference equality (lines 71-79); aliases for 'int' include 'uint' etc."
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of scalar type system.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ScalarSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/ScalarTypes.cs",
+      "lines": 388,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "ScalarTypes (static class)"
+      ],
+      "purpose": "Static catalog of built-in scalar type symbols (bool,int,long,real,decimal,string,datetime,timespan,guid,type,dynamic,null,unknown), dynamic variants, arrays, GeoShape and name-to-symbol map; factory helpers GetDynamic/GetDynamicArray/GetDynamicBag/GetTuple.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+        "src/Kusto.Language/Symbols/TupleSymbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 45,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "LINQ"
+      ],
+      "traps": [
+        "STATIC INIT ORDER (C# textual order of static field initialisers, then explicit static ctor at line 365): Dynamic (line ~9) = DynamicAnySymbol.Instance; Bool..Guid; String uses widerThan:{Dynamic}; Unknown (line ~66); DynamicBool etc. use ScalarTypes.Bool; DynamicBag = DynamicBagSymbol.Empty; DynamicArrayOfArray uses ScalarTypes.DynamicArray which MUST be declared earlier; GeoShape builds ColumnSymbol which reads ScalarTypes.Unknown; `All` array (line ~345) then static ctor builds s_typeMap. Java static initialiser blocks must reproduce this exact textual order (forward references yield null)",
+        "Cyclic class-init: ColumnSymbol/Signature/TableSymbol static state read ScalarTypes.Unknown; ScalarTypes.GeoShape touches ColumnSymbol -> in Java a class-init cycle may observe null; keep the cycle shallow",
+        "s_typeMap.Add (static ctor, lines 365-377) THROWS on duplicate keys: aliases 'date','time','double','float','boolean','uuid','uniqueid','int8..uint64' must not collide with names",
+        "GetSymbol(string) returns null for unknown names (out param default); lookup is ordinal case-sensitive Dictionary",
+        "Int is intentionally also DynamicLong in GetDynamic/GetDynamicArray (Int->Long mapping)",
+        "Reference-identity comparisons (==) on symbols throughout GetDynamic* (lines ~190-290)",
+        "`public static readonly` IReadOnlyList `All` ordering is observable (used for enumeration in catalogs)",
+        "Name 'Type', 'String', 'Decimal', 'Guid', 'DateTime', 'TimeSpan' shadow System types inside the class - Java names like Type/String must be handled (rename fields e.g. STRING) - mirror deviation"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Central type catalog; must be ported first with exact init order.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/ScalarTypes.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/SchemaDisplay.cs",
+      "lines": 75,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "SchemaDisplay (static class)"
+      ],
+      "purpose": "Renders symbols (columns, tables, function parameter lists) as schema text such as (a: long, b: string).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+        "src/Kusto.Language/Parser/KustoFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "pattern-matching",
+        "string.Format",
+        "LINQ"
+      ],
+      "traps": [
+        "Pattern-matching switch order matters: ColumnSymbol,ParameterSymbol,TableSymbol,FunctionSymbol before default (lines 12-30)",
+        "GetScalarTypeText returns '' for non-scalar types (e.g. table columns of unexpected kind)",
+        "Uses KustoFacts.BracketNameIfNecessary (Parser area)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by CommandSymbol and tooling; deterministic text; keep.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/SchemaDisplay.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/Scope.cs",
+      "lines": 24,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "Scope (abstract class)"
+      ],
+      "purpose": "Abstract symbol scope with GetSymbols(name, match, list) and convenience overload.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 3,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Used by binder LocalScope etc.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Scope.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/Signature.cs",
+      "lines": 694,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "Signature (class)"
+      ],
+      "purpose": "A function/operator signature: return kind/type/body/declaration/custom return type, parameters with min/max argument counts, layout, tabularity inference, return-type computation including computed-body parsing.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Symbols/ParameterLayout.cs",
+        "src/Kusto.Language/Symbols/ParameterLayouts.cs",
+        "src/Kusto.Language/Symbols/ReturnTypeKind.cs",
+        "src/Kusto.Language/Symbols/TypeFacts.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+        "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+        "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
+        "src/Kusto.Language/Symbols/ErrorSymbol.cs",
+        "src/Kusto.Language/Symbols/DebugDisplay.cs",
+        "src/Kusto.Language/GlobalState.cs",
+        "src/Kusto.Language/KustoCode.cs",
+        "src/Kusto.Language/Binder/Binder_Functions*.cs (GetComputedReturnType)",
+        "src/Kusto.Language/Parser/KustoFacts.cs (GetSyntaxTabularity)",
+        "src/Kusto.Language/Syntax/FunctionBody (generated syntax)",
+        "src/Kusto.Language/Utils/ObjectPool.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 48,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "delegate/Func",
+        "string.Format",
+        "pattern-matching",
+        "static-ctor"
+      ],
+      "traps": [
+        "STATIC: UnknownParameter (line 330) = new Parameter(\"\", ScalarTypes.Unknown) -> forces ScalarTypes init; ctor reads ParameterLayouts.Fixed/Repeating (cycle)",
+        "AllowsNamedArguments (line 335) reads GlobalState.Default (static singleton created from catalogs) - cyclic init: Signature -> GlobalState.Default -> Functions -> Signature; must be lazy in Java",
+        "Symbol setter is internal, assigned by FunctionSymbol/OperatorSymbol/GraphModelSymbol/EntityGroupSymbol ctors",
+        "Non-thread-safe lazy fields _body, _tabularity, nameToParameterMap (line 304) mutate on read",
+        "ComputeTabularity (lines ~634-668) pre-assigns _tabularity=Unknown to break recursion, then calls Binder.GetComputedReturnType and KustoCode.Parse(body) (line 687) - requires full parser+binder; body StartsWith/EndsWith('{','}') use StringComparison.Ordinal (lines 681-684)",
+        "GetReturnType overloads: (GlobalState) and (GlobalState, IReadOnlyList<TypeSymbol>) and (GlobalState, IReadOnlyList<TypeSymbol>, IReadOnlyList<Parameter>)",
+        "Parameter0Promoted etc use argumentParameters.IndexOf(Parameter) = reference equality; iArg bounds checks; returns ErrorSymbol.Instance",
+        "Widest case (line ~596): `TypeFacts.GetWidestScalarType(argumentTypes).PromoteToLong() ?? ErrorSymbol.Instance` - PromoteToLong is an extension tolerating null receiver; Java must make PromoteToLong null-safe",
+        "StoredQueryResultSymbol.Empty (lines 507, 621) resolves via static inheritance to TableSymbol.Empty (StoredQueryResultSymbol declares no Empty) - port as TableSymbol.Empty to avoid Java compile error / wrong value",
+        "Parameter0Table/ExternalTable/MaterializedView all return TableSymbol.Empty.WithIsOpen(true)",
+        "`new DatabaseSymbol(\"\", null, isOpen: true)` and `new ClusterSymbol(\"\", null, isOpen: true)` (lines 489,492,603,606) - null overload ambiguity",
+        "Constructor overload set (ReturnTypeKind / TypeSymbol / CustomReturnType / string body / FunctionBody) x (IReadOnlyList / params array) - Java varargs vs List collisions, e.g. new Signature(returnType) with zero params",
+        "Private ctor validation uses `body != null | declaration != null` (non-short-circuit |) - harmless",
+        "ObjectPool<List<Parameter>> static (line 516)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core; has hard dependencies on Binder, KustoCode, GlobalState (cycle across areas).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Signature.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/Symbol.cs",
+      "lines": 362,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "Symbol (abstract class)"
+      ],
+      "purpose": "Root symbol type: Name, AlternateName, Kind, Tabularity, Members, member matching, GetResultType and the type assignability algorithm (AreAssignable with conversions, tuple/table/bag/array rules).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/SymbolKind.cs",
+        "src/Kusto.Language/Symbols/Tabularity.cs",
+        "src/Kusto.Language/Symbols/SymbolMatch.cs",
+        "src/Kusto.Language/Symbols/Conversion.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Symbols/TypeFacts.cs",
+        "src/Kusto.Language/Symbols/DebugDisplay.cs",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 16,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "pattern-matching",
+        "LINQ",
+        "static-ctor"
+      ],
+      "traps": [
+        "IsHidden (line 41) uses StringComparison.Ordinal StartsWith('__')",
+        "AreAssignable (lines ~190-300) is a long pattern-matching chain whose ORDER matters; switch on targetType with type patterns (ColumnSymbol,TupleSymbol,GroupSymbol,TableSymbol,PrimitiveSymbol,DynamicArraySymbol,DynamicBagSymbol)",
+        "Argument swap is intentional: DynamicArraySymbol case calls AreAssignable(srcArray.ElementType, tarArray.ElementType) (reversed) - mirror",
+        "ColumnSymbol assignability compares Name with == (ordinal)",
+        "Symbol equality is reference identity throughout (no Equals/GetHashCode overrides) - do NOT override equals/hashCode in Java",
+        "GetResultType recursion on GroupSymbol builds a GroupSymbol from result TYPES"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Root of hierarchy.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Symbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/SymbolKind.cs",
+      "lines": 146,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "SymbolKind (enum)"
+      ],
+      "purpose": "Enum of symbol kinds (Primitive, Variable, Function, ... GraphSnapshot).",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 27,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Explicit None = 0 then implicit ascending values; ordinals used nowhere numerically but keep order"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Pure enum; includes Command and QueryOperatorParameter kinds even if unused.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/SymbolKind.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/SymbolMatch.cs",
+      "lines": 228,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "SymbolMatch (enum, [Flags])",
+        "SymbolMatchExtensions (static class)"
+      ],
+      "purpose": "Bit-flag enum of symbol categories to match, and Matches() extension that tests a symbol by name and category.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+        "src/Kusto.Language/Symbols/VariableSymbol.cs",
+        "src/Kusto.Language/Symbols/ParameterSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "pattern-matching"
+      ],
+      "traps": [
+        "NON-ORDINAL compare: string.Compare(symbol.Name, name, ignoreCase) (line 128) and string.Compare(sn, name) (line 138) use the CURRENT CULTURE; Java must decide ordinal vs culture - upstream behaviour for ASCII identifiers is equal to ordinal except for exotic Unicode; use equals / equalsIgnoreCase (note: C# ignoreCase uses culture upper/lower; Java equalsIgnoreCase is simple case folding) and record the deviation",
+        "Fast-path compares first char name[0] != sn[0] before string.Compare (line 133-137) - means the case-sensitive path is strictly ordinal on first char",
+        "Enum shifts `Column << 1` chain -> 20 flags; Java int/long bit constants (EnumSet or int masks); Any/Default are composites that do NOT include Scalar/Tabular/Option/StoredQueryResult/NonScalar",
+        "Matches flows through many `symbol is X` checks; ExternalTable vs Table distinguished via IsExternal/IsMaterializedView/IsStoredQueryResult",
+        "Extension method on Symbol -> static helper SymbolMatchExtensions.matches(symbol,...) or instance method on Symbol (deviation)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed for scope lookups.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/SymbolMatch.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/TableState.cs",
+      "lines": 75,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "TableState (enum, [Flags])",
+        "TableStateExtensions (static class)"
+      ],
+      "purpose": "Flags enum for table properties (Serialized, Sorted, Open) plus extension helpers Has/With/Without/New/Open/Unsorted.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 8,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "unsigned"
+      ],
+      "traps": [
+        "NAME CLASH: TableSymbol.cs declares a nested protected `TableState : ushort` enum (line ~20) that shadows this top-level public TableState inside TableSymbol; the top-level one is used by the binder. Java: nested TableSymbol.TableState vs top-level TableState both named identically - rename one or merge (deviation)",
+        "Extension methods named With/Open on an enum -> static methods in TableStateExtensions; New() adds Serialized"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by binder for table state propagation; keep both, flag the duplicate.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TableState.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/TableSymbol.cs",
+      "lines": 600,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "TableSymbol (class)",
+        "MaterializedViewKind (enum)",
+        "MaterializedViewSymbol (class)",
+        "ExternalTableSymbol (class)",
+        "StoredQueryResultSymbol (sealed class)"
+      ],
+      "purpose": "Symbol for a table (columns, description, state flags) with immutable With*/Add* operations, schema-string parsing (From), column lookup, pattern matching, Combine and equivalence helpers; plus materialized view, external table and stored query result subclasses.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+        "src/Kusto.Language/Symbols/TableState.cs",
+        "src/Kusto.Language/Symbols/CombineKind.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Parser/QueryParser.cs (ParseRowSchema)",
+        "src/Kusto.Language/Binder/Binder*.cs (CreateColumnsFromRowSchema)",
+        "src/Kusto.Language/Parser/KustoFacts.cs (Matches)",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs",
+        "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 55,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "Interlocked",
+        "nullable-value-type",
+        "unsigned",
+        "static-ctor",
+        "pattern-matching"
+      ],
+      "traps": [
+        "nested `protected enum TableState : ushort` (ushort-backed [Flags]) at lines 17-24 -> Java enum + int bitmask; shadows top-level TableState",
+        "From(string) (lines 90-110) wraps text in parens, calls QueryParser.ParseRowSchema and Binder.CreateColumnsFromRowSchema - throws InvalidOperationException(\"Invalid schema: ...\") on failure; runtime parser dependency for any `new TableSymbol(name, schema)` in catalogs/tests",
+        "With() (lines ~140-170) compares `useColumns != this.Columns` by REFERENCE, so passing an equal-but-new IEnumerable always creates a new table",
+        "ColumnMap (line 323-345) first-wins on duplicate column names (ContainsKey check) in contrast to other maps; Interlocked.CompareExchange lazy",
+        "GetMembers(name, ...) (line ~395): when name != null it uses ColumnMap.TryGetValue (ordinal, case-SENSITIVE) and ignores ignoreCase argument; when name == null calls base.GetMembers(name, match, symbols) dropping ignoreCase - mirror exactly",
+        "Empty (line 426) static: new TableSymbol() via params ColumnSymbol[] ctor with zero args",
+        "StoredQueryResultSymbol defines no Empty: Signature.cs uses inherited TableSymbol.Empty",
+        "AreEquivalent uses GetType() equality (line ~455) -> getClass() in Java; TableState compare in AreResultEquivalent",
+        "Subclass hooks: protected virtual Create(...) clone pattern; WithIsExternal/WithIsMaterializedView downcast-by-ctor via internal ctors (MaterializedViewSymbol(TableSymbol,string) internal)",
+        "WithDescripton typo (line ~120) is the public API name - keep",
+        "pattern.Contains(\"*\") (line 379) ordinal; KustoFacts.Matches wildcard matching",
+        "MaterializedViewKind internal property setter 'TODO' state",
+        "Overload ambiguity: TableSymbol(string name, string schema, string description) vs (string name, params ColumnSymbol[]) vs (string, IEnumerable<ColumnSymbol>, string)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of schema input; depends on parser (ParseRowSchema) and binder (CreateColumnsFromRowSchema).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TableSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/Tabularity.cs",
+      "lines": 40,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "Tabularity (enum)"
+      ],
+      "purpose": "Enum: None, Scalar, Tabular, Other, Unknown, Unspecified.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Pure enum.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/Tabularity.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/TupleSymbol.cs",
+      "lines": 64,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "TupleSymbol (sealed class)"
+      ],
+      "purpose": "Scalar tuple symbol holding columns and optional related table; IsReducibleToScalar, WithColumns/WithSource.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+        "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Syntax/SyntaxNode.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 12,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "static-ctor"
+      ],
+      "traps": [
+        "`public static new TupleSymbol From(string)` hides ScalarSymbol.From (line 42)",
+        "Empty (line 62) = new TupleSymbol(null): C# overload resolution picks the `params ColumnSymbol[]` ctor with a null array (array more specific than IEnumerable), which then casts to IEnumerable null -> ToReadOnly(null) must yield empty list; verify Utils.ToReadOnly/CheckArgumentNullOrElementNull behaviour",
+        "Base name is literal 'tuple'"
+      ],
+      "proposedStatus": "ported",
+      "justification": "",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TupleSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/TypeFacts.cs",
+      "lines": 634,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "TypeFacts (static class)"
+      ],
+      "purpose": "Static helpers on types: element type, widest scalar, common type/common result type/common argument type, promotion, predicate extensions (IsInteger, IsNumeric, IsStringOrDynamic ...), and column list Union/Intersect.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/ScalarTypes.cs",
+        "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+        "src/Kusto.Language/Symbols/TableSymbol.cs",
+        "src/Kusto.Language/Symbols/Conversion.cs",
+        "src/Kusto.Language/Symbols/Parameter.cs",
+        "src/Kusto.Language/Syntax/Expression.cs",
+        "src/Kusto.Language/Utils/ObjectPool.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 34,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "ref/out",
+        "pattern-matching",
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "`out commonType` aliased with an input argument: TryGetCommonType(commonType, type, conv, out commonType) at lines 81,124,157,182,344,349 - C# evaluates args before the call then assigns; Java needs holder/return-by-value",
+        "TryGetCommonType (lines 193-310): else-if chain with pattern variables and reuse of `out var dut` across branches; ORDER of branches is semantic; port with a small result holder",
+        "Conversion comparisons via `<=` on enum (line 313)",
+        "Extension methods on Symbol/TypeSymbol (IsPromotableTo, PromoteToLong at 364-370, IsNumeric...) -> static methods; PromoteToLong must tolerate null receiver (used on possibly-null widest type in Signature.cs)",
+        "Static ObjectPools s_nameToTypePool / s_columnListPool (lines 505-514) used by Union/Intersect; pooled Dictionary + List cleared on return; if not pooling, results must be copied (ToReadOnly)",
+        "Union (519) builds output order from columnsA then columnsB using a Dictionary only for lookups (not iterated), so order is deterministic; Remove() during second pass dedupes",
+        "Union loop semantics: `if (!TryGetCommonType(...)) nameToTypeMap[...] = commonType ?? Dynamic` (line ~540) - inverted-looking but mirror",
+        "GetCommonResultType overloads with params Expression[] vs IReadOnlyList<Expression>",
+        "IsRealOrDecimal etc reference ScalarTypes by identity"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core of type inference.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TypeFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/TypeSymbol.cs",
+      "lines": 19,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "TypeSymbol (abstract class)"
+      ],
+      "purpose": "Base class for symbols that are types.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Trivial base.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/TypeSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/VariableSymbol.cs",
+      "lines": 57,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "VariableSymbol (sealed class)"
+      ],
+      "purpose": "Symbol for a variable (let) with a type, optional constant value info and source expression.",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/Symbol.cs",
+        "src/Kusto.Language/Symbols/TypeSymbol.cs",
+        "src/Kusto.Language/Syntax/ValueInfo.cs",
+        "src/Kusto.Language/Syntax/Expression.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 9,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Type.CheckArgumentNull throws ArgumentNullException on null type"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by binder.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/VariableSymbol.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Symbols/VoidSymbol.cs",
+      "lines": 25,
+      "namespace": "Kusto.Language.Symbols",
+      "types": [
+        "VoidSymbol (sealed class)"
+      ],
+      "purpose": "Singleton void type symbol (Tabularity.None).",
+      "dependsOn": [
+        "src/Kusto.Language/Symbols/TypeSymbol.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor"
+      ],
+      "traps": [],
+      "proposedStatus": "ported",
+      "justification": "Trivial.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/symbols/VoidSymbol.java"
+    }
+  ]
+}

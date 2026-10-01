@@ -1,0 +1,2655 @@
+{
+ "area": "editor-kusto",
+ "files": [
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+   "lines": 865,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ActorUtilities (class) line 13"
+   ],
+   "purpose": "Shared helpers for actors: token/node lookup by range, edit building, action data encoding.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/BrackettingStyle.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/PositionBias.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Parser/TokenParser.cs",
+    "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+    "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+    "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Symbols/TableSymbol.cs",
+    "src/Kusto.Language/Symbols/TypeSymbol.cs",
+    "src/Kusto.Language/Syntax/SeparatedElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "usings": [
+    "Kusto.Language.Parsing",
+    "Kusto.Language.Symbols",
+    "Kusto.Language.Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "System.Text",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 52,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "BrackettingStyle",
+    "CodeAction",
+    "EditString",
+    "FormattingOptions",
+    "MenuAction",
+    "PositionBias",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "extension-methods",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "StringBuilder",
+    "as-cast",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 682"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Code action/refactoring actor; editor-only, reachable only via KustoActors registry and KustoCodeService. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ActorUtilities.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/ConvertToMacroExpandActor.cs",
+   "lines": 270,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ConvertToMacroExpandActor (class) line 13"
+   ],
+   "purpose": "Refactoring actor: converts a cross-database/cluster query into a macro-expand form.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "ActorUtilities",
+    "Parsing",
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 15,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "ChangeTextAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "EditString",
+    "FormattingOptions",
+    "MoveCaretAction",
+    "RenameAction",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "ActorUtilities",
+    "KustoActor",
+    "KustoCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 89,110,162",
+    "numeric parse/round semantics: lines 96,97,98,151"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Code action/refactoring actor; editor-only, reachable only via KustoActors registry and KustoCodeService. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ConvertToMacroExpandActor.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/DiagnosticFixActor.cs",
+   "lines": 156,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "DiagnosticFixActor (class) line 12"
+   ],
+   "purpose": "Actor that surfaces KustoFixer fixes for diagnostics as code actions, keyed by diagnostic code.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixers.cs",
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "usings": [
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 6,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "TextRange"
+   ],
+   "referencesEditorKusto": [
+    "ActorUtilities",
+    "KustoActor",
+    "KustoCodeService",
+    "KustoFixer",
+    "KustoFixers"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "tuple",
+    "CancellationToken"
+   ],
+   "traps": [
+    "Dictionary/HashSet iteration order observable: lines 14,15,25,77,118,120"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Code action/refactoring actor; editor-only, reachable only via KustoActors registry and KustoCodeService. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/DiagnosticFixActor.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/ExtractValueToLetStatementActor.cs",
+   "lines": 312,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ExtractExpressionActor (class) line 14"
+   ],
+   "purpose": "Refactoring actor (class ExtractExpressionActor): extracts an expression into a let statement.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "usings": [
+    "ActorUtilities",
+    "Kusto.Language.Parsing",
+    "Kusto.Language.Symbols",
+    "Kusto.Language.Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Diagnostics",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 18,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "EditString",
+    "FormattingOptions",
+    "RenameAction"
+   ],
+   "referencesEditorKusto": [
+    "ActorUtilities",
+    "KustoActor",
+    "KustoCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 183,232,233,256,266,267",
+    "numeric parse/round semantics: lines 135,136"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Code action/refactoring actor; editor-only, reachable only via KustoActors registry and KustoCodeService. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ExtractExpressionActor.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/InlineDatabaseFunctionActor.cs",
+   "lines": 292,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "InlineDatabaseFunctionActor (class) line 12"
+   ],
+   "purpose": "Refactoring actor: inlines a database function call with its body, requalifying names.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoQualifier.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Symbols/Parameter.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "ActorUtilities",
+    "Kusto.Language.Symbols",
+    "Kusto.Language.Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 24,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "ChangeTextAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "EditString",
+    "MenuAction",
+    "MoveCaretAction"
+   ],
+   "referencesEditorKusto": [
+    "ActorUtilities",
+    "KustoActor",
+    "KustoCodeService",
+    "KustoQualifier"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "Dictionary/HashSet iteration order observable: lines 187",
+    "culture-sensitive format/interpolation: lines 270",
+    "numeric parse/round semantics: lines 101,106",
+    "explicit string comparer (check Ordinal vs IgnoreCase mapping): lines 277,280"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Code action/refactoring actor; editor-only, reachable only via KustoActors registry and KustoCodeService. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/InlineDatabaseFunctionActor.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Actors/RenameActor.cs",
+   "lines": 61,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "RenameActor (class) line 10"
+   ],
+   "purpose": "Refactoring actor: renames a symbol and all of its references.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/Editor/RelatedInfo.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "FindRelatedOptions",
+    "MoveCaretAction",
+    "RelatedElementKind",
+    "RelatedInfo",
+    "RenameAction"
+   ],
+   "referencesEditorKusto": [
+    "KustoActor",
+    "KustoCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "CancellationToken"
+   ],
+   "traps": [
+    "numeric parse/round semantics: lines 49"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Code action/refactoring actor; editor-only, reachable only via KustoActors registry and KustoCodeService. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/RenameActor.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AnalyzerUtilities.cs",
+   "lines": 230,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AnalyzerUtilities (class) line 9"
+   ],
+   "purpose": "Helpers shared by analyzers (column-reference tests, operator operand tests, etc.).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+    "src/Kusto.Language/Syntax/SeparatedElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic"
+   ],
+   "partialGroup": null,
+   "memberCount": 14,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "extension-methods",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 183,189"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AnalyzerUtilities.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidJoinWithoutKindAnalyzer.cs",
+   "lines": 37,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidJoinWithoutKindAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (AvoidJoinWithoutKindAnalyzer): warns on join without explicit kind (KS508). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidJoinWithoutKindAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidStrlenWithDynamic.cs",
+   "lines": 38,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidStrlenWithDynamicAnalyzer (class) line 10"
+   ],
+   "purpose": "Analyzer (AvoidStrlenWithDynamicAnalyzer): warns on strlen over dynamic values (KS516). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 18"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidStrlenWithDynamicAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingContainsAnalyzer.cs",
+   "lines": 107,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingContainsAnalyzer (class) line 10"
+   ],
+   "purpose": "Analyzer (AvoidUsingContainsAnalyzer): suggests has instead of contains (KS500) with fix. Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AnalyzerUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "AnalyzerUtilities",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 6,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "AnalyzerUtilities",
+    "FixEdits",
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "operator-overload",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 18,19,57,58",
+    "numeric parse/round semantics: lines 73"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingContainsAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingFormatDateTimeInPredicateAnalyzer.cs",
+   "lines": 170,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingFormatDateTimeInPredicateAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (AvoidUsingFormatDateTimeInPredicateAnalyzer): warns on format_datetime in predicates (KS506) with fix. Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AnalyzerUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "AnalyzerUtilities",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 9,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "AnalyzerUtilities",
+    "FixEdits",
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 19,20,77,82,83,144",
+    "numeric parse/round semantics: lines 130,131"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingFormatDateTimeInPredicateAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingHasWithIPv4Strings.cs",
+   "lines": 189,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingHasWithIPv4StringsAnalyzer (class) line 15"
+   ],
+   "purpose": "Analyzer (AvoidUsingHasWithIPv4StringsAnalyzer): warns on has with IPv4-like strings (KS514) with fix. Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AnalyzerUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/CharScanners.cs",
+    "src/Kusto.Language/Parser/Combinators/Parser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs",
+    "src/Kusto.Language/Utils/Optional.cs"
+   ],
+   "usings": [
+    "AnalyzerUtilities",
+    "CharScanners",
+    "Kusto.Language.Parsing",
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 14,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "AnalyzerUtilities",
+    "FixEdits",
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "operator-overload",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 23,107,125,126",
+    "numeric parse/round semantics: lines 140"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingHasWithIPv4StringsAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingLegacyPartitionAnalyzer.cs",
+   "lines": 63,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingLegacyPartitionAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (AvoidUsingLegacyPartitionAnalyzer): warns on legacy partition operator form (KS513). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingLegacyPartitionAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingNullStringComparisonAnalyzer.cs",
+   "lines": 102,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingNullStringComparisonAnalyzer (class) line 14"
+   ],
+   "purpose": "Analyzer (AvoidUsingNullStringComparisonAnalyzer): warns on comparing strings to null/empty (KS501/KS502) with fix. Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/ScalarTypes.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 6,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "FixEdits",
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "pattern-matching",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 75,76",
+    "numeric parse/round semantics: lines 90,91"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingNullStringComparisonAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingObsoleteFunctions.cs",
+   "lines": 159,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingObsoleteFunctionsAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (AvoidUsingObsoleteFunctionsAnalyzer): warns on obsolete functions (KS507) with fix. Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Symbols/Parameter.cs",
+    "src/Kusto.Language/Symbols/ParameterTypeKind.cs",
+    "src/Kusto.Language/Symbols/Signature.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 9,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "FixEdits",
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 36,43,67,68",
+    "numeric parse/round semantics: lines 77,78"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingObsoleteFunctionsAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingToBoolOnNumericsAnalyzer.cs",
+   "lines": 48,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AvoidUsingToBoolOnNumericsAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (AvoidUsingToBoolOnNumericsAnalyzer): warns on tobool over numerics (KS504). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/ScalarTypes.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AvoidUsingToBoolOnNumericsAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/CalledFunctionHasErrorsAnalyzer.cs",
+   "lines": 58,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "CalledFunctionHasErrorsAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (CalledFunctionHasErrorsAnalyzer): reports errors inside called database functions (KS512). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/Signature.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 55"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/CalledFunctionHasErrorsAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/ColumnHasSameNameAsVariableAnalyzer.cs",
+   "lines": 67,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ColumnHasSameNameAsVariableAnalyzer (class) line 16"
+   ],
+   "purpose": "Analyzer (ColumnHasSameNameAsVariableAnalyzer): warns when a column name shadows a variable (KS510). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+    "src/Kusto.Language/Symbols/ParameterSymbol.cs",
+    "src/Kusto.Language/Symbols/SymbolMatch.cs",
+    "src/Kusto.Language/Symbols/VariableSymbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "Dictionary/HashSet iteration order observable: lines 32"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ColumnHasSameNameAsVariableAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+   "lines": 35,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoAnalyzerCodes (class) line 15"
+   ],
+   "purpose": "Constants for analyzer diagnostic codes KS500-KS516.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingOptimizedAlternative.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 17,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "PreferUsingOptimizedAlternative"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoAnalyzerCodes.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/NullAggregationAnalyzer.cs",
+   "lines": 52,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "NullAggregationAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (NullAggregationAnalyzer): warns on aggregations over null (KS505). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Aggregates.cs",
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "string.Format",
+    "CancellationToken",
+    "as-cast",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 44,46"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/NullAggregationAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingMaterializedViewIntrinsicAnalyzer.cs",
+   "lines": 115,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "PreferUsingMaterializedViewIntrinsicAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (PreferUsingMaterializedViewIntrinsicAnalyzer): suggests materialized_view() intrinsic (KS511). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeKinds.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/TableSymbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 5,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CodeKinds"
+   ],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "Dictionary/HashSet iteration order observable: lines 44",
+    "culture-sensitive format/interpolation: lines 19,20"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/PreferUsingMaterializedViewIntrinsicAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingOptimizedAlternative.cs",
+   "lines": 42,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "PreferUsingOptimizedAlternative (class) line 11"
+   ],
+   "purpose": "Analyzer (PreferUsingOptimizedAlternative): suggests optimized function alternative (KS515). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 35"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/PreferUsingOptimizedAlternative.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/Analyzers/StdevTimespanConversionAnalyzer.cs",
+   "lines": 51,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "StdevTimespanConversionAnalyzer (class) line 11"
+   ],
+   "purpose": "Analyzer (StdevTimespanConversionAnalyzer): warns on stdev of timespan conversion (KS509). Overrides KustoAnalyzer to emit diagnostics, optionally with fix edits.",
+   "dependsOn": [
+    "src/Kusto.Language/Aggregates.cs",
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/KustoAnalyzerCodes.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Symbols/ScalarTypes.cs",
+    "src/Kusto.Language/Syntax/SeparatedElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 4,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzer",
+    "KustoAnalyzerCodes"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Lint analyzer/helper (KS5xx codes); reachable only via KustoAnalyzers registry and KustoCodeService.GetAnalyzers (incl. Editor/DisabledDiagnostics.cs:104). Out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/StdevTimespanConversionAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/AnnotatedParserFinder.cs",
+   "lines": 454,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "AnnotatedParserFinder<TInput> (class) line 15"
+   ],
+   "purpose": "ParserVisitor that scans the grammar against input up to an offset and records annotated parsers (completion items/hints) considered at that offset, either flat or as ParserPaths.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/Kusto/ParserPath.cs",
+    "src/Kusto.Language/Parser/Combinators/LimitSource.cs",
+    "src/Kusto.Language/Parser/Combinators/Parser.cs",
+    "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/ApplyParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/BestParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/ConvertParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/FailsParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/FirstParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/ForwardParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/IfParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/LimitParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/MapParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/MatchParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/NotParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/OneOrMoreParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/OptionalParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/ProduceParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/RequiredParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/RuleParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/SequenceParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Parsers/ZeroOrMoreParser.cs",
+    "src/Kusto.Language/Parser/Combinators/RightParser.cs",
+    "src/Kusto.Language/Parser/Combinators/Source.cs"
+   ],
+   "usings": [
+    "Parsing",
+    "System",
+    "System.Collections.Generic"
+   ],
+   "partialGroup": null,
+   "memberCount": 24,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "ParserAndIndex",
+    "ParserPath"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "tuple",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Only consumed by KustoCompleter (KustoCompleter.cs:2543,2572). Walks grammar parser annotations; completion-only. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/AnnotatedParserFinder.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+   "lines": 44,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoActor (class) line 11"
+   ],
+   "purpose": "Abstract base for code actions/refactorings (GetActions/ApplyAction) over a KustoCodeService.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "System",
+    "System.Collections.Generic",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 3,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult"
+   ],
+   "referencesEditorKusto": [
+    "KustoCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "delegate/Func",
+    "CancellationToken"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Code-action/refactoring infrastructure; out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoActor.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoActors.cs",
+   "lines": 32,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoActors (class) line 6",
+    "KustoActorNames (class) line 24"
+   ],
+   "purpose": "Static registry of built-in actors plus KustoActorNames constants.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/Kusto/Actors/ConvertToMacroExpandActor.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/DiagnosticFixActor.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ExtractValueToLetStatementActor.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/InlineDatabaseFunctionActor.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/RenameActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs"
+   ],
+   "usings": [
+    "System",
+    "System.Collections.Generic"
+   ],
+   "partialGroup": null,
+   "memberCount": 11,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "ConvertToMacroExpandActor",
+    "DiagnosticFixActor",
+    "ExtractExpressionActor",
+    "InlineDatabaseFunctionActor",
+    "KustoActor",
+    "RenameActor"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Registry of editor actors; out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoActors.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": [
+    "KustoActorNames"
+   ]
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+   "lines": 134,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoAnalyzer (class) line 14",
+    "AnalyzerFixer (class, nested) line 82"
+   ],
+   "purpose": "Abstract base for additional semantic analyzers producing diagnostics, with a nested AnalyzerFixer adapter exposing a KustoFixer.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 13,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions"
+   ],
+   "referencesEditorKusto": [
+    "FixEdits",
+    "KustoFixer"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Analyzer infrastructure (extra lint diagnostics, KS5xx) beyond core binder diagnostics; out of scope. KustoCode does not call analyzers. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoAnalyzer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoAnalyzers.cs",
+   "lines": 85,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoAnalyzers (class) line 14"
+   ],
+   "purpose": "Static registry of the 16 built-in analyzers and the All list.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidJoinWithoutKindAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidStrlenWithDynamic.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingContainsAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingFormatDateTimeInPredicateAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingHasWithIPv4Strings.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingLegacyPartitionAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingNullStringComparisonAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingObsoleteFunctions.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/AvoidUsingToBoolOnNumericsAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/CalledFunctionHasErrorsAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/ColumnHasSameNameAsVariableAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/NullAggregationAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingMaterializedViewIntrinsicAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/PreferUsingOptimizedAlternative.cs",
+    "src/Kusto.Language/Editor/Kusto/Analyzers/StdevTimespanConversionAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 16,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "AvoidJoinWithoutKindAnalyzer",
+    "AvoidStrlenWithDynamicAnalyzer",
+    "AvoidUsingContainsAnalyzer",
+    "AvoidUsingFormatDateTimeInPredicateAnalyzer",
+    "AvoidUsingHasWithIPv4StringsAnalyzer",
+    "AvoidUsingLegacyPartitionAnalyzer",
+    "AvoidUsingNullStringComparisonAnalyzer",
+    "AvoidUsingObsoleteFunctionsAnalyzer",
+    "AvoidUsingToBoolOnNumericsAnalyzer",
+    "CalledFunctionHasErrorsAnalyzer",
+    "ColumnHasSameNameAsVariableAnalyzer",
+    "KustoAnalyzer",
+    "NullAggregationAnalyzer",
+    "PreferUsingMaterializedViewIntrinsicAnalyzer",
+    "PreferUsingOptimizedAlternative",
+    "StdevTimespanConversionAnalyzer"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Registry of lint analyzers; out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoAnalyzers.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoClassifier.cs",
+   "lines": 269,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoClassifier (class) line 15"
+   ],
+   "purpose": "Static classifier mapping syntax tokens/nodes to ClassificationKind ranges for syntax highlighting.",
+   "dependsOn": [
+    "src/Kusto.Language/Binder/Binder_API.cs",
+    "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs",
+    "src/Kusto.Language/Binder/Binder_ContextBuilder.cs",
+    "src/Kusto.Language/Binder/Binder_FunctionCalls.cs",
+    "src/Kusto.Language/Binder/Binder_Misc.cs",
+    "src/Kusto.Language/Binder/Binder_Names.cs",
+    "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
+    "src/Kusto.Language/Binder/Binder_Operators.cs",
+    "src/Kusto.Language/Binder/Binder_Projection.cs",
+    "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs",
+    "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs",
+    "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
+    "src/Kusto.Language/Editor/ClassificationKind.cs",
+    "src/Kusto.Language/Editor/ClassifiedRange.cs",
+    "src/Kusto.Language/Editor/ClientParameter.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Symbols/Parameter.cs",
+    "src/Kusto.Language/Symbols/SymbolKind.cs",
+    "src/Kusto.Language/Syntax/CustomNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxCategory.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Binding",
+    "Parsing",
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "System.Text",
+    "System.Threading.Tasks",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 12,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClassificationKind",
+    "ClassifiedRange",
+    "ClientParameter"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "CancellationToken"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor classification; only caller KustoCodeService.cs:387. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoClassifier.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+   "lines": 666,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoCodeService (class) line 17"
+   ],
+   "purpose": "Public CommonCodeService implementation for Kusto: diagnostics, classification, outlining, completion, quick info, related elements, references, formatting, code actions. Facade over all other editor-kusto files.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs",
+    "src/Kusto.Language/Editor/AnalyzerInfo.cs",
+    "src/Kusto.Language/Editor/ClassificationResult.cs",
+    "src/Kusto.Language/Editor/ClassifiedRange.cs",
+    "src/Kusto.Language/Editor/ClientParameter.cs",
+    "src/Kusto.Language/Editor/ClusterReference.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/CodeKinds.cs",
+    "src/Kusto.Language/Editor/CodeServiceFeatures.cs",
+    "src/Kusto.Language/Editor/CommonCodeService.cs",
+    "src/Kusto.Language/Editor/CompletionInfo.cs",
+    "src/Kusto.Language/Editor/CompletionOptions.cs",
+    "src/Kusto.Language/Editor/DatabaseReference.cs",
+    "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+    "src/Kusto.Language/Editor/FormattedText.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActor.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoActors.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzer.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzers.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoClassifier.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCompleter.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFormatter.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoOutliner.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoQuickInfoBuilder.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoReferenceFinder.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoRelatedElementFinder.cs",
+    "src/Kusto.Language/Editor/MinimalTextKind.cs",
+    "src/Kusto.Language/Editor/OutlineInfo.cs",
+    "src/Kusto.Language/Editor/OutliningOptions.cs",
+    "src/Kusto.Language/Editor/QuickInfo.cs",
+    "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+    "src/Kusto.Language/Editor/RelatedInfo.cs",
+    "src/Kusto.Language/Editor/TextRange.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/TriviaFacts.cs",
+    "src/Kusto.Language/Properties.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+    "src/Kusto.Language/Utils/Interlocked.cs"
+   ],
+   "usings": [
+    "Kusto.Language",
+    "Kusto.Language.Parsing",
+    "Kusto.Language.Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "System.Text",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 41,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "AnalyzerInfo",
+    "ApplyAction",
+    "ClassificationInfo",
+    "ClassifiedRange",
+    "ClientParameter",
+    "ClusterReference",
+    "CodeAction",
+    "CodeActionInfo",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "CodeKinds",
+    "CodeServiceFeatures",
+    "CommonCodeService",
+    "CompletionInfo",
+    "CompletionOptions",
+    "DatabaseReference",
+    "FindRelatedOptions",
+    "FormattedText",
+    "FormattingOptions",
+    "MinimalTextKind",
+    "OutlineInfo",
+    "OutliningOptions",
+    "QuickInfo",
+    "QuickInfoOptions",
+    "RelatedInfo",
+    "TextRange"
+   ],
+   "referencesEditorKusto": [
+    "ActorUtilities",
+    "KustoActor",
+    "KustoActors",
+    "KustoAnalyzer",
+    "KustoAnalyzers",
+    "KustoClassifier",
+    "KustoCompleter",
+    "KustoFormatter",
+    "KustoOutliner",
+    "KustoQuickInfoBuilder",
+    "KustoReferenceFinder",
+    "KustoRelatedElementFinder"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "delegate/Func",
+    "Interlocked",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [
+    "string compare (culture/ignoreCase semantics): lines 331",
+    "sort order observable (List.Sort unstable / OrderBy stable): lines 331",
+    "Dictionary/HashSet iteration order observable: lines 279",
+    "culture-sensitive format/interpolation: lines 367,639"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Editor facade. Referenced from outside Editor/Kusto only by Editor/CodeScript.cs, Editor/CommonCodeService.cs:324 and Editor/DisabledDiagnostics.cs:104 (all editor area). Not referenced by KustoCode.cs or GlobalState.cs. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoCodeService.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoCodeServiceFactory.cs",
+   "lines": 96,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoCodeServiceFactory (class) line 8"
+   ],
+   "purpose": "CodeServiceFactory that creates KustoCodeService instances and heuristically detects Kusto vs. other (e.g. SQL select/with) text.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeService.cs",
+    "src/Kusto.Language/Editor/CodeServiceFactory.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Parser/TokenParser.cs"
+   ],
+   "usings": [
+    "System"
+   ],
+   "partialGroup": null,
+   "memberCount": 5,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CodeService",
+    "CodeServiceFactory"
+   ],
+   "referencesEditorKusto": [
+    "KustoCodeService"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "pattern-matching"
+   ],
+   "traps": [
+    "string compare (culture/ignoreCase semantics): lines 92,93"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Editor factory; referenced only by Editor/CodeScript.cs:121,127,134. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoCodeServiceFactory.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoCompleter.cs",
+   "lines": 3655,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoCompleter (class) line 15",
+    "CompletionBuilder (class, nested) line 33",
+    "CompletionMode (enum, nested) line 976"
+   ],
+   "purpose": "Largest editor class: computes IntelliSense completion items by combining grammar annotations, binder symbols and syntax context.",
+   "dependsOn": [
+    "src/Kusto.Language/Binder/Binder_API.cs",
+    "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs",
+    "src/Kusto.Language/Binder/Binder_ContextBuilder.cs",
+    "src/Kusto.Language/Binder/Binder_FunctionCalls.cs",
+    "src/Kusto.Language/Binder/Binder_Misc.cs",
+    "src/Kusto.Language/Binder/Binder_Names.cs",
+    "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
+    "src/Kusto.Language/Binder/Binder_Operators.cs",
+    "src/Kusto.Language/Binder/Binder_Projection.cs",
+    "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs",
+    "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs",
+    "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
+    "src/Kusto.Language/Editor/CompletionDisplay.cs",
+    "src/Kusto.Language/Editor/CompletionHint.cs",
+    "src/Kusto.Language/Editor/CompletionInfo.cs",
+    "src/Kusto.Language/Editor/CompletionItem.cs",
+    "src/Kusto.Language/Editor/CompletionKind.cs",
+    "src/Kusto.Language/Editor/CompletionOptions.cs",
+    "src/Kusto.Language/Editor/CompletionPriority.cs",
+    "src/Kusto.Language/Editor/CompletionText.cs",
+    "src/Kusto.Language/Editor/DisabledDiagnostics.cs",
+    "src/Kusto.Language/Editor/Kusto/AnnotatedParserFinder.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoServiceHelpers.cs",
+    "src/Kusto.Language/Editor/Kusto/ParserPath.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Operators.cs",
+    "src/Kusto.Language/Parser/Combinators/ArraySource.cs",
+    "src/Kusto.Language/Parser/Combinators/Parser.cs",
+    "src/Kusto.Language/Parser/CommandGrammar.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Parser/LexicalToken.cs",
+    "src/Kusto.Language/Parser/QueryGrammar.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Parser/TokenParser.cs",
+    "src/Kusto.Language/Parser/TriviaFacts.cs",
+    "src/Kusto.Language/Symbols/ArgumentKind.cs",
+    "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+    "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+    "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+    "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Symbols/OperatorKind.cs",
+    "src/Kusto.Language/Symbols/OperatorSymbol.cs",
+    "src/Kusto.Language/Symbols/OptionSymbol.cs",
+    "src/Kusto.Language/Symbols/Parameter.cs",
+    "src/Kusto.Language/Symbols/ParameterSymbol.cs",
+    "src/Kusto.Language/Symbols/ParameterTypeKind.cs",
+    "src/Kusto.Language/Symbols/PatternSymbol.cs",
+    "src/Kusto.Language/Symbols/ReturnTypeKind.cs",
+    "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+    "src/Kusto.Language/Symbols/ScalarTypes.cs",
+    "src/Kusto.Language/Symbols/Signature.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Symbols/SymbolKind.cs",
+    "src/Kusto.Language/Symbols/SymbolMatch.cs",
+    "src/Kusto.Language/Symbols/TableSymbol.cs",
+    "src/Kusto.Language/Symbols/TupleSymbol.cs",
+    "src/Kusto.Language/Symbols/TypeSymbol.cs",
+    "src/Kusto.Language/Symbols/VariableSymbol.cs",
+    "src/Kusto.Language/Syntax/SeparatedElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxCategory.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxFacts.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
+    "src/Kusto.Language/Utils/Interlocked.cs",
+    "src/Kusto.Language/Utils/ObjectPool.cs"
+   ],
+   "usings": [
+    "Binding",
+    "KustoServiceHelpers",
+    "Parsing",
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "System.Text",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 136,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "Builder",
+    "CompletionDisplay",
+    "CompletionHint",
+    "CompletionInfo",
+    "CompletionItem",
+    "CompletionKind",
+    "CompletionOptions",
+    "CompletionPriority",
+    "CompletionRank",
+    "CompletionText"
+   ],
+   "referencesEditorKusto": [
+    "AnnotatedParserFinder",
+    "KustoServiceHelpers",
+    "ParserPath"
+   ],
+   "referencesCommands": [
+    "CommandGrammar"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "LINQ",
+    "decimal",
+    "delegate/Func",
+    "Interlocked",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "StringBuilder",
+    "as-cast",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive case conversion: lines 144,1383",
+    "string StartsWith/EndsWith without StringComparison (culture-sensitive): lines 242,1112,1128,1139,1155,1171,1182,1198 (+3 more)",
+    "sort order observable (List.Sort unstable / OrderBy stable): lines 132",
+    "Dictionary/HashSet iteration order observable: lines 36,1288,1332,1368,1397,1747,1749,1763 (+2 more)",
+    "char.IsLetter/IsWhiteSpace/etc. Unicode semantics: lines 158,260,271,2448,3271,3272,3302,3536 (+1 more)",
+    "culture-sensitive format/interpolation: lines 141,142,686,1026,1385,1387,1389,1391 (+1 more)"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Completion/IntelliSense is out of scope. Not referenced by any in-scope file. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoCompleter.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoFixer.cs",
+   "lines": 263,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoFixer (class) line 12",
+    "FixEdits (class) line 201"
+   ],
+   "purpose": "Abstract base for diagnostic fixers (GetFixes/ApplyFix) plus FixEdits result class.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/CodeAction.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/PositionBias.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs",
+    "src/Kusto.Language/Utils/EmptyReadOnlyList.cs"
+   ],
+   "usings": [
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 12,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ApplyAction",
+    "CodeAction",
+    "CodeActionOptions",
+    "CodeActionResult",
+    "EditString",
+    "MultiAction",
+    "PositionBias",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "CancellationToken",
+    "generics"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Quick-fix infrastructure; out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoFixer.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": [
+    "FixEdits"
+   ]
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoFixers.cs",
+   "lines": 27,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoFixers (class) line 14"
+   ],
+   "purpose": "Static registry of fixers, concatenated from analyzer fixers.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/Kusto/KustoAnalyzers.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoFixer.cs"
+   ],
+   "usings": [
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 1,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [
+    "KustoAnalyzers",
+    "KustoFixer"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Quick-fix registry; out of scope. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoFixers.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoFormatter.cs",
+   "lines": 1851,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoFormatter (class) line 13",
+    "SpacingKind (enum, nested) line 1419",
+    "ComputationState (enum, nested) line 1472",
+    "SpacingRule (class, nested) line 1482",
+    "AlignmentRule (class, nested) line 1615"
+   ],
+   "purpose": "Syntax-tree-driven code formatter with spacing/alignment rule engine producing FormattedText.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/BrackettingStyle.cs",
+    "src/Kusto.Language/Editor/FormattedText.cs",
+    "src/Kusto.Language/Editor/FormattingOptions.cs",
+    "src/Kusto.Language/Editor/PlacementStyle.cs",
+    "src/Kusto.Language/Editor/SpacingStyle.cs",
+    "src/Kusto.Language/FunctionBodyFacts.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Syntax/SeparatedElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxFacts.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs"
+   ],
+   "usings": [
+    "Parsing",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Text"
+   ],
+   "partialGroup": null,
+   "memberCount": 97,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "BrackettingStyle",
+    "DualSpacingStyle",
+    "FormattedText",
+    "FormattingOptions",
+    "PlacementStyle",
+    "SpacingStyle"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "nullable-value-type",
+    "delegate/Func",
+    "static-ctor",
+    "pattern-matching",
+    "tuple",
+    "StringBuilder",
+    "as-cast"
+   ],
+   "traps": [
+    "string StartsWith/EndsWith without StringComparison (culture-sensitive): lines 309,310,311,313,314,316,317,318 (+2 more)",
+    "Dictionary/HashSet iteration order observable: lines 21,22,24,25,30,31"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Formatting is out of scope. Only caller is KustoCodeService.cs:658. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoFormatter.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoOutliner.cs",
+   "lines": 139,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoOutliner (class) line 10"
+   ],
+   "purpose": "Computes collapsible outline ranges for statements and root collapsed text.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/OutlineInfo.cs",
+    "src/Kusto.Language/Editor/OutlineRange.cs",
+    "src/Kusto.Language/Editor/OutliningOptions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/TextFacts.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs"
+   ],
+   "usings": [
+    "Parsing",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Text"
+   ],
+   "partialGroup": null,
+   "memberCount": 6,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "OutlineInfo",
+    "OutlineRange",
+    "OutliningOptions"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "StringBuilder"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor outlining; only caller KustoCodeService.cs:441. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoOutliner.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoQualifier.cs",
+   "lines": 162,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoQualifier (class) line 11"
+   ],
+   "purpose": "Rewrites query text to fully or minimally qualify database entity references (cluster/database).",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/CodeKinds.cs",
+    "src/Kusto.Language/Editor/EditString.cs",
+    "src/Kusto.Language/Editor/Kusto/Actors/ActorUtilities.cs",
+    "src/Kusto.Language/Editor/TextEdit.cs",
+    "src/Kusto.Language/GlobalState.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+    "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs"
+   ],
+   "usings": [
+    "ActorUtilities",
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Text"
+   ],
+   "partialGroup": null,
+   "memberCount": 7,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CodeKinds",
+    "EditString",
+    "TextEdit"
+   ],
+   "referencesEditorKusto": [
+    "ActorUtilities"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "delegate/Func",
+    "tuple",
+    "string.Format",
+    "StringBuilder",
+    "as-cast"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 142,156"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Editor requalification helper; only caller Actors/InlineDatabaseFunctionActor.cs:289. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoQualifier.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoQuickInfoBuilder.cs",
+   "lines": 535,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoQuickInfoBuilder (class) line 12"
+   ],
+   "purpose": "Builds hover QuickInfo text (symbol description, signatures, diagnostics) for a position.",
+   "dependsOn": [
+    "src/Kusto.Language/Diagnostics/Diagnostic.cs",
+    "src/Kusto.Language/Editor/ClassificationKind.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoCodeService.cs",
+    "src/Kusto.Language/Editor/Kusto/KustoServiceHelpers.cs",
+    "src/Kusto.Language/Editor/QuickInfo.cs",
+    "src/Kusto.Language/Editor/QuickInfoOptions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Parser/KustoFacts.cs",
+    "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+    "src/Kusto.Language/Properties.cs",
+    "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+    "src/Kusto.Language/Symbols/ColumnSymbol.cs",
+    "src/Kusto.Language/Symbols/CommandSymbol.cs",
+    "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+    "src/Kusto.Language/Symbols/DynamicSymbol.cs",
+    "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs",
+    "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
+    "src/Kusto.Language/Symbols/FunctionSymbol.cs",
+    "src/Kusto.Language/Symbols/GraphSymbol.cs",
+    "src/Kusto.Language/Symbols/GroupSymbol.cs",
+    "src/Kusto.Language/Symbols/OperatorSymbol.cs",
+    "src/Kusto.Language/Symbols/OptionSymbol.cs",
+    "src/Kusto.Language/Symbols/Parameter.cs",
+    "src/Kusto.Language/Symbols/ParameterSymbol.cs",
+    "src/Kusto.Language/Symbols/PatternSymbol.cs",
+    "src/Kusto.Language/Symbols/ScalarSymbol.cs",
+    "src/Kusto.Language/Symbols/ScalarTypes.cs",
+    "src/Kusto.Language/Symbols/Signature.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Symbols/TableSymbol.cs",
+    "src/Kusto.Language/Symbols/TupleSymbol.cs",
+    "src/Kusto.Language/Symbols/TypeSymbol.cs",
+    "src/Kusto.Language/Symbols/VariableSymbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/ValueInfo.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Kusto.Language.Symbols",
+    "KustoServiceHelpers",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Text",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 18,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClassificationKind",
+    "ClassifiedText",
+    "QuickInfo",
+    "QuickInfoItem",
+    "QuickInfoKind",
+    "QuickInfoOptions"
+   ],
+   "referencesEditorKusto": [
+    "KustoCodeService",
+    "KustoServiceHelpers"
+   ],
+   "referencesCommands": [
+    "CommandSymbol"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "nullable-value-type",
+    "pattern-matching",
+    "tuple",
+    "string.Format",
+    "CancellationToken",
+    "StringBuilder"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 273,456,460"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Editor hover; only caller KustoCodeService.cs:496. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoQuickInfoBuilder.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoReferenceFinder.cs",
+   "lines": 256,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoReferenceFinder (class) line 14"
+   ],
+   "purpose": "Finds cluster() and database() name references in code for the service reference APIs.",
+   "dependsOn": [
+    "src/Kusto.Language/Binder/Binder_API.cs",
+    "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs",
+    "src/Kusto.Language/Binder/Binder_ContextBuilder.cs",
+    "src/Kusto.Language/Binder/Binder_FunctionCalls.cs",
+    "src/Kusto.Language/Binder/Binder_Misc.cs",
+    "src/Kusto.Language/Binder/Binder_Names.cs",
+    "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
+    "src/Kusto.Language/Binder/Binder_Operators.cs",
+    "src/Kusto.Language/Binder/Binder_Projection.cs",
+    "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs",
+    "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs",
+    "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
+    "src/Kusto.Language/Editor/ClusterReference.cs",
+    "src/Kusto.Language/Editor/DatabaseReference.cs",
+    "src/Kusto.Language/FunctionBodyFacts.cs",
+    "src/Kusto.Language/Functions.Convert.cs",
+    "src/Kusto.Language/Functions.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/ClusterSymbol.cs",
+    "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxList.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Utils/Cancellation.cs"
+   ],
+   "usings": [
+    "Kusto.Language",
+    "Kusto.Language.Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 10,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "ClusterReference",
+    "DatabaseReference"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "ref/out",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple",
+    "CancellationToken"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor reference finding; only callers KustoCodeService.cs:585,612. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoReferenceFinder.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoRelatedElementFinder.cs",
+   "lines": 221,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoRelatedElementFinder (class) line 15"
+   ],
+   "purpose": "Finds related syntax elements (matching brackets/keywords, same-symbol references) at a position.",
+   "dependsOn": [
+    "src/Kusto.Language/Editor/FindRelatedOptions.cs",
+    "src/Kusto.Language/Editor/RelatedInfo.cs",
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Symbols/Symbol.cs",
+    "src/Kusto.Language/Syntax/SyntaxElement.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs"
+   ],
+   "usings": [
+    "Binding",
+    "Parsing",
+    "Symbols",
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "System.Text",
+    "System.Threading.Tasks",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 12,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "FindRelatedOptions",
+    "RelatedElement",
+    "RelatedElementKind",
+    "RelatedInfo"
+   ],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "pattern-matching",
+    "tuple"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Editor related-element finding; only caller KustoCodeService.cs:564. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoRelatedElementFinder.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/KustoServiceHelpers.cs",
+   "lines": 90,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "KustoServiceHelpers (class) line 11"
+   ],
+   "purpose": "Small helpers for locating tokens and expressions around a caret position (affinity).",
+   "dependsOn": [
+    "src/Kusto.Language/KustoCode.cs",
+    "src/Kusto.Language/Syntax/SyntaxCategory.cs",
+    "src/Kusto.Language/Syntax/SyntaxKind.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode.cs",
+    "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
+    "src/Kusto.Language/Syntax/SyntaxToken.cs"
+   ],
+   "usings": [
+    "Syntax",
+    "System",
+    "System.Collections.Generic",
+    "System.Linq",
+    "System.Text",
+    "System.Threading.Tasks"
+   ],
+   "partialGroup": null,
+   "memberCount": 5,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "tuple"
+   ],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Caret/affinity helpers used only by KustoCompleter and KustoQuickInfoBuilder (using static). No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/KustoServiceHelpers.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": []
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Editor/Kusto/ParserPath.cs",
+   "lines": 99,
+   "namespace": "Kusto.Language.Editor",
+   "types": [
+    "ParserPath<TInput> (class) line 9",
+    "ParserAndIndex<TInput> (struct) line 89"
+   ],
+   "purpose": "Immutable linked path of parsers (with index in parent) from a root grammar parser down to a leaf; lazily materializes child paths. Used by the completer to navigate grammar context.",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/Combinators/Parser.cs",
+    "src/Kusto.Language/Utils/Interlocked.cs"
+   ],
+   "usings": [
+    "Parsing",
+    "System.Collections.Generic",
+    "Utils"
+   ],
+   "partialGroup": null,
+   "memberCount": 13,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesEditorKusto": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "struct",
+    "ref/out",
+    "delegate/Func",
+    "Interlocked",
+    "tuple",
+    "string.Format",
+    "generics"
+   ],
+   "traps": [
+    "culture-sensitive format/interpolation: lines 17,18"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Only consumed by KustoCompleter and AnnotatedParserFinder (grep across Kusto.Language finds no use outside Editor/Kusto). Pure completion infrastructure. No in-scope file (Lexing/Parser/Syntax/Binder/Symbols/GlobalState/KustoCode) references this file's types.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/editor/ParserPath.java  (path only if ever un-excluded)",
+   "extraTopLevelTypesInFile": [
+    "ParserAndIndex"
+   ]
+  }
+ ],
+ "summaryNotes": [
+  "All 42 files excluded. No #if BRIDGE blocks anywhere in area; KustoFormatter.cs:1368-1390 has an #if false dead block.",
+  "KustoCode.cs:8 (using Editor) and GlobalState.cs:7 (using Kusto.Language.Editor) are unused usings w.r.t. Editor/Kusto types; grep for every type in this area outside Editor/Kusto finds only Editor/CodeScript.cs, Editor/CommonCodeService.cs, Editor/DisabledDiagnostics.cs.",
+  "In-scope files do reference non-Kusto Editor types: Parser/SyntaxParsers.cs and PredefinedRuleParsers.cs (CompletionKind, CompletionItem, CompletionHint, CompletionPriority), Parser/TriviaFacts.cs, ScriptFacts.cs, Syntax/SyntaxElement.cs etc. That is area Editor (top-level), not Editor/Kusto."
+ ]
+}

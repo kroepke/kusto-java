@@ -1,0 +1,586 @@
+{
+  "area": "root",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Aggregates.cs",
+      "lines": 860,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Aggregates (class, static)"
+      ],
+      "purpose": "Catalog of built-in aggregate FunctionSymbols (sum, count, make_list, arg_max, any, percentiles, ...) plus custom return-type callbacks, and the All list.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Syntax",
+        "src/Kusto.Language/FunctionHelpers.cs",
+        "Kusto.Language.Binding (CustomReturnTypeContext)"
+      ],
+      "partialGroup": null,
+      "memberCount": 140,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching",
+        "extension-methods"
+      ],
+      "traps": [
+        "static field initialisers run in textual order; All (line 796) must come after every field",
+        "HashSet<ColumnSymbol> at 519,610,611,729,730 relies on ColumnSymbol equality (reference unless overridden): use identity-or-equals consistently",
+        "Obsolete/Hide fluent chains (32-41,180,214,487,504,708,719) create new symbol instances; keep instance identity semantics (GlobalState.IsAggregateFunction compares by reference)",
+        "GetAnyResult(514)/GetArgMinMaxResult(604) build result columns; column ordering observable"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core binder catalog; hand-written (not generated). Port 1:1 as static final fields in one Java class; Java class init order = textual order, no cross-partial ambiguity.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Aggregates.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/FunctionBodyFacts.cs",
+      "lines": 362,
+      "namespace": "Kusto.Language",
+      "types": [
+        "FunctionBodyFacts (class)",
+        "Flags (enum, private nested, [Flags])"
+      ],
+      "purpose": "Immutable record of facts about a database function body (cluster/database/table calls, dependent params, syntax errors) used by function expansion and caching.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Utils (Optional<T>)"
+      ],
+      "partialGroup": null,
+      "memberCount": 45,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "nullable-value-type",
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "[Flags] enum with binary literals 0b_ (line 315+): map to int bit constants, not EnumSet, or use EnumSet carefully",
+        "Optional<T> struct (Utils) used in With(...) at 61 and 154-170: need Java Optional-like class distinguishing 'unset' from null (do not use java.util.Optional)",
+        "static readonly Default singleton (line 40)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Pure data class needed by binder function-expansion; no editor deps.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/FunctionBodyFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/FunctionHelpers.cs",
+      "lines": 152,
+      "namespace": "Kusto.Language",
+      "types": [
+        "FunctionHelpers (class, static)"
+      ],
+      "purpose": "Static helpers for custom return-type callbacks: prefixed tuples, column-name building, constant extraction, summarize-by columns, name sanitising.",
+      "dependsOn": [
+        "Kusto.Language.Syntax",
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Utils",
+        "Kusto.Language.Parsing (TextFacts)"
+      ],
+      "partialGroup": null,
+      "memberCount": 11,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "extension-methods",
+        "delegate/Func"
+      ],
+      "traps": [
+        "MakeValidNameFragment (90-102) uses TextFacts.IsLetterOrDigit: must use the ported TextFacts, not Character.isLetterOrDigit (surrogates/Unicode category differences)",
+        "GetConstantValue (66) uses ConstantValue?.ToString(): Java String.valueOf differs for bool (C# 'True'), double and DateTime formatting; need a ported invariant formatter",
+        "MaxRepeat = short.MaxValue (19)",
+        "used via 'using static FunctionHelpers' in Functions/Aggregates/PlugIns: Java static imports"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by every catalog file.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/FunctionHelpers.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Functions.Convert.cs",
+      "lines": 342,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Functions (class, partial)"
+      ],
+      "purpose": "Generated partial of Functions: unit-name string arrays and the convert_angle/energy/force/length/mass/speed/temperature/volume FunctionSymbols.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "src/Kusto.Language/Functions.cs"
+      ],
+      "partialGroup": "Functions",
+      "memberCount": 16,
+      "generated": true,
+      "generatedBy": "ConverUnits.CodeGen utility (external; not in this repo - header lines 2-6 say DO NOT MODIFY, output in 'GeneratedCode' folder)",
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func"
+      ],
+      "traps": [
+        "Merge into Functions.java BEFORE the Functions.All array (declared Functions.cs:3733): C# leaves cross-partial static-init order unspecified, Java must define these fields textually before All or they are null",
+        "Unit lists must be copied verbatim (order observable in completion/diagnostics)"
+      ],
+      "proposedStatus": "generated",
+      "justification": "Header says auto-generated by external tool. Generator absent from repo, so port the output as-is; mark generated. Do not attempt regeneration.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Functions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Functions.cs",
+      "lines": 4226,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Functions (class, partial)"
+      ],
+      "purpose": "Catalog of all built-in scalar functions (string, math, datetime, dynamic/array, geo, graph, ip, format, other) with signatures, return-type kinds and custom return-type callbacks; exposes All (3733-4225).",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Syntax",
+        "Kusto.Language.Utils",
+        "src/Kusto.Language/FunctionHelpers.cs",
+        "src/Kusto.Language/Functions.Convert.cs"
+      ],
+      "partialGroup": "Functions",
+      "memberCount": 700,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching",
+        "extension-methods"
+      ],
+      "traps": [
+        "Huge static initializer: Java method/class-init size limit (64KB per <clinit>, constant pool); split into nested holder classes or static init blocks per #region while preserving textual order",
+        "Static order dependencies: private statics like ParseUrlResult (640), ParseUrlQueryResult(666), ParsePathResult(822), ParseUserAgentResult(839), m_ArraySort_* (1636) must precede their users",
+        "All array (3733) references Convert* fields from Functions.Convert.cs; #region directives inside the array at 3737+ (no semantic effect)",
+        "Self-reference inside callbacks: Functions.InnerNodes/_All/Any/Map (3466-3469)",
+        "Fluent .Hide()/.ConstantFoldable()/.WithResultNameKind() create new symbols: reference identity matters for GlobalState.IsBuiltInFunction",
+        "Function named 'Any','_All' etc: Java identifier clashes (e.g. Table, Database, Cast, Prev, Next, Invoke, Map) fine inside class but check reserved words",
+        "No culture-sensitive code found; string-literal defaults in parameters (e.g. enum value lists) must match exactly"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core catalog, hand-written. Single Java class Functions merging Functions.cs and Functions.Convert.cs. Static-init risk: Functions static init constructs FunctionSymbol/ScalarTypes; GlobalState.Default is lazy to avoid cycle (symbols may reference Default).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Functions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/GlobalState.cs",
+      "lines": 1217,
+      "namespace": "Kusto.Language",
+      "types": [
+        "GlobalState (class, sealed)",
+        "GlobalStateProperty (class, abstract)",
+        "GlobalStateProperty<T> (class)",
+        "PropertyAndValue (class, private nested)"
+      ],
+      "purpose": "Immutable global binding environment: clusters, current cluster/database, function/aggregate/plugin/operator/option catalogs, ambient/client symbols, properties, parse options, cache; lazily-built lookup maps and Default instance.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Utils",
+        "Kusto.Language.Editor (using only; no concrete editor type found in file)",
+        "src/Kusto.Language/Functions.cs",
+        "src/Kusto.Language/Aggregates.cs",
+        "src/Kusto.Language/PlugIns.cs",
+        "src/Kusto.Language/Operators.cs",
+        "src/Kusto.Language/Options.cs",
+        "src/Kusto.Language/ServerKinds.cs",
+        "src/Kusto.Language/KustoCache.cs",
+        "Kusto.Language.Parsing (KustoFacts, ParseOptions)"
+      ],
+      "partialGroup": null,
+      "memberCount": 110,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "CommandSymbol (11x: field 118, ctor 181, GetCommand 847-862)",
+        "EngineCommands.All (874)",
+        "DataManagerCommands.All (876)",
+        "ClusterManagerCommands.All (878)",
+        "AriaBridgeCommands.All (880)"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "Interlocked",
+        "delegate/Func",
+        "LINQ",
+        "nullable-value-type",
+        "generic-over-primitive",
+        "pattern-matching"
+      ],
+      "traps": [
+        "Interlocked.CompareExchange lazy publication (616,667,694,715,744,772,862,921,939,1012,1043,1078,1190): use AtomicReference/volatile + benign race, or synchronized",
+        "Lazy Default (1154-1195) with comment: 'other symbols may reference this default instance'; keep lazy holder; do NOT make a plain static final eager field",
+        "Dictionary<string,...> maps built with ToDictionaryLast (Utils) so last duplicate wins: use HashMap put-overwrite; no iteration order dependence found",
+        "Dictionary<GlobalStateProperty,object> propertyMap (138) keyed on reference identity",
+        "GlobalStateProperty<T>.DefaultValue default(T) (1212): int 0/bool false/null",
+        "Name comparison is C# default ordinal (string keys): use String.equals",
+        "using Kusto.Language.Editor at line 7: verify unused; ported file should not import editor package",
+        "GetCommands (869) switches on ServerKind strings from ServerKinds"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Central to binding and schema input; port fully. GetCommand/commandMap/GetCommands pull in command grammar symbols (EngineCommands etc.) which are out of scope: stub GetCommand returning null / empty list initially (status partial) or keep with empty command lists.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/GlobalState.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/KustoCache.cs",
+      "lines": 75,
+      "namespace": "Kusto.Language",
+      "types": [
+        "KustoCache (class)"
+      ],
+      "purpose": "Per-GlobalState type-keyed cache of arbitrary objects (e.g. GlobalBindingCache) with GetOrCreate/TryGetValue.",
+      "dependsOn": [
+        "Kusto.Language.Utils (ThreadSafeDictionary<,>)",
+        "src/Kusto.Language/GlobalState.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive",
+        "delegate/Func",
+        "ref/out"
+      ],
+      "traps": [
+        "Keyed by System.Type: use Class<?> with ConcurrentHashMap; generic T needs Class<T> parameter in Java (type erasure) - API change from GetOrCreate<T>() to GetOrCreate(Class<T>, Supplier)",
+        "GetOrCreate(creator) at 54-56 calls creator twice (once discarded): mirror but harmless",
+        "TryGetValue out param -> return Optional/nullable"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Small, needed by binder caching.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoCache.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/KustoCode.cs",
+      "lines": 518,
+      "namespace": "Kusto.Language",
+      "types": [
+        "KustoCode (class, sealed)",
+        "AnalysisState (enum, private nested)",
+        "IncludeFunctionKind (enum)",
+        "ParserKind (enum)"
+      ],
+      "purpose": "Primary public facade: parse text (query or command) into a SyntaxTree, optionally bind, expose diagnostics, result type, symbols in scope, token/line lookup.",
+      "dependsOn": [
+        "Kusto.Language.Binding",
+        "Kusto.Language.Editor (CodeKinds)",
+        "Kusto.Language.Parsing",
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Syntax",
+        "Kusto.Language.Utils",
+        "src/Kusto.Language/GlobalState.cs",
+        "src/Kusto.Language/KustoDialect.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 40,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CodeKinds (Editor; used 120,210,341)"
+      ],
+      "referencesCommands": [
+        "CommandGrammar.From(globals).CommandBlock (211)",
+        "CommandBlock (272)",
+        "KustoDialect.*Command (124-129)"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "Interlocked",
+        "out",
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching"
+      ],
+      "traps": [
+        "Interlocked.CompareExchange (378,394,452) lazy diagnostics/lineStarts",
+        "GetKind (331-358) uses TokenParser.ParseToken and TextFacts.GetNextLineStart: line-ending handling must match",
+        "CancellationToken (164,296,316,...) -> need Java equivalent (volatile flag / Supplier<Boolean> / Thread interrupt); ThrowIfCancellationRequested at 214",
+        "Command branch (206-214) requires CommandGrammar: stub (always treat as query or throw) to keep out of scope",
+        "default param values (globals = null)->Java overloads",
+        "ParserKind.Grammar (QueryGrammar path 226) vs Default QueryParser",
+        "internal members used by TestHelpers (_localCache)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Public entry point; port with command branch stubbed. CodeKinds is a tiny Editor constants class: relocate/copy minimal constants rather than the Editor package.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoCode.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/KustoDialect.cs",
+      "lines": 12,
+      "namespace": "Kusto.Language",
+      "types": [
+        "KustoDialect (enum)"
+      ],
+      "purpose": "Enum of dialects: Unknown, ClusterManagerCommand, DataManagerCommand, EngineCommand, Query.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Ordinal values: Unknown = 0 explicit"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Trivial enum; keep values although command dialects unused.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoDialect.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Operators.cs",
+      "lines": 420,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Operators (class, static)"
+      ],
+      "purpose": "Catalog of built-in OperatorSymbols (arithmetic, comparison, string ops, logical) with typed signatures, plus All list.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "src/Kusto.Language/FunctionHelpers.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 60,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "delegate/Func",
+        "LINQ"
+      ],
+      "traps": [
+        "Private static type arrays (DateAndTimespan 15, StringOrDynamic 21, DynamicAddable 27) and helper StringBinary(36) must be initialised before the public fields using them: textual order",
+        "UnaryReturnType callback (63)",
+        "Hide() on Signature (76-86,159-189) returns new Signature: preserve",
+        "Name 'MatchRegex' etc. is operator names not regex usage"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Hand-written catalog; port 1:1.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Operators.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Options.cs",
+      "lines": 255,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Options (class)"
+      ],
+      "purpose": "Catalog of well-known query-option OptionSymbols with descriptions, plus All list (193).",
+      "dependsOn": [
+        "Kusto.Language.Symbols"
+      ],
+      "partialGroup": null,
+      "memberCount": 40,
+      "generated": true,
+      "generatedBy": "Engine unit test TestQueryOptions (external, not in repo)",
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor"
+      ],
+      "traps": [
+        "Header comment (lines 8-12) says generated by running tests Kusto.Engine.UT.exe -run:TestQueryOptions (external, not in repo): treat as hand-maintained",
+        "Verbatim multi-line @\"...\" strings (e.g. 15-17, ~45) must convert to Java text blocks or concatenation preserving exact newlines (source uses LF, no CR)",
+        "Class is non-static public (line 14)"
+      ],
+      "proposedStatus": "generated",
+      "justification": "Documented as generated by an external test; port output verbatim.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Options.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/PlugIns.cs",
+      "lines": 1179,
+      "namespace": "Kusto.Language",
+      "types": [
+        "PlugIns (class, static)"
+      ],
+      "purpose": "Catalog of built-in plug-in FunctionSymbols (autocluster, basket, diffpatterns, geo/ipv4/ipv6 lookup, python, funnel, sql_request, ai_*...) with custom return-type logic; All list and GetPlugIn.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Syntax",
+        "System",
+        "src/Kusto.Language/FunctionHelpers.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 110,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "delegate/Func",
+        "LINQ",
+        "pattern-matching",
+        "out"
+      ],
+      "traps": [
+        "#if false block at 300-306 (dead code): drop, keep as comment",
+        "ToLower() culture-sensitive at 594 and 683: use toLowerCase(Locale.ROOT) (Turkish-i)",
+        "bool.TryParse (394,425,456,486): C# accepts case-insensitive 'true'/'false' with whitespace trim; Boolean.parseBoolean differs for whitespace and non-matching -> write helper",
+        "Private shared Parameter statics (137-144, 529-541, 730-734, 787-790, 970-974) must precede users",
+        "s_nameToPlugInMap lazy unsynchronised (1164-1178): ToDictionary throws on duplicate names; use ConcurrentHashMap/holder",
+        "GetPlugIn(name) null name throws in C# TryGetValue: guard",
+        "Switch on string (594,683): Java switch on string OK"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Hand-written catalog needed for binding; ported fully.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/PlugIns.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Properties.cs",
+      "lines": 45,
+      "namespace": "Kusto.Language",
+      "types": [
+        "Properties (class, static)"
+      ],
+      "purpose": "Predefined GlobalStateProperty<T> constants: AllowClientParameters, MaxParseTextSize, MaxAnalysisDepth, MaxCachedExpansions, MaxCachedResultTypes.",
+      "dependsOn": [
+        "src/Kusto.Language/GlobalState.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Generic over primitives bool/int: boxed Integer/Boolean in Java; nameof -> string literal",
+        "Name clash with GlobalState.Properties private property and java.util.Properties: name class Properties but avoid importing java.util.*",
+        "File has UTF-8 BOM"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Tiny config constants.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/Properties.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/QueryOperatorParameters.cs",
+      "lines": 639,
+      "namespace": "Kusto.Language",
+      "types": [
+        "QueryOperatorParameters (class, static)",
+        "QueryOperatorParameterValueKind (enum)",
+        "QueryOperatorParameter (class : Symbol)"
+      ],
+      "purpose": "Catalog of named parameters accepted by query operators (kind=, hint.*, bagexpansion, ...), grouped per operator in lists; QueryOperatorParameter symbol type and value-kind enum.",
+      "dependsOn": [
+        "Kusto.Language.Symbols",
+        "Kusto.Language.Utils",
+        "Kusto.Language.Parsing (KustoFacts value lists)"
+      ],
+      "partialGroup": null,
+      "memberCount": 130,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "delegate/Func",
+        "LINQ"
+      ],
+      "traps": [
+        "Hide()/WithValues() return copies (128,165,398): reference identity for lists vs. base entries",
+        "Static init depends on KustoFacts statics (e.g. SortHintStrategies 398): cross-file init-order cycle risk between KustoFacts and QueryOperatorParameters",
+        "Enum QueryOperatorParameterValueKind declared at 445: keep member order",
+        "Symbol subclass: overrides IsHidden, Kind (115-117) -> SymbolKind.QueryOperatorParameter"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Used by parser for operator parameter validation and binding; keep.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/QueryOperatorParameters.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/ServerKinds.cs",
+      "lines": 19,
+      "namespace": "Kusto.Language",
+      "types": [
+        "ServerKinds (class, static)"
+      ],
+      "purpose": "String constants naming server kinds: Engine, DataManager, ClusterManager, AriaBridge.",
+      "dependsOn": [],
+      "partialGroup": null,
+      "memberCount": 4,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "const string -> static final String",
+        "File has BOM"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Tiny constants; used by GlobalState.ServerKind.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/ServerKinds.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/TestHelpers.cs",
+      "lines": 62,
+      "namespace": "Kusto.Language",
+      "types": [
+        "TestHelpers (class, internal static)"
+      ],
+      "purpose": "Internal test hooks to count cached expansions/result types in GlobalBindingCache and KustoCode local cache, and bind a syntax node.",
+      "dependsOn": [
+        "Kusto.Language.Binding",
+        "Kusto.Language.Syntax",
+        "Kusto.Language.Symbols",
+        "src/Kusto.Language/KustoCode.cs",
+        "src/Kusto.Language/KustoCache.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 6,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "pattern-matching",
+        "out"
+      ],
+      "traps": [
+        "Accesses internal KustoCode._localCache: Java package-private across packages needs same package (org.graylog.kusto.language)"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Internal, but upstream tests use it for cache-limit assertions; port to src/test or package-private for mirror tests. Place in main only if tests need it.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/TestHelpers.java"
+    }
+  ]
+}

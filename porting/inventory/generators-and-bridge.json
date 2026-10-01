@@ -1,0 +1,795 @@
+{
+ "area": "generators-and-bridge",
+ "files": [
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeInfos.cs",
+   "lines": 3343,
+   "namespace": "Kusto.Language.Generator",
+   "types": [
+    "SyntaxNodeInfos (static class)"
+   ],
+   "purpose": "Design-time data table: 226 'new SyntaxNodeInfo' entries (All, from line 16) describing every concrete/abstract syntax node (Name, Base, Abstract/Sealed, Kind, Properties with Type/Optional/Completion/IsSyntax/DefaultValue, Construction/CloneOptions) plus KnownTypes (line 3336). This is the authoritative schema from which GeneratedSyntaxNodes.cs is produced. File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "Kusto.Language.Generator.SyntaxNodeGenerator (SyntaxNodeInfo/SyntaxNodeProperty/KnownTypeInfo)"
+   ],
+   "partialGroup": null,
+   "memberCount": 2,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "CompletionKind",
+    "CompletionHint (as string literals only)"
+   ],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "static-ctor"
+   ],
+   "traps": [
+    "Array order of All determines emitted class order, Visit* method order and child index order (SyntaxNodeInfos.cs:16-3335); Java generator must preserve it",
+    "Completion=\"...\" strings reference Kusto.Language.Editor.CompletionKind/CompletionHint by name (editor dependency leaks into every node's GetCompletionHintCore)"
+   ],
+   "proposedStatus": "ported",
+   "justification": "Pure data. Port 1:1 as a Java data class (or convert to JSON/YAML consumed by a Java generator). It is the single most important input for producing Java syntax node classes since the generated .cs is not checked in upstream.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeInfos.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
+   "lines": 681,
+   "namespace": "Kusto.Language.Generator",
+   "types": [
+    "KnownTypeInfo (class)",
+    "SyntaxNodeInfo (class)",
+    "ConstructorGenerationOptions (enum)",
+    "SyntaxNodeCloneOptions (enum)",
+    "SyntaxNodeProperty (class)",
+    "SyntaxNodeGenerator (class)"
+   ],
+   "purpose": "Reads SyntaxNodeInfo[] + KnownTypeInfo[] (SyntaxNodeInfos.All/KnownTypes) and emits a single C# source string (namespace Kusto.Language.Syntax): one partial class per node (ctor, GetChild/GetName/IsOptional/GetCompletionHintCore switches, Accept x3, CloneCore, typed property accessors) plus partial SyntaxVisitor, DefaultSyntaxVisitor, SyntaxVisitor<TResult>, DefaultSyntaxVisitor<TResult>. Output: Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.cs (via GeneratedSyntaxNodes.tt; not committed). File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "CodeGenerator.cs",
+    "SyntaxNodeInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 40,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "delegate/Func",
+    "LINQ",
+    "string.Format"
+   ],
+   "traps": [
+    "Dictionary m_nameToClass/m_knownTypes only used for lookup, not iteration (SyntaxNodeGenerator.cs:192-215), so no observable order issue",
+    "Duplicate names throw via Dictionary.Add (line 210, 217-220): Java must detect same",
+    "Output text emits '// This file was generated from .tt' header via CodeGenerator.WriteHeader (line 233)",
+    "Emits using aliases CompletionKind=Kusto.Language.Editor.CompletionKind (line 255-256): Java needs import of ported editor enums or stubs",
+    "Emits partial classes: Java has no partials, so the generated Java must either contain the whole hand-written class body or use a base/helper split; hand-written halves live in Kusto.Language/Syntax/*.cs"
+   ],
+   "proposedStatus": "ported",
+   "justification": "Core generator. Reimplement in Java (a build-time tool, e.g. Gradle JavaExec or annotation-free main()) emitting Java source with the same member order. Straightforward string emission; replace partial-class emission with merged output strategy (generate to a *Generated base class or inline into merged file).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeGenerator.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CodeGenerator.cs",
+   "lines": 879,
+   "namespace": "Kusto.Language.Generator",
+   "types": [
+    "CodeGenerator (internal class)",
+    "IndentedTextWriter (internal class)",
+    "Indentation (internal class)"
+   ],
+   "purpose": "Text-emission helper: indentation-aware writer, WriteHeader/WriteUsingBlock/WriteNamespaceDeclaration/WriteRegion/WriteScope, plus GetPascalCase/GetCamelCase utilities. Adapted copy of System.CodeDom IndentedTextWriter. Used only by SyntaxNodeGenerator. File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "System.IO.TextWriter",
+    "System.Globalization"
+   ],
+   "partialGroup": null,
+   "memberCount": 80,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "string.Format",
+    "delegate/Func"
+   ],
+   "traps": [
+    "string.Format(format,args) with C# composite format (CodeGenerator.cs:308) - braces escaping semantics differ from Java String.format",
+    "Char.ToUpper/ToLower culture-sensitive (lines 324, 342) - use Locale.ROOT / ASCII in Java",
+    "IndentedTextWriter ctor uses CultureInfo.InvariantCulture (line 403); newline handling via TextWriter.NewLine (Environment-dependent \\r\\n) - generated output line endings matter for diffing, use \\n",
+    "GetCamelCase escapes 'operator' keyword with '@' (line ~348): C#-specific, Java needs different keyword escaping (e.g. none of C# keywords; Java keywords like 'default','class')"
+   ],
+   "proposedStatus": "ported",
+   "justification": "Small reusable emitter; reimplement with StringBuilder + indent level. Drop TextWriter subclassing.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generator/CodeGenerator.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CommandGenerator.cs",
+   "lines": 2109,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "CommandGenerator (class)",
+    "CommandAndGrammar (private struct)",
+    "ElementInfo (internal class)",
+    "ShapeInfo (internal class)",
+    "ParserInfo (internal class)",
+    "RuleInfo (internal class)",
+    "ShapeMapBuilder (private class)",
+    "MissingInfo (internal abstract class)",
+    "ExpressionMissingInfo / FunctionMissingInfo / OneOrMoreMissingInfo / SequenceMissingInfo (internal classes)",
+    "MissingBuilder (private class)",
+    "CommonGrammarInfo (private class)",
+    "CommandGrammarWriter (private class)"
+   ],
+   "purpose": "Reads CommandInfo fields (reflected from *CommandInfos static classes via GetFields), parses each command grammar string with GrammarParser, de-duplicates shapes/missing-parsers, and emits C# source for (a) XCommandGrammar : CommandGrammar (namespace Kusto.Language.Parsing) via GenerateParser and (b) XCommands static class of CommandSymbol (namespace Kusto.Language) via GenerateSymbols. Outputs: Kusto.Language/Parser/CodeGen/{Engine,DataManager,ClusterManager,AriaBridge}CommandGrammar.cs and {...}Commands.cs (not committed). File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "Grammar.cs",
+    "CommandInfo.cs",
+    "Kusto.Language.Symbols",
+    "Kusto.Language.Syntax",
+    "Kusto.Language.Editor (emitted using only)",
+    "Kusto.Language.Parsing (emitted: Parsers<LexicalToken>, SyntaxParsers, CommandGrammar, PredefinedRuleParsers, CommandParserInfo)"
+   ],
+   "partialGroup": null,
+   "memberCount": 51,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [
+    "Kusto.Language.Editor (using emitted into generated parsers)"
+   ],
+   "referencesCommands": [
+    "CommandInfo",
+    "CommandGrammar",
+    "CommandParserInfo",
+    "CommandSymbol"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "LINQ",
+    "delegate/Func",
+    "struct",
+    "ref/out",
+    "pattern-matching",
+    "string.Format",
+    "static-ctor"
+   ],
+   "traps": [
+    "Uses reflection: Type.GetFields(Public|Static) (CommandGenerator.cs:29) - field order is declaration order in practice but not guaranteed; determines emitted order of parsers/commands",
+    "char.IsLetter/IsLetterOrDigit (lines 265, 268) Unicode-aware",
+    "Dictionary/HashSet keyed on Grammar & ShapeInfo with custom GetHashCode/Equals (lines 334-445, 508-640); iteration over Dictionary results (e.g. shapeMap pairs at 342-360) can make emitted helper naming/order nondeterministic across runtimes",
+    "static mutable cache _rulesMap (line 17) not thread-safe",
+    "Interpolated strings with embedded braces for emitted C# (many lines)"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Generates management/control command grammars, explicitly out of scope. GlobalState (GlobalState.cs:874-880) and CommandGrammar.cs:452-458 reference the generated classes, so the Java port must stub CommandGrammar/EngineCommands.All (empty) rather than port this generator. If commands are later added, reimplement in Java.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/CommandGenerator.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/Grammar.cs",
+   "lines": 2426,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "GrammarParser (class)",
+    "Grammar (abstract class)",
+    "GrammarEquivalenceComparer (sealed class)",
+    "SequenceGrammar / AlternationGrammar / OptionalGrammar / RequiredGrammar / ZeroOrMoreGrammar / OneOrMoreGrammar / TaggedGrammar / HiddenGrammar / TokenGrammar / RuleGrammar (sealed classes)",
+    "GrammarVisitor<TResult> (abstract class)",
+    "DefaultGrammarVisitor<TResult> (abstract class)",
+    "GrammarRewriter (abstract class)",
+    "GrammarTreeMapper (sealed class)",
+    "GrammarStyle (enum)",
+    "GrammarWriter (static class)",
+    "GrammarAnalysis (abstract class)",
+    "MergeAnalysis (internal class)",
+    "GrammarGraph (internal class)"
+   ],
+   "purpose": "Mini-language for command grammars: a recursive-descent GrammarParser (BNF-like text such as '{ a, e }+', 'tag=e', '<rule>'), an immutable Grammar AST with structural equality/hashing, visitors/rewriters, a GrammarWriter pretty-printer, and GrammarAnalysis/GrammarGraph for finding unique/alternative terms used to build partial parsers. Only consumed by CommandGenerator. File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "System.Threading (Interlocked)"
+   ],
+   "partialGroup": null,
+   "memberCount": 201,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "CommandInfo grammar strings"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "pattern-matching",
+    "delegate/Func",
+    "Interlocked",
+    "ref/out",
+    "LINQ"
+   ],
+   "traps": [
+    "char.IsLetter / IsLetterOrDigit / IsWhiteSpace are Unicode-aware (Grammar.cs:521, 529, 619, 649, 1783)",
+    "string.Compare(..., Ordinal) good (line 679) - keep ordinal",
+    "Structural GetHashCode sums child hashes (lines 718-726, 1131-1293) and string.GetHashCode is randomized per process in .NET Core, so any HashSet/Dictionary<Grammar,...> iteration order is nondeterministic (lines 1911-1938, 2072-2080)",
+    "Interlocked.CompareExchange lazy init of _alternativeMap (line 2055): use volatile/compute-once in Java",
+    "TryParse out Grammar/out int (lines 72-97)"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Used exclusively by CommandGenerator (management commands, out of scope). Port only if command grammars are later adopted.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/Grammar.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/CommandInfo.cs",
+   "lines": 25,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "CommandInfo (class)"
+   ],
+   "purpose": "Simple DTO: Name, Grammar, Schema, Construction strings describing one management command. File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 6,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "CommandInfo"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/CommandInfo.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/EngineCommandInfos.cs",
+   "lines": 3777,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "EngineCommandInfos (static class)"
+   ],
+   "purpose": "Data table of 642 'new CommandInfo' static readonly fields (Kusto engine control commands: grammar string, result-schema string, construction expression) plus header doc listing predefined grammar rules (<name>, <table>, <value> ...). Input to CommandGenerator for EngineCommands.cs / EngineCommandGrammar.cs. File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "CommandInfo.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 650,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "CommandInfo",
+    "EngineCommands"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [
+    "static-ctor",
+    "string.Format"
+   ],
+   "traps": [
+    "Public static field declaration order drives reflection order in CommandGenerator.GetCommandInfos (CommandGenerator.cs:29)",
+    "Interpolated strings with doubled braces (e.g. EngineCommandInfos.cs:83) build grammar text"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "Management/control commands out of scope. Java must still provide EngineCommands.All (empty list) because GlobalState.cs:874 references it.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/EngineCommandInfos.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs",
+   "lines": 20,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "ClusterManagerCommandInfos (static class)"
+   ],
+   "purpose": "Command info table for the ClusterManager server; contains a single CommandInfo (line ~10 onward). File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "CommandInfo.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 1,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "CommandInfo"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Server-specific management commands out of scope; stub ClusterManagerCommands.All.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/ClusterManagerCommandInfos.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/DataManagerCommandInfos.cs",
+   "lines": 20,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "DataManagerCommandInfos (static class)"
+   ],
+   "purpose": "Command info table for the DataManager server; contains a single CommandInfo (line ~10 onward). File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "CommandInfo.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 1,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "CommandInfo"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Server-specific management commands out of scope; stub DataManagerCommands.All.",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/DataManagerCommandInfos.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs",
+   "lines": 20,
+   "namespace": "Kusto.Language.Generators",
+   "types": [
+    "AriaBridgeCommandInfos (static class)"
+   ],
+   "purpose": "Command info table for the Aria bridge; contains one command 'show version'. Not related to the Bridge.NET JS build despite the name. File is a T4 include fragment: starts with '// <#+' and ends with '// #>' (class-feature block); '#if !T4' guards the namespace/usings so the same text compiles as a normal .cs and as an included T4 block. Namespace is declared only in non-T4 mode. ",
+   "dependsOn": [
+    "CommandInfo.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 1,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "CommandInfo"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Server-specific; stub AriaBridgeCommands.All (GlobalState.cs:880).",
+   "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/generators/AriaBridgeCommandInfos.java"
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Generators/Kusto.Language.Generators.csproj",
+   "lines": 4,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "SDK-style project, AllowUnsafeBlocks only. Contains no references: .cs files are not compiled into a standalone tool by default; they are textually included into T4 templates, and (being valid C# under !T4) compile as a library.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Build metadata.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt",
+   "lines": 14,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: compilerOptions /d:T4, includes CodeGenerator.cs, SyntaxNodeGenerator.cs, SyntaxNodeInfos.cs from Kusto.Language.Generators and outputs SyntaxNodeGenerator.Generate(SyntaxNodeInfos.All, SyntaxNodeInfos.KnownTypes) to GeneratedSyntaxNodes.cs. OUTPUT: src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.cs (build-time, not committed, git-ignored).",
+   "dependsOn": [
+    "src/Kusto.Language.Generators/CodeGenerator.cs",
+    "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
+    "src/Kusto.Language.Generators/SyntaxNodeInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "generated",
+   "justification": "Java build should invoke the ported SyntaxNodeGenerator instead of T4 (Gradle task) producing Java files into build/generated or checked-in.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommandGrammar.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: includes CommandGenerator.t4 and EngineCommandInfos.cs; emits new CommandGenerator().GenerateParser(\"EngineCommandGrammar\", typeof(EngineCommandInfos)) -> EngineCommandGrammar.cs (class EngineCommandGrammar : CommandGrammar, instantiated at CommandGrammar.cs:452-458).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/EngineCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "EngineCommandGrammar"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommands.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: emits GenerateSymbols(\"EngineCommands\", typeof(EngineCommandInfos)) -> EngineCommands.cs (static class of CommandSymbol with All list, referenced from GlobalState.cs:874-880).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/EngineCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "EngineCommands"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope; Java stubs All as empty.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommandGrammar.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: includes CommandGenerator.t4 and DataManagerCommandInfos.cs; emits new CommandGenerator().GenerateParser(\"DataManagerCommandGrammar\", typeof(DataManagerCommandInfos)) -> DataManagerCommandGrammar.cs (class DataManagerCommandGrammar : CommandGrammar, instantiated at CommandGrammar.cs:452-458).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/DataManagerCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "DataManagerCommandGrammar"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommands.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: emits GenerateSymbols(\"DataManagerCommands\", typeof(DataManagerCommandInfos)) -> DataManagerCommands.cs (static class of CommandSymbol with All list, referenced from GlobalState.cs:874-880).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/DataManagerCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "DataManagerCommands"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope; Java stubs All as empty.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommandGrammar.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: includes CommandGenerator.t4 and ClusterManagerCommandInfos.cs; emits new CommandGenerator().GenerateParser(\"ClusterManagerCommandGrammar\", typeof(ClusterManagerCommandInfos)) -> ClusterManagerCommandGrammar.cs (class ClusterManagerCommandGrammar : CommandGrammar, instantiated at CommandGrammar.cs:452-458).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "ClusterManagerCommandGrammar"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommands.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: emits GenerateSymbols(\"ClusterManagerCommands\", typeof(ClusterManagerCommandInfos)) -> ClusterManagerCommands.cs (static class of CommandSymbol with All list, referenced from GlobalState.cs:874-880).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "ClusterManagerCommands"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope; Java stubs All as empty.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommandGrammar.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: includes CommandGenerator.t4 and AriaBridgeCommandInfos.cs; emits new CommandGenerator().GenerateParser(\"AriaBridgeCommandGrammar\", typeof(AriaBridgeCommandInfos)) -> AriaBridgeCommandGrammar.cs (class AriaBridgeCommandGrammar : CommandGrammar, instantiated at CommandGrammar.cs:452-458).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "AriaBridgeCommandGrammar"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommands.tt",
+   "lines": 3,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 template: emits GenerateSymbols(\"AriaBridgeCommands\", typeof(AriaBridgeCommandInfos)) -> AriaBridgeCommands.cs (static class of CommandSymbol with All list, referenced from GlobalState.cs:874-880).",
+   "dependsOn": [
+    "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+    "src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [
+    "AriaBridgeCommands"
+   ],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Management commands out of scope; Java stubs All as empty.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+   "lines": 12,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "T4 include that sets T4 define, imports System*, and includes Grammar.cs, CommandInfo.cs, CommandGenerator.cs from the Generators project (lines 11-13).",
+   "dependsOn": [
+    "src/Kusto.Language.Generators/Grammar.cs",
+    "src/Kusto.Language.Generators/CommandInfo.cs",
+    "src/Kusto.Language.Generators/CommandGenerator.cs"
+   ],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Command generation out of scope.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge/Kusto.Language.Bridge.csproj",
+   "lines": 65,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "net472 library defining BRIDGE constant; compiles ..\\Kusto.Language\\**\\*.cs (excluding obj and Parser/CodeGen, Syntax/CodeGen .cs) with Bridge.NET 17.10.1 to transpile to JavaScript; runs T4 transforms against Kusto.Language as external root. Contains no C# source of its own.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [
+    "csproj lines 8, 19, 27 define BRIDGE"
+   ],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "JS build only; no Java relevance. Confirms the in-tree source is a single shared codebase with #if BRIDGE forks, so the Java port should follow the non-BRIDGE branch (!BRIDGE), except where noted below.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge/bridge.json",
+   "lines": 48,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "Bridge.NET compiler config: output dir, console, sourceMap, reflection, TypeScript d.ts generation, rules (integer Managed, lambda Plain).",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [
+    "rules.integer=Managed: JS build emulates int overflow, so BRIDGE behaviour of integer arithmetic may differ from .NET; use .NET (non-BRIDGE) semantics as the reference"
+   ],
+   "proposedStatus": "excluded",
+   "justification": "JS build config.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge/package.json",
+   "lines": 16,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "npm manifest for @kusto/language-service-next JS package.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "JS packaging.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge/.npmrc",
+   "lines": 5,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "Internal Azure DevOps npm registry config.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "JS packaging.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge/publish.cmd",
+   "lines": 110,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "Windows script building the Bridge project via MSBuild and publishing to npm.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "JS packaging.",
+   "javaPath": null
+  },
+  {
+   "upstreamPath": "src/Kusto.Language.Bridge/runtests.cmd",
+   "lines": 0,
+   "namespace": "n/a",
+   "types": [],
+   "purpose": "Empty script.",
+   "dependsOn": [],
+   "partialGroup": null,
+   "memberCount": 0,
+   "generated": false,
+   "generatedBy": null,
+   "referencesEditor": [],
+   "referencesCommands": [],
+   "bridgeOnly": [],
+   "csharpFeatures": [],
+   "traps": [],
+   "proposedStatus": "excluded",
+   "justification": "Empty.",
+   "javaPath": null
+  }
+ ],
+ "bridgeRegions": [
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/ThreadSafeDictionary.cs",
+   "lines": "3-5, 11-37 (#if !BRIDGE ... #else ... #endif), 62-68 (#if NET472_OR_GREATER || NET || BRIDGE)",
+   "note": "Dictionary wrapper selection; non-BRIDGE uses a real locking/concurrent implementation. Java: ConcurrentHashMap or synchronized map."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/KustoFacts.cs",
+   "lines": "935-943 (#if !BRIDGE: string escape case 'U' = 8-hex-digit char.ConvertFromUtf32)",
+   "note": "Non-BRIDGE supports \\UXXXXXXXX escapes producing surrogate pairs. Java must implement via Character.toChars / appendCodePoint; invalid code points throw ArgumentOutOfRangeException in C# (trap)."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Cancellation.cs",
+   "lines": "9-22 (#if BRIDGE) else 22-39",
+   "note": "BRIDGE uses a stub cancellation; non-BRIDGE uses CancellationToken. Java: mirror with a small CancellationToken class or volatile flag."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/SyntaxToken.cs",
+   "lines": "641-647 (#if !BRIDGE: TimeSpan.TryParse(valueText, out result) in GetTimeSpanValue)",
+   "note": "Non-BRIDGE falls back to culture-sensitive .NET TimeSpan.TryParse before 'min'/'max' handling. Java needs a hand-written TimeSpan.TryParse equivalent (format [-][d.]hh:mm:ss[.fffffff]); culture trap."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
+   "lines": "21-32, 41-52, 58-64 (#if !BRIDGE ... #else ...) and unrelated 93-97 (#if TARGET_ARM64 || TARGET_LOONGARCH64)",
+   "note": "BRIDGE uses non-atomic fallbacks (JS single-threaded); non-BRIDGE uses System.Threading.Interlocked. Java: AtomicReference / VarHandle."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Binder/Binder_Misc.cs",
+   "lines": "2800",
+   "note": "Comment only: '// keep line for BRIDGE.NET bug' - no conditional code."
+  },
+  {
+   "upstreamPath": "src/Kusto.Language/Parser/QueryGrammar.cs",
+   "lines": "4098",
+   "note": "Comment only: blank-line-before-#endregion workaround for Bridge.NET crash - no conditional code."
+  }
+ ],
+ "notes": [
+  "Generated sources are NOT committed upstream (git-ignored); the only checked-in inputs are SyntaxNodeInfos.cs and *CommandInfos.cs. Java port needs a Java reimplementation of SyntaxNodeGenerator run at build time (recommended) or a one-time generated and committed set of Java files.",
+  "Namespace discrepancy: SyntaxNodeGenerator/CodeGenerator/SyntaxNodeInfos use Kusto.Language.Generator (singular); CommandGenerator/Grammar/CommandInfo/*CommandInfos use Kusto.Language.Generators.",
+  "Generators' .cs files are dual-use: wrapped in '// <#+ ... // #>' so T4 can include them as class-feature blocks; under #if !T4 they are ordinary C#. Do not mirror the T4 wrapper in Java.",
+  "Generated node classes are partial; hand-written halves live in Kusto.Language/Syntax/*.cs. Java mirror rule (partials merge into one file) conflicts with generation; recommend generator emitting the generated members into the merged file via marker regions, or emitting an abstract *Base class per node.",
+  "Generated syntax nodes reference Kusto.Language.Editor.CompletionKind/CompletionHint (GetCompletionHintCore); these two enums must be ported (or stubbed) even though Editor is out of scope.",
+  "Non-BRIDGE (full .NET) branches are the reference behaviour for the Java port."
+ ]
+}

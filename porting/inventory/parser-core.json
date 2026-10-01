@@ -1,0 +1,926 @@
+{
+  "area": "parser-core",
+  "files": [
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CharScanners.cs",
+      "lines": 64,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "CharScanners (class, static)"
+      ],
+      "purpose": "Predefined char-level scanner parsers (Chars, Char, Letter, Digit, HexDigit, Whitespace, LineBreak) built on Parsers<char>. Not used by the parser/lexer; only referenced by one Editor analyzer (AvoidUsingHasWithIPv4Strings).",
+      "dependsOn": [
+        "Parser/Combinators/Parsers.cs (Parsers<char>)",
+        "Parser/Combinators/Parser.cs",
+        "Parser/TextFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Static field initializers (lines 26-60) run in textual order, Letter/Digit depend on TextFacts method groups"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Only consumer is Editor/Kusto/Analyzers/AvoidUsingHasWithIPv4Strings.cs (out of scope). Port later together with combinators only if an analyzer is ported.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CharScanners.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/LexicalToken.cs",
+      "lines": 57,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "LexicalToken (class)"
+      ],
+      "purpose": "Immutable lexer token: SyntaxKind, leading trivia string, text, diagnostics. Produced by TokenParser and consumed by every parser.",
+      "dependsOn": [
+        "Syntax/SyntaxKind.cs",
+        "Syntax/SyntaxFacts.cs",
+        "Diagnostics/Diagnostic.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func"
+      ],
+      "traps": [
+        "Diagnostics defaults to Diagnostic.NoDiagnostics (line 41); trivia/text null coerced to \"\" (lines 39-40)",
+        "[DebuggerDisplay] attribute at line 13 is droppable"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Core lexer output type. Needed.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LexicalToken.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/ScannerExtensions.cs",
+      "lines": 83,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ScannerExtensions (class, static)",
+        "ReuseableTextSource (class, nested private sealed)"
+      ],
+      "purpose": "Extension Matches() that runs a Parser<char> scanner over a string using a pooled Source<char>. Only used by char-level scanners (CharScanners).",
+      "dependsOn": [
+        "Parser/Combinators/Source.cs",
+        "Parser/Combinators/Parser.cs",
+        "Utils/ObjectPool.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 8,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "delegate/Func"
+      ],
+      "traps": [
+        "ObjectPool of ReuseableTextSource (line 36) - thread-safety semantics must be preserved or replaced by new instance",
+        "Peek returns '\\0' past end (line 70)"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "grep shows Matches extension is not used by lexer/parser/binder paths; only meaningful with CharScanners. Exclude unless char-level combinators are ported.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ScannerExtensions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/TriviaFacts.cs",
+      "lines": 61,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "TriviaFacts (class, static)"
+      ],
+      "purpose": "Locates comment spans inside trivia text for a cursor position (TryGetCommentSpan). Used only by editor services (KustoCodeService, KustoCompleter).",
+      "dependsOn": [
+        "Parser/TextFacts.cs",
+        "Editor (using only, no concrete types referenced)"
+      ],
+      "partialGroup": null,
+      "memberCount": 2,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "using Kusto.Language.Editor (unused)"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "ref/out"
+      ],
+      "traps": [
+        "Whitespace test via TextFacts.IsWhitespace (line 38)"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Only consumers are Editor/Kusto/KustoCodeService.cs:533 and KustoCompleter.cs:379. Editor out of scope.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TriviaFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/TextFacts.cs",
+      "lines": 655,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "TextFacts (class, static)"
+      ],
+      "purpose": "Pure string helpers: whitespace (explicit Unicode list), line breaks (\\r, \\n, \\r\\n, U+2028/2029), line-start tables, line/offset<->position, trim ranges, ASCII-only IsLetter/IsDigit/IsHexDigit. Heavily used by lexer, KustoCode and CommandGrammar.",
+      "dependsOn": [
+        "Utils (using Kusto.Language.Utils)"
+      ],
+      "partialGroup": null,
+      "memberCount": 42,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "ref/out",
+        "LINQ"
+      ],
+      "traps": [
+        "IsWhitespace (12-45) is an explicit char list incl. U+00A0, U+FEFF, U+200B; must NOT be replaced by Character.isWhitespace",
+        "IsLetter/IsDigit/IsLetterOrDigit/IsHexDigit (361-380) are ASCII-only; differs from char.IsLetter and Java Character.isLetter",
+        "Line break set (117-150) includes U+2028/U+2029; \\r\\n pairing logic in GetLineBreakLength (132)",
+        "Line start tables are UTF-16 code unit offsets; Java String indices match"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Foundation helpers, trivially portable.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TextFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/ParseOptions.cs",
+      "lines": 113,
+      "namespace": "Kusto.Language",
+      "types": [
+        "ParseOptions (class)"
+      ],
+      "purpose": "Immutable options bag: AlwaysProduceEndToken, AllowLiteralsWithLineBreaks, AllowNonAdjacentWildcardParts, ParserKind. Has With* copy methods and IEquatable.",
+      "dependsOn": [
+        "KustoCode.cs (ParserKind enum at line 506)"
+      ],
+      "partialGroup": null,
+      "memberCount": 14,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "nullable-value-type"
+      ],
+      "traps": [
+        "Static ParseOptions.Default (line 104) uses ParserKind.Default, i.e. the hand-written QueryParser",
+        "EqualExceptForParseKind (94) intentionally ignores ParserKind - used as grammar cache key",
+        "Constructor optional ParserKind? args at 44 mean nullable value type -> use boxed Integer/Optional or overloads",
+        "No GetHashCode override (grep) - Java equals/hashCode should be consistent"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Needed by TokenParser and QueryParser. Note ParserKind enum is declared in KustoCode.cs (line 506-), another area; must be ported alongside.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/ParseOptions.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CommentFacts.cs",
+      "lines": 109,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "CommentFacts (class, static)"
+      ],
+      "purpose": "Detects and extracts '//' comment lines in script text; trims comment and blank lines. Used by CommandFacts for script block splitting.",
+      "dependsOn": [
+        "Parser/TextFacts.cs",
+        "Utils"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "text.Contains(\"/\") (18) string overload ordinal in .NET; Java contains ok",
+        "Substring(...).Trim() (56) trims Unicode whitespace per char.IsWhiteSpace; Java String.trim() trims <= U+0020 only - use strip semantic carefully"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Only referenced by CommandFacts (script/command block splitting, Editor CodeScript). Not needed for parse/bind.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CommentFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CommandFacts.cs",
+      "lines": 115,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "CommandFacts (class, static)"
+      ],
+      "purpose": "Splits a script into command blocks (lines starting with '.') and returns command block texts. Script-level helper.",
+      "dependsOn": [
+        "Parser/CommentFacts.cs",
+        "Parser/ScriptFacts.cs",
+        "Parser/TextFacts.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 5,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "command block start heuristics (no concrete command types)"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "Line-start based scanning; depends on TextFacts line break set"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Management/control command helper; no consumer in parse/bind path (grep: only used inside Parser/).",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CommandFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/ScriptFacts.cs",
+      "lines": 158,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "ScriptFacts (class, static)"
+      ],
+      "purpose": "Splits script text into Kusto blocks separated by blank lines and removes invalid block starts (inside string literals/comments) using TokenParser.",
+      "dependsOn": [
+        "Parser/TokenParser.cs",
+        "Parser/TextFacts.cs",
+        "Editor/TextRange.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 7,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "Editor.TextRange (lines 90,121-145)"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "LINQ",
+        "delegate/Func"
+      ],
+      "traps": [
+        "blockStarts.OrderBy(x=>x) on ints (62,92) - stable, deterministic",
+        "Depends on TokenParser.ScanStringLiteral/ScanComment public statics"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Used only by Editor/CodeScript.cs:157 and CommandFacts. Editor-scope script splitting.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/ScriptFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+      "lines": 187,
+      "namespace": "Kusto.Language",
+      "types": [
+        "KustoFacts (class, static, partial)"
+      ],
+      "purpose": "Second half of partial KustoFacts: a single big HashSet<string> s_engineCommandKeywordsThatNeedBrackets of identifier-like keywords that must be bracketed when used as names.",
+      "dependsOn": [
+        "Syntax"
+      ],
+      "partialGroup": "KustoFacts",
+      "memberCount": 1,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor"
+      ],
+      "traps": [
+        "HashSet<string> default comparer is ordinal (line 14); use HashSet<String> in Java, no ordering reliance expected - verify consumers (CanBeIdentifier in KustoFacts.cs:607) only call Contains"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Merged into KustoFacts.java. Needed by CanBeIdentifier/BracketNameIfNecessary. Name says engine command keywords but it is consulted by query-name bracketing.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/KustoFacts.cs",
+      "lines": 1483,
+      "namespace": "Kusto.Language",
+      "types": [
+        "KustoFacts (class, static, partial)"
+      ],
+      "purpose": "Large static facts class: keyword/option string lists (ParamTypes, ChartTypes, join kinds, hint values...), keyword-as-identifier sets, name bracketing, string-literal escape/unescape (GetStringLiteralValue, DecodeEscapes), host-name/URI helpers, wildcard Matches(), syntax tabularity, literal types.",
+      "dependsOn": [
+        "Syntax/SyntaxKind.cs",
+        "Syntax/*Expression, Statement, QueryOperator, Command",
+        "Symbols (TableSymbol, ScalarSymbol, Tabularity)",
+        "GlobalState.cs",
+        "QueryOperatorParameters.cs",
+        "KustoDialect.cs",
+        "Binder (using)",
+        "Parser/TextFacts.cs"
+      ],
+      "partialGroup": "KustoFacts",
+      "memberCount": 110,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [
+        "Syntax.Command (case Command _ at 1363)",
+        "KustoDialect.EngineCommand/DataManagerCommand/ClusterManagerCommand (628-633)"
+      ],
+      "bridgeOnly": [
+        "935-943 (#if !BRIDGE: \\U 8-hex escape decoding via char.ConvertFromUtf32)"
+      ],
+      "csharpFeatures": [
+        "LINQ",
+        "ref/out",
+        "pattern-matching",
+        "delegate/Func",
+        "static-ctor"
+      ],
+      "traps": [
+        "KnownQueryOperatorParameterNames: OrderBy(n=>n) with default culture comparer (89) - observable ordering; use ordinal comparator and verify against .NET (InvariantCulture-ish) for names with underscore/case",
+        "string.Compare(text,start,quote,0,len,Ordinal) (857) ok; but string.Compare(...ignoreCase) overload at 1304,1310,1322 and string.Compare(...) at 1345 are culture-sensitive",
+        "IndexOf(string) culture-sensitive: 878 text.IndexOf(quote), 1094 uri.IndexOf(HostNamePrefix); Java indexOf is ordinal",
+        "char.IsDigit at 950,980,1122 and char.IsLetter/IsDigit at 1159 are Unicode-aware; Java Character.isDigit similar but not identical categories (ok for ASCII)",
+        "Dictionary<char,string> escape maps (722,733) lookup only; verify no iteration",
+        "Escape decoding (882-1030) casts int to char ((char)DecodeHex) for \\u, \\x, octal - UTF-16 semantic; 'U' case uses char.ConvertFromUtf32 -> Java new String(Character.toChars(cp)) (invalid code point throws in both)",
+        "text.Contains(\"'\") (688) ordinal",
+        "StringComparison.OrdinalIgnoreCase at 1045,1187,1205 -> equalsIgnoreCase/regionMatches (Unicode folding differences negligible)",
+        "Lazy init of _knownQueryOperatorParameterNames (77-95) to avoid static-init cycle with QueryOperatorParameters: preserve lazy init in Java (holder class) to avoid class-init cycle"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Core string-literal and name helpers are required by lexer/binder; hostname/URI helpers (1038-1250) are management/connection oriented and can be stubbed or dropped initially. Lists of option strings are required by QueryParser/QueryOperatorParameters.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/KustoFacts.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/SyntaxParsers.cs",
+      "lines": 671,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "SyntaxParsers (class, static)"
+      ],
+      "purpose": "Glue between LexicalToken sources and SyntaxToken/SyntaxList: token parsers with completion hints, MatchesText/ProduceSyntaxToken (used by QueryParser too), CreateMissingToken, SeparatedList/CommaList combinators, ParseAll/ParseFirst helpers.",
+      "dependsOn": [
+        "Parser/Combinators/Parsers.cs",
+        "Parser/Combinators/Source.cs",
+        "Syntax/SyntaxToken.cs",
+        "Syntax/SyntaxList.cs",
+        "Syntax/SeparatedElement.cs",
+        "Diagnostics/Diagnostic.cs",
+        "Editor/Completion*"
+      ],
+      "partialGroup": null,
+      "memberCount": 47,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionKind",
+        "CompletionItem",
+        "CompletionHint",
+        "CompletionPriority"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "extension-methods",
+        "yield",
+        "LINQ",
+        "delegate/Func",
+        "nullable-value-type",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "string.Compare(token.Text,0,text,textOffset,len) with NO StringComparison (188): culture-sensitive; use regionMatches/ordinal in Java",
+        "kind.ToString().ToLower() (99): culture-sensitive; only for default tag names, use toLowerCase(Locale.ROOT)",
+        "text.StartsWith(\"_\", Ordinal) (406)",
+        "yield return in ParseAll (628) - lazy IEnumerable; implement as List or Iterator preserving laziness semantics only if observable",
+        "HashSet<SyntaxKind>/HashSet<string> (153,350,550) membership only"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Used by QueryParser (CreateMissingToken, MatchesText, ProduceSyntaxToken, lines 342-437) so non-grammar helpers (lines 23-78, 169-277) are required. Grammar-combinator token builders (Token/HiddenToken/RequiredToken/List/CommaList/ParseAll/Examples) and completion plumbing are needed only by QueryGrammar.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/SyntaxParsers.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/PredefinedRuleParsers.cs",
+      "lines": 395,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "PredefinedRuleParsers (class)"
+      ],
+      "purpose": "Holds reusable grammar rule parsers (Column, Table, Database, Cluster, etc. names with completion hints) that command grammars plug into. Built from the query grammar's name rules.",
+      "dependsOn": [
+        "Parser/QueryGrammar.cs (alias Q)",
+        "Parser/SyntaxParsers.cs",
+        "Symbols",
+        "Syntax"
+      ],
+      "partialGroup": null,
+      "memberCount": 49,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "Editor.CompletionHint (25 uses, lines 179-315)"
+      ],
+      "referencesCommands": [
+        "Created by CommandGrammar.cs:45, consumed by command parsers"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func"
+      ],
+      "traps": [
+        "Constructor (queryParser, queryInput, scriptInput) builds many Parser<LexicalToken,...> rule objects eagerly"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Only referenced from CommandGrammar.cs (28,45,499). Command grammar support.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/PredefinedRuleParsers.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CommandGrammar.cs",
+      "lines": 871,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "CommandGrammar (class)",
+        "TagFinder (class, nested private, ParserVisitor)",
+        "RecentGrammar (class, nested private)",
+        "CommandParserInfo (class, nested internal)"
+      ],
+      "purpose": "Combinator grammar for control commands (dot-commands): CommandBlock, unknown-command fallback, per-ServerKind grammar cache, IsPossibleStartOfCommand. CreateCommandGrammar (447-463) instantiates generated EngineCommandGrammar/DataManagerCommandGrammar/ClusterManagerCommandGrammar/AriaBridgeCommandGrammar subclasses.",
+      "dependsOn": [
+        "Parser/Combinators/*",
+        "Parser/SyntaxParsers.cs",
+        "Parser/PredefinedRuleParsers.cs",
+        "Parser/QueryParser.cs (queryParser param)",
+        "ServerKinds.cs",
+        "GlobalState.cs",
+        "Syntax/Command*.cs",
+        "Parser/CodeGen generated types (not in repo)"
+      ],
+      "partialGroup": null,
+      "memberCount": 45,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionHint",
+        "CompletionKind",
+        "CompletionItem (190)"
+      ],
+      "referencesCommands": [
+        "Command",
+        "UnknownCommand",
+        "CommandBlock",
+        "EngineCommandGrammar",
+        "DataManagerCommandGrammar",
+        "ClusterManagerCommandGrammar",
+        "AriaBridgeCommandGrammar"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "Interlocked",
+        "static-ctor",
+        "LINQ",
+        "delegate/Func",
+        "extension-methods"
+      ],
+      "traps": [
+        "Distinct().OrderBy(x=>x) on tag strings (174) uses culture comparer",
+        "Interlocked.CompareExchange on static caches (404,438) -> AtomicReference",
+        "Reachability: only KustoCode.Create:211 when GetKind(text)==CodeKinds.Command (text starting with '.' per KustoCode.GetKind); NOT reachable from query parsing"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Command grammar reached only from KustoCode.Create case CodeKinds.Command (KustoCode.cs:209-212). Generated subclasses it needs are NOT checked into the repo (T4 outputs absent), so the upstream tree cannot even compile this at this commit without running T4. Out of scope (management commands). Stub in Java: KustoCode treats '.' text as Command -> either unsupported or yields UnknownCommand.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/CommandGrammar.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/TokenParser.cs",
+      "lines": 1320,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "TokenParser (class)",
+        "TokenInfo (class, nested private)"
+      ],
+      "purpose": "The lexer. ParseTokens(string, ParseOptions) produces LexicalToken[] (trivia, keywords via longest-match SubstringMap, identifiers, numeric/timespan/datetime/guid literals, string literals incl. verbatim/multiline/escapes, goo literals like dynamic(...), client parameters, directives). Public static Scan* helpers reused by ScriptFacts/Editor.",
+      "dependsOn": [
+        "Syntax/SyntaxKind.cs",
+        "Syntax/SyntaxFacts.cs",
+        "Diagnostics/DiagnosticFacts.cs",
+        "Utils/StringTable.cs",
+        "Utils/SubstringMap.cs",
+        "Parser/TextFacts.cs",
+        "Parser/ParseOptions.cs",
+        "Parser/LexicalToken.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 62,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "static-ctor",
+        "LINQ",
+        "ref/out",
+        "delegate/Func"
+      ],
+      "traps": [
+        "char.IsDigit at 180,627,661: Unicode digits accepted by .NET (e.g. Arabic-Indic); Java Character.isDigit also Unicode but verify identical decisions; ASCII-only expected",
+        "gooText.EndsWith(\")\") (137): culture-sensitive overload; use ordinal",
+        "Matches() uses Ordinal compare (1236) fine",
+        "Identifier chars via TextFacts ASCII-only (591-602) plus '_' and '$' start",
+        "Static Dictionary<SyntaxKind,TokenInfo> s_kindToTokenInfoMap built from SyntaxFacts.GetKindsWithFixedText() (1280) then SubstringMap longest-match; keyword table ordering must not matter - verify SubstringMap tie rules",
+        "String interning via StringTable (GetSubstring 1240) - pure optimization, drop or use String.intern off",
+        "Static token singletons (ZeroTriviaToken etc, 1261-1275) shared/immutable",
+        "Token reuse 'trivia == \" \"' fast path (1275)",
+        "Static init order: 18 TokenInfo static readonly fields (1283-1315) depend on s_kindToTokenInfoMap being initialised first"
+      ],
+      "proposedStatus": "ported",
+      "justification": "Required: first stage of KustoCode.Parse (KustoCode.cs:153). Mirror as-is.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/TokenParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/QueryParser.cs",
+      "lines": 7062,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "AllowedNameKind (enum, internal)",
+        "QueryParser (class)"
+      ],
+      "purpose": "Hand-written recursive-descent parser for Kusto queries: expressions, pipe operators, ~60 query operators with per-operator parameter maps, function bodies, literals, schemas, graph operators. This is the DEFAULT parser used by KustoCode.Parse (ParserKind.Default). Falls back to QueryGrammar via StackSafeParser when depth > MaxDepth (300).",
+      "dependsOn": [
+        "Syntax/* (hundreds of node types)",
+        "Parser/TokenParser.cs",
+        "Parser/SyntaxParsers.cs",
+        "Parser/QueryGrammar.cs (stack-safe fallback, 161-179)",
+        "Parser/Combinators/StackSafeParser (SafeParse)",
+        "QueryOperatorParameters.cs, QueryOperatorParameter",
+        "KustoFacts.cs",
+        "GlobalState.cs",
+        "Utils"
+      ],
+      "partialGroup": null,
+      "memberCount": 560,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "Editor.CompletionHint (3409-3417 GetExpressionHint)"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [],
+      "csharpFeatures": [
+        "delegate/Func",
+        "LINQ",
+        "ref/out",
+        "static-ctor",
+        "pattern-matching",
+        "extension-methods"
+      ],
+      "traps": [
+        "MaxDepth=300 (141) with StackSafeParse (166-195): recursion depth behavior is observable; Java default stack may need explicit depth guard or larger thread stack",
+        "~35 static IReadOnlyDictionary<string,QueryOperatorParameter> maps (1974, 3447, 3824-6025); built by CreateQueryOperatorParameterMap (3450) via Dictionary; confirm lookup-only and string keys case-sensitivity (default Dictionary => ordinal)",
+        "Static HashSet<SyntaxKind> keyword-as-identifier sets (447,2439) and s_knownQueryOperaterParameterNames (3480)",
+        "char.IsDigit(number.Text[0]) (1384,1449,1466)",
+        "string.Equals(..., OrdinalIgnoreCase) (2278)",
+        "#if false dead block 1417-1442 (ParseNumericLiteral) - drop",
+        "Static initialization order across many s_* maps referencing QueryOperatorParameters statics - possible class-init cycle with KustoFacts (see KustoFacts lazy list)",
+        "private fields _safeParser/_safeOutput/_safeQueryGrammar (150-161): requires combinator StackSafeParser port",
+        "Large switch/pattern code on SyntaxKind - Java switch on enum fine; 7000 lines may exceed 64KB method limit only in giant methods - check ParseQueryOperator style switch",
+        "Uses GlobalState.Default.WithParseOptions (176) inside parser: parser->GlobalState dependency"
+      ],
+      "proposedStatus": "ported",
+      "justification": "THE default parse path. Must be ported 1:1. The stack-safe fallback requires QueryGrammar+combinators; can be stubbed initially with a depth-limit diagnostic.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/QueryParser.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/QueryGrammar.cs",
+      "lines": 4101,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "QueryGrammar (class)",
+        "CachedGrammar (class, nested private)"
+      ],
+      "purpose": "Parser-combinator grammar for the full query language (QueryBlock, Statement, Expression, all operators). Legacy/alternate parser selected by ParserKind.Grammar and the stack-safe fallback of QueryParser; also the source of completion metadata for IntelliSense (148 CompletionKind uses). KustoCode.Create:217 builds QueryGrammar.From(globals).QueryBlock for every non-command parse even though QueryParser is used by default.",
+      "dependsOn": [
+        "Parser/Combinators/*",
+        "Parser/SyntaxParsers.cs",
+        "Syntax/*",
+        "Symbols",
+        "KustoFacts.cs",
+        "QueryOperatorParameters.cs",
+        "Editor.CompletionKind/Hint/Item",
+        "Utils"
+      ],
+      "partialGroup": null,
+      "memberCount": 115,
+      "generated": false,
+      "generatedBy": null,
+      "referencesEditor": [
+        "CompletionKind (148 uses)",
+        "CompletionItem (18)",
+        "CompletionHint (17)",
+        "CompletionPriority"
+      ],
+      "referencesCommands": [],
+      "bridgeOnly": [
+        "4098 comment only: 'keep this blank line separation before the #endregion to keep BRIDGE.Net from crashing' (no #if)"
+      ],
+      "csharpFeatures": [
+        "Interlocked",
+        "delegate/Func",
+        "LINQ",
+        "static-ctor",
+        "extension-methods",
+        "generic-over-primitive"
+      ],
+      "traps": [
+        "Initialize() (line ~103-4098) is one enormous method building ~hundreds of local Parser variables with forward-declared nulls; Java 64KB method bytecode limit WILL be exceeded - must split into several methods/fields",
+        "Interlocked.CompareExchange(ref s_currentGrammar,...) (58) -> AtomicReference",
+        "Grammar cache keyed by ParseOptions.EqualExceptForParseKind (30)",
+        "Static Dictionary<SyntaxKind,SyntaxKind> StringOperatorMap (4042)",
+        "string.Equals OrdinalIgnoreCase (1735)",
+        "char.IsDigit (694)",
+        "Grammar results are ordered-choice (First/Or) - semantics depend on combinator implementation; behavioral parity with QueryParser is test-checked upstream",
+        "Rule(...) lambdas build syntax nodes with arity up to ~10 (generic delegate overloads in Parsers<T>)"
+      ],
+      "proposedStatus": "partial",
+      "justification": "Not used on default path except (a) eager construction in KustoCode.Create (avoidable), (b) QueryParser depth>300 fallback, (c) ParserKind.Grammar and tests. Recommend: defer; port later (strip Editor completion annotations) only if deep-nesting fallback or grammar-vs-parser parity tests are required. Initially stub QueryBlock access and skip grammar construction.",
+      "javaPath": "kusto-language/src/main/java/org/graylog/kusto/language/parsing/QueryGrammar.java"
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommandGrammar.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits AriaBridgeCommandGrammar class deriving CommandGrammar)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateParser(\"AriaBridgeCommandGrammar\", typeof(AriaBridgeCommandInfos)) using src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/AriaBridgeCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommandGrammar.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits ClusterManagerCommandGrammar class deriving CommandGrammar)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateParser(\"ClusterManagerCommandGrammar\", typeof(ClusterManagerCommandInfos)) using src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/ClusterManagerCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommandGrammar.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits DataManagerCommandGrammar class deriving CommandGrammar)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateParser(\"DataManagerCommandGrammar\", typeof(DataManagerCommandInfos)) using src/Kusto.Language.Generators/DataManagerCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/DataManagerCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommandGrammar.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits EngineCommandGrammar class deriving CommandGrammar)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateParser(\"EngineCommandGrammar\", typeof(EngineCommandInfos)) using src/Kusto.Language.Generators/EngineCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/EngineCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommands.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits AriaBridgeCommands class of CommandSymbols)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateSymbols(\"AriaBridgeCommands\", typeof(AriaBridgeCommandInfos)) using src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/AriaBridgeCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommands.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits ClusterManagerCommands class of CommandSymbols)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateSymbols(\"ClusterManagerCommands\", typeof(ClusterManagerCommandInfos)) using src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/ClusterManagerCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/DataManagerCommands.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits DataManagerCommands class of CommandSymbols)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateSymbols(\"DataManagerCommands\", typeof(DataManagerCommandInfos)) using src/Kusto.Language.Generators/DataManagerCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/DataManagerCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/EngineCommands.tt",
+      "lines": 3,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 template; emits EngineCommands class of CommandSymbols)"
+      ],
+      "purpose": "T4 template calling new CommandGenerator().GenerateSymbols(\"EngineCommands\", typeof(EngineCommandInfos)) using src/Kusto.Language.Generators/EngineCommandInfos.cs. Output .cs is NOT committed in the repo.",
+      "dependsOn": [
+        "Parser/CodeGen/CommandGenerator.t4",
+        "Kusto.Language.Generators/EngineCommandInfos.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "Parser/CodeGen/CommandGenerator.t4 + Kusto.Language.Generators/CommandGenerator.cs",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [
+        "Generated output file absent from git; to port would need running T4 or reimplementing generator in Java"
+      ],
+      "proposedStatus": "excluded",
+      "justification": "Generates control-command grammar/symbols (management commands), out of scope. Unreachable from query parsing.",
+      "javaPath": null
+    },
+    {
+      "upstreamPath": "src/Kusto.Language/Parser/CodeGen/CommandGenerator.t4",
+      "lines": 12,
+      "namespace": "Kusto.Language.Parsing",
+      "types": [
+        "(T4 include; imports Generators/Grammar.cs, CommandInfo.cs, CommandGenerator.cs)"
+      ],
+      "purpose": "Shared T4 include for all 8 command .tt templates; sets output extension .cs and includes the generator sources.",
+      "dependsOn": [
+        "Kusto.Language.Generators/Grammar.cs",
+        "Kusto.Language.Generators/CommandInfo.cs",
+        "Kusto.Language.Generators/CommandGenerator.cs"
+      ],
+      "partialGroup": null,
+      "memberCount": 0,
+      "generated": true,
+      "generatedBy": "T4 host (Visual Studio / TextTransform)",
+      "referencesEditor": [],
+      "referencesCommands": [
+        "entire command surface"
+      ],
+      "bridgeOnly": [],
+      "csharpFeatures": [],
+      "traps": [],
+      "proposedStatus": "excluded",
+      "justification": "Generator infrastructure for management commands. Out of scope.",
+      "javaPath": null
+    }
+  ]
+}
