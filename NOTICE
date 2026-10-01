@@ -1,0 +1,19 @@
+kusto-java
+Copyright (c) 2026 Graylog, Inc.
+
+This product is a derived work of Kusto-Query-Language
+(https://github.com/microsoft/Kusto-Query-Language),
+Copyright (c) 2019 Microsoft Corporation, licensed under the Apache License,
+Version 2.0. The upstream source is vendored unmodified as a git submodule at
+upstream/kusto-query-language. The Java sources under kusto-language/ and
+kusto-language-generator/ are a translation of that code and carry a per-file
+attribution header naming the upstream file and commit. Modifications are
+marked in the source with "// PORT:" comments and listed in PORTING.md.
+
+Test corpora under kusto-language-conformance/src/test/resources/corpus/ carry
+their own provenance and license notices (see the LICENSE files beside them):
+- Microsoft Learn KQL documentation examples: CC-BY-4.0 (docs) / MIT (code).
+- Azure-Sentinel detection and hunting queries: MIT.
+
+Nothing in this product is endorsed by Microsoft. "Kusto" and "Azure" are
+trademarks of Microsoft Corporation.
