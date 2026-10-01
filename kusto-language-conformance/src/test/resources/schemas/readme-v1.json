@@ -1,0 +1,17 @@
+{
+ "id": "readme-v1",
+ "cluster": "readme",
+ "database": "db",
+ "tables": [
+  {"name": "T", "columns": [{"name": "a", "type": "real"}, {"name": "b", "type": "real"}], "docstring": null},
+  {"name": "Shapes", "columns": [{"name": "id", "type": "string"}, {"name": "width", "type": "real"}, {"name": "height", "type": "real"}], "docstring": null}
+ ],
+ "functions": [
+  {"name": "TallShapes", "parameters": "()", "body": "{ Shapes | where width < height; }"},
+  {"name": "ShortShapes", "parameters": "(maxHeight: real)", "body": "{ Shapes | height < maxHeight; }"}
+ ],
+ "externalTables": [],
+ "materializedViews": [],
+ "entityGroups": [],
+ "notes": "Union of the readme's examples: table T (database 'db', readme line 57); Shapes and TallShapes (database 'db', lines 172-173); ShortShapes (line 359, body copied verbatim although it lacks 'where'). The readme's other TallShapes body (line 358, '{ Shapes | width < height; }') is omitted in favour of line 173's valid body. Readme databases 'db'/'mydb' and cluster 'mycluster.kusto.windows.net' are merged into one database; the cluster name is a placeholder."
+}

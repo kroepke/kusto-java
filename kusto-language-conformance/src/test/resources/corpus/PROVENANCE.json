@@ -1,0 +1,40 @@
+{
+  "docs": {
+    "repo": "MicrosoftDocs/dataexplorer-docs",
+    "commit": "86afc4923305ff6704e4fc4c85c87fa4c8b8b631",
+    "license": "CC-BY-4.0 (docs text) AND MIT (code)",
+    "licenseNote": "Dual-licensed: CC-BY-4.0 for documentation text (LICENSE) and MIT for code (LICENSE-CODE). Files copied as found: LICENSE-dataexplorer-docs.txt (LICENSE) and LICENSE-CODE-dataexplorer-docs.txt (LICENSE-CODE).",
+    "count": 1537,
+    "markdownFilesScanned": 671,
+    "emptyBlocksSkipped": 0,
+    "duplicatesSkipped": 26,
+    "extractionScript": "porting/tools/extract_docs_corpus.py",
+    "extractedAt": "2026-10-01T23:34:25Z"
+  },
+  "readme": {
+    "repo": "microsoft/Kusto-Query-Language (upstream submodule)",
+    "path": "src/Kusto.Language/readme.md",
+    "commit": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
+    "license": "Apache-2.0",
+    "count": 7,
+    "extractionScript": "porting/tools/extract_readme_corpus.py",
+    "extractedAt": "2026-10-01T23:36:06Z"
+  },
+  "sentinel": {
+    "repo": "Azure/Azure-Sentinel",
+    "commit": "cfb3c3ded5cb65c907abb6b71b28b9ed25806ee2",
+    "license": "MIT",
+    "count": 4722,
+    "files": 5612,
+    "parseFailures": 0,
+    "multiDocumentFailures": 0,
+    "noQueryField": 521,
+    "queryNotString": 0,
+    "emptyQuery": 0,
+    "duplicatesSkipped": 369,
+    "placeholderQueries": 170,
+    "pyyaml": "6.0.3",
+    "extractionScript": "porting/tools/extract_sentinel_corpus.py",
+    "extractedAt": "2026-10-01T23:34:53Z"
+  }
+}

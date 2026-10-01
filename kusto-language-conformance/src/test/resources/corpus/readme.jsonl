@@ -1,0 +1,7 @@
+{"id": "readme/0001", "text": "T | project a = a + b | where a > 10.0", "schema": "readme-v1", "source": "readme.md:15"}
+{"id": "readme/0002", "text": "{ Shapes | where width < height; }", "schema": "readme-v1", "source": "readme.md:173"}
+{"id": "readme/0003", "text": "TallShapes | where width > 5 | project id, width", "schema": "readme-v1", "source": "readme.md:176"}
+{"id": "readme/0004", "text": "{ Shapes | width < height; }", "schema": "readme-v1", "source": "readme.md:358"}
+{"id": "readme/0005", "text": "{ Shapes | height < maxHeight; }", "schema": "readme-v1", "source": "readme.md:359"}
+{"id": "readme/0006", "text": "print fake(10)", "schema": null, "source": "readme.md:420"}
+{"id": "readme/0007", "text": "T | summarize minmax(c)", "schema": "readme-v1", "source": "readme.md:426"}

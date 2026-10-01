@@ -1,0 +1,33 @@
+{
+  "repos": [
+    {
+      "repo": "MicrosoftDocs/dataexplorer-docs",
+      "name": "dataexplorer-docs",
+      "url": "https://github.com/MicrosoftDocs/dataexplorer-docs",
+      "commit": "86afc4923305ff6704e4fc4c85c87fa4c8b8b631",
+      "branch": "main",
+      "resolvedAt": "2026-10-01T23:28:43Z",
+      "license": "CC-BY-4.0 (docs text) AND MIT (code)",
+      "sparsePaths": [
+        "data-explorer/kusto/query/"
+      ]
+    },
+    {
+      "repo": "Azure/Azure-Sentinel",
+      "name": "Azure-Sentinel",
+      "url": "https://github.com/Azure/Azure-Sentinel",
+      "commit": "cfb3c3ded5cb65c907abb6b71b28b9ed25806ee2",
+      "branch": "master",
+      "resolvedAt": "2026-10-01T23:28:43Z",
+      "license": "MIT",
+      "sparsePaths": [
+        "Detections/",
+        "Hunting Queries/",
+        "Solutions/",
+        ".script/tests/KqlvalidationsTests/CustomTables/"
+      ]
+    }
+  ],
+  "pyyaml": "6.0.3",
+  "readmeSource": "upstream/kusto-query-language/src/Kusto.Language/readme.md"
+}
