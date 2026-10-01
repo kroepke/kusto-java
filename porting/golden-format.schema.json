@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/graylog/kusto-java/porting/golden-format.schema.json",
+  "title": "Kusto conformance golden line (format v1)",
+  "description": "One line of a golden .jsonl.gz file: line 1 is a header, every other line a record. Normative text: porting/golden-format.md (that document wins). Key order is fixed by the spec and not expressible here.",
+  "oneOf": [
+    { "$ref": "#/$defs/header" },
+    { "$ref": "#/$defs/record" }
+  ],
+  "$defs": {
+    "offset": { "type": "integer", "minimum": 0 },
+    "exceptionName": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_.`]*$" },
+
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["golden", "upstream", "oracle", "generatedAt"],
+      "properties": {
+        "golden": { "const": 1 },
+        "upstream": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "oracle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sourcesSha256", "runtime", "configuration", "invariantGlobalization", "tz", "serverKind"],
+          "properties": {
+            "sourcesSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "runtime": { "type": "string", "const": "net10.0" },
+            "configuration": { "type": "string", "enum": ["Release", "Debug"] },
+            "invariantGlobalization": { "type": "boolean" },
+            "tz": { "type": "string" },
+            "serverKind": { "type": "string", "enum": ["Engine", "DataManager", "ClusterManager", "AriaBridge", "Unknown"] }
+          }
+        },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "start", "length", "message"],
+      "properties": {
+        "code": { "type": "string" },
+        "severity": { "type": "string", "enum": ["Error", "Warning", "Suggestion", "Information", "Hidden"] },
+        "start": { "$ref": "#/$defs/offset" },
+        "length": { "$ref": "#/$defs/offset" },
+        "message": { "type": "string" }
+      }
+    },
+
+    "token": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "triviaStart", "start", "end", "trivia", "text", "value", "diagnostics"],
+      "properties": {
+        "kind": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$" },
+        "triviaStart": { "$ref": "#/$defs/offset" },
+        "start": { "$ref": "#/$defs/offset" },
+        "end": { "$ref": "#/$defs/offset" },
+        "trivia": { "type": "string" },
+        "text": { "type": "string" },
+        "value": {
+          "description": "DotNet.str(SyntaxToken.Value) for literal tokens, null otherwise or for a null literal; \"!<ExceptionTypeName>\" when computing it threw.",
+          "type": ["string", "null"]
+        },
+        "diagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }
+      }
+    },
+
+    "treeElement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["i", "kind", "depth", "parent", "name", "start", "end", "missing"],
+      "properties": {
+        "i": { "$ref": "#/$defs/offset" },
+        "kind": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*$" },
+        "depth": { "$ref": "#/$defs/offset" },
+        "parent": { "type": "integer", "minimum": -1 },
+        "name": { "type": "string" },
+        "start": { "$ref": "#/$defs/offset" },
+        "end": { "$ref": "#/$defs/offset" },
+        "missing": { "type": "boolean" }
+      }
+    },
+
+    "bindEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["i", "symbolKind", "symbol", "symbolOwner", "type", "signature", "isConstant", "constantValue", "calledBody", "alternates"],
+      "properties": {
+        "i": { "$ref": "#/$defs/offset" },
+        "symbolKind": { "type": ["string", "null"] },
+        "symbol": { "type": ["string", "null"] },
+        "symbolOwner": { "type": ["string", "null"] },
+        "type": { "type": ["string", "null"] },
+        "signature": { "type": ["string", "null"] },
+        "isConstant": { "type": "boolean" },
+        "constantValue": { "type": ["string", "null"] },
+        "calledBody": { "oneOf": [ { "type": "null" }, { "type": "string", "pattern": "^[0-9a-f]{16}$" } ] },
+        "alternates": { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "tokens", "fidelity", "tree", "syntaxDiagnostics", "semanticDiagnostics", "bind", "resultType", "outcome", "timing"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["Query", "Command", "Directive"] },
+        "tokens": { "type": "array", "items": { "$ref": "#/$defs/token" } },
+        "fidelity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["roundTrip", "fullWidth"],
+          "properties": {
+            "roundTrip": { "type": "boolean" },
+            "fullWidth": { "$ref": "#/$defs/offset" }
+          }
+        },
+        "tree": { "type": "array", "items": { "$ref": "#/$defs/treeElement" } },
+        "syntaxDiagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } },
+        "semanticDiagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } },
+        "bind": { "type": "array", "items": { "$ref": "#/$defs/bindEntry" } },
+        "resultType": { "type": ["string", "null"] },
+        "outcome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["parse", "analyze", "tokenValues"],
+          "properties": {
+            "parse": { "type": "string", "pattern": "^(ok|throw:[A-Za-z_][A-Za-z0-9_.`]*)$" },
+            "analyze": { "type": "string", "pattern": "^(ok|skipped:depth|throw:[A-Za-z_][A-Za-z0-9_.`]*)$" },
+            "tokenValues": { "type": "string", "pattern": "^(ok|throw:[A-Za-z_][A-Za-z0-9_.`]*)$" }
+          }
+        },
+        "timing": {
+          "description": "Ignored by the comparator.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["parseMs", "analyzeMs"],
+          "properties": {
+            "parseMs": { "type": "number", "minimum": 0 },
+            "analyzeMs": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    }
+  }
+}

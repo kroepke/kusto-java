@@ -1,0 +1,10 @@
+{"id": "readme-v1", "cluster": "help", "database": "db",
+ "tables": [
+   {"name": "T", "columns": [{"name": "a", "type": "real"}, {"name": "b", "type": "real"}], "docstring": null},
+   {"name": "Shapes", "columns": [{"name": "id", "type": "string"}, {"name": "width", "type": "real"}, {"name": "height", "type": "real"}], "docstring": null}
+ ],
+ "functions": [
+   {"name": "TallShapes", "parameters": "()", "body": "{ Shapes | where width < height; }"},
+   {"name": "ShortShapes", "parameters": "(maxHeight: real)", "body": "{ Shapes | where height < maxHeight; }"}
+ ],
+ "externalTables": [], "materializedViews": [], "entityGroups": []}

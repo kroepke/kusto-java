@@ -1,0 +1,607 @@
+# dotnet-facts cases: one `api<TAB>input` per line; '#' comments and blank lines are ignored.
+# An input starting with '[' is a JSON array of arguments; otherwise the raw text is the single argument.
+# Evaluated by `oracle/run.sh facts` (kusto-oracle facts) under invariant globalization, TZ=UTC;
+# output: kusto-language-conformance/src/test/resources/dotnet-facts.json. See oracle/README.md for the
+# exact semantics of each api name. PORTING.md 5.1/5.2 lists the upstream call sites these pin.
+
+# ----------------------------------------------------------------------
+# Character classification tables over U+0000..U+FFFF (PORTING.md 5.1, D21)
+# ----------------------------------------------------------------------
+char.IsWhiteSpace	table
+char.IsDigit	table
+char.IsLetter	table
+char.IsLetterOrDigit	table
+char.IsUpper	table
+char.IsLower	table
+char.ToUpperInvariant	table
+char.ToLowerInvariant	table
+
+# ----------------------------------------------------------------------
+# Int32.TryParse
+# SyntaxToken.cs literal values: X.TryParse(string, out X), default styles, invariant culture
+# ----------------------------------------------------------------------
+Int32.TryParse	[""]
+Int32.TryParse	[" 5 "]
+Int32.TryParse	+5
+Int32.TryParse	-0
+Int32.TryParse	00012
+Int32.TryParse	1_000
+Int32.TryParse	0x1F
+Int32.TryParse	1e3
+Int32.TryParse	1E+3
+Int32.TryParse	1.
+Int32.TryParse	.5
+Int32.TryParse	1.5
+Int32.TryParse	1,000
+Int32.TryParse	1.5e400
+Int32.TryParse	-1.5e400
+Int32.TryParse	1e-400
+Int32.TryParse	NaN
+Int32.TryParse	Infinity
+Int32.TryParse	-Infinity
+Int32.TryParse	∞
+Int32.TryParse	1.5d
+Int32.TryParse	0x1p3
+Int32.TryParse	9223372036854775807
+Int32.TryParse	9223372036854775808
+Int32.TryParse	-9223372036854775808
+Int32.TryParse	2147483647
+Int32.TryParse	2147483648
+Int32.TryParse	-2147483649
+Int32.TryParse	٣
+Int32.TryParse	１２
+Int32.TryParse	1 000
+Int32.TryParse	1.0.0
+Int32.TryParse	79228162514264337593543950335
+Int32.TryParse	79228162514264337593543950336
+Int32.TryParse	0.0000000000000000000000000001
+Int32.TryParse	1e28
+Int32.TryParse	["\t5\n"]
+
+# ----------------------------------------------------------------------
+# Int64.TryParse
+# SyntaxToken.cs literal values: X.TryParse(string, out X), default styles, invariant culture
+# ----------------------------------------------------------------------
+Int64.TryParse	[""]
+Int64.TryParse	[" 5 "]
+Int64.TryParse	+5
+Int64.TryParse	-0
+Int64.TryParse	00012
+Int64.TryParse	1_000
+Int64.TryParse	0x1F
+Int64.TryParse	1e3
+Int64.TryParse	1E+3
+Int64.TryParse	1.
+Int64.TryParse	.5
+Int64.TryParse	1.5
+Int64.TryParse	1,000
+Int64.TryParse	1.5e400
+Int64.TryParse	-1.5e400
+Int64.TryParse	1e-400
+Int64.TryParse	NaN
+Int64.TryParse	Infinity
+Int64.TryParse	-Infinity
+Int64.TryParse	∞
+Int64.TryParse	1.5d
+Int64.TryParse	0x1p3
+Int64.TryParse	9223372036854775807
+Int64.TryParse	9223372036854775808
+Int64.TryParse	-9223372036854775808
+Int64.TryParse	2147483647
+Int64.TryParse	2147483648
+Int64.TryParse	-2147483649
+Int64.TryParse	٣
+Int64.TryParse	１２
+Int64.TryParse	1 000
+Int64.TryParse	1.0.0
+Int64.TryParse	79228162514264337593543950335
+Int64.TryParse	79228162514264337593543950336
+Int64.TryParse	0.0000000000000000000000000001
+Int64.TryParse	1e28
+Int64.TryParse	["\t5\n"]
+
+# ----------------------------------------------------------------------
+# Double.TryParse
+# SyntaxToken.cs literal values: X.TryParse(string, out X), default styles, invariant culture
+# ----------------------------------------------------------------------
+Double.TryParse	[""]
+Double.TryParse	[" 5 "]
+Double.TryParse	+5
+Double.TryParse	-0
+Double.TryParse	00012
+Double.TryParse	1_000
+Double.TryParse	0x1F
+Double.TryParse	1e3
+Double.TryParse	1E+3
+Double.TryParse	1.
+Double.TryParse	.5
+Double.TryParse	1.5
+Double.TryParse	1,000
+Double.TryParse	1.5e400
+Double.TryParse	-1.5e400
+Double.TryParse	1e-400
+Double.TryParse	NaN
+Double.TryParse	Infinity
+Double.TryParse	-Infinity
+Double.TryParse	∞
+Double.TryParse	1.5d
+Double.TryParse	0x1p3
+Double.TryParse	9223372036854775807
+Double.TryParse	9223372036854775808
+Double.TryParse	-9223372036854775808
+Double.TryParse	2147483647
+Double.TryParse	2147483648
+Double.TryParse	-2147483649
+Double.TryParse	٣
+Double.TryParse	１２
+Double.TryParse	1 000
+Double.TryParse	1.0.0
+Double.TryParse	79228162514264337593543950335
+Double.TryParse	79228162514264337593543950336
+Double.TryParse	0.0000000000000000000000000001
+Double.TryParse	1e28
+Double.TryParse	["\t5\n"]
+
+# ----------------------------------------------------------------------
+# Decimal.TryParse
+# SyntaxToken.cs literal values: X.TryParse(string, out X), default styles, invariant culture
+# ----------------------------------------------------------------------
+Decimal.TryParse	[""]
+Decimal.TryParse	[" 5 "]
+Decimal.TryParse	+5
+Decimal.TryParse	-0
+Decimal.TryParse	00012
+Decimal.TryParse	1_000
+Decimal.TryParse	0x1F
+Decimal.TryParse	1e3
+Decimal.TryParse	1E+3
+Decimal.TryParse	1.
+Decimal.TryParse	.5
+Decimal.TryParse	1.5
+Decimal.TryParse	1,000
+Decimal.TryParse	1.5e400
+Decimal.TryParse	-1.5e400
+Decimal.TryParse	1e-400
+Decimal.TryParse	NaN
+Decimal.TryParse	Infinity
+Decimal.TryParse	-Infinity
+Decimal.TryParse	∞
+Decimal.TryParse	1.5d
+Decimal.TryParse	0x1p3
+Decimal.TryParse	9223372036854775807
+Decimal.TryParse	9223372036854775808
+Decimal.TryParse	-9223372036854775808
+Decimal.TryParse	2147483647
+Decimal.TryParse	2147483648
+Decimal.TryParse	-2147483649
+Decimal.TryParse	٣
+Decimal.TryParse	１２
+Decimal.TryParse	1 000
+Decimal.TryParse	1.0.0
+Decimal.TryParse	79228162514264337593543950335
+Decimal.TryParse	79228162514264337593543950336
+Decimal.TryParse	0.0000000000000000000000000001
+Decimal.TryParse	1e28
+Decimal.TryParse	["\t5\n"]
+
+# ----------------------------------------------------------------------
+# TimeSpan.TryParse (SyntaxToken.cs GetTimeSpanValue, before the unit-suffix switch)
+# ----------------------------------------------------------------------
+TimeSpan.TryParse	1
+TimeSpan.TryParse	1.5
+TimeSpan.TryParse	01:02
+TimeSpan.TryParse	1:02:03
+TimeSpan.TryParse	1.02:03:04.5
+TimeSpan.TryParse	1.02:03:04.5000000
+TimeSpan.TryParse	1.02:03:04.50000000
+TimeSpan.TryParse	-1.02:03:04
+TimeSpan.TryParse	24:00
+TimeSpan.TryParse	23:59:59
+TimeSpan.TryParse	23:60
+TimeSpan.TryParse	10675199.02:48:05.4775807
+TimeSpan.TryParse	10675199.02:48:05.4775808
+TimeSpan.TryParse	-10675199.02:48:05.4775808
+TimeSpan.TryParse	1d
+TimeSpan.TryParse	1.5h
+TimeSpan.TryParse	[" 1:00 "]
+TimeSpan.TryParse	1:00:00:00
+TimeSpan.TryParse	0.5
+TimeSpan.TryParse	00:00:00.1234567
+TimeSpan.TryParse	00:00:00.12345678
+TimeSpan.TryParse	1.00:00
+TimeSpan.TryParse	-0:00:01
+TimeSpan.TryParse	+1:00
+TimeSpan.TryParse	[""]
+TimeSpan.TryParse	1:2:3.4
+TimeSpan.TryParse	99:00
+TimeSpan.TryParse	1.24:00:00
+
+# ----------------------------------------------------------------------
+# TimeSpan.FromSeconds
+# double overload; overflow/NaN throw (PORTING.md 3.16)
+# ----------------------------------------------------------------------
+TimeSpan.FromSeconds	1.5
+TimeSpan.FromSeconds	-0.5
+TimeSpan.FromSeconds	1e15
+TimeSpan.FromSeconds	NaN
+TimeSpan.FromSeconds	1e300
+TimeSpan.FromSeconds	0.1
+TimeSpan.FromSeconds	2.5
+TimeSpan.FromSeconds	1.0000001
+
+# ----------------------------------------------------------------------
+# TimeSpan.FromMinutes
+# double overload; overflow/NaN throw (PORTING.md 3.16)
+# ----------------------------------------------------------------------
+TimeSpan.FromMinutes	1.5
+TimeSpan.FromMinutes	-0.5
+TimeSpan.FromMinutes	1e15
+TimeSpan.FromMinutes	NaN
+TimeSpan.FromMinutes	1e300
+TimeSpan.FromMinutes	0.1
+TimeSpan.FromMinutes	2.5
+TimeSpan.FromMinutes	1.0000001
+
+# ----------------------------------------------------------------------
+# TimeSpan.FromHours
+# double overload; overflow/NaN throw (PORTING.md 3.16)
+# ----------------------------------------------------------------------
+TimeSpan.FromHours	1.5
+TimeSpan.FromHours	-0.5
+TimeSpan.FromHours	1e15
+TimeSpan.FromHours	NaN
+TimeSpan.FromHours	1e300
+TimeSpan.FromHours	0.1
+TimeSpan.FromHours	2.5
+TimeSpan.FromHours	1.0000001
+
+# ----------------------------------------------------------------------
+# TimeSpan.FromDays
+# double overload; overflow/NaN throw (PORTING.md 3.16)
+# ----------------------------------------------------------------------
+TimeSpan.FromDays	1.5
+TimeSpan.FromDays	-0.5
+TimeSpan.FromDays	1e15
+TimeSpan.FromDays	NaN
+TimeSpan.FromDays	1e300
+TimeSpan.FromDays	0.1
+TimeSpan.FromDays	2.5
+TimeSpan.FromDays	1.0000001
+
+# ----------------------------------------------------------------------
+# TimeSpan.FromMilliseconds
+# double overload; overflow/NaN throw (PORTING.md 3.16)
+# ----------------------------------------------------------------------
+TimeSpan.FromMilliseconds	1.5
+TimeSpan.FromMilliseconds	-0.5
+TimeSpan.FromMilliseconds	1e15
+TimeSpan.FromMilliseconds	NaN
+TimeSpan.FromMilliseconds	1e300
+TimeSpan.FromMilliseconds	0.1
+TimeSpan.FromMilliseconds	2.5
+TimeSpan.FromMilliseconds	1.0000001
+
+# ----------------------------------------------------------------------
+# TimeSpan.FromTicks (long)
+# ----------------------------------------------------------------------
+TimeSpan.FromTicks	0
+TimeSpan.FromTicks	1
+TimeSpan.FromTicks	-1
+TimeSpan.FromTicks	9223372036854775807
+TimeSpan.FromTicks	-9223372036854775808
+
+# ----------------------------------------------------------------------
+# Convert.ToInt64Cast: C# (long)double cast, saturating on .NET 9+ (NaN -> 0)
+# Used by the `tick`/`ticks` timespan suffix: TimeSpan.FromTicks((long)number)
+# ----------------------------------------------------------------------
+Convert.ToInt64Cast	1.5
+Convert.ToInt64Cast	-1.5
+Convert.ToInt64Cast	1e19
+Convert.ToInt64Cast	-1e19
+Convert.ToInt64Cast	NaN
+Convert.ToInt64Cast	Infinity
+Convert.ToInt64Cast	-Infinity
+Convert.ToInt64Cast	9.2233720368547758E+18
+Convert.ToInt64Cast	0.9999999
+Convert.ToInt64Cast	-0.0
+
+# ----------------------------------------------------------------------
+# DateTime.TryParse (SyntaxToken.cs GetDateTimeValue; D11 for Z/offset)
+# ----------------------------------------------------------------------
+DateTime.TryParse	2020-01-02
+DateTime.TryParse	2020-01-02T03:04:05
+DateTime.TryParse	2020-01-02T03:04:05Z
+DateTime.TryParse	2020-01-02T03:04:05.1234567Z
+DateTime.TryParse	2020-01-02T03:04:05.12345678Z
+DateTime.TryParse	2020-01-02T03:04:05+02:00
+DateTime.TryParse	2020-01-02 03:04:05
+DateTime.TryParse	01/02/2020
+DateTime.TryParse	1/2/2020
+DateTime.TryParse	2/30/2020
+DateTime.TryParse	2020-13-01
+DateTime.TryParse	Jan 2 2020
+DateTime.TryParse	2 Jan 2020
+DateTime.TryParse	2020-01-02T25:00:00
+DateTime.TryParse	9999-12-31T23:59:59.9999999
+DateTime.TryParse	10000-01-01
+DateTime.TryParse	0001-01-01
+# time-only input: the date part is the oracle run's current date (not reproducible; compare time and kind only)
+DateTime.TryParse	12:00
+DateTime.TryParse	2020
+DateTime.TryParse	20200102
+DateTime.TryParse	2020-01-02T03:04:05.1234567890Z
+DateTime.TryParse	Thu, 02 Jan 2020 03:04:05 GMT
+DateTime.TryParse	2020-01-02T03:04:05.5+00:00
+DateTime.TryParse	["  2020-01-02  "]
+DateTime.TryParse	2020-01-02T03:04
+DateTime.TryParse	2020-01-02T03:04:05-08:00
+DateTime.TryParse	2020-02-29
+DateTime.TryParse	2019-02-29
+DateTime.TryParse	2020-01-02T03:04:05.123
+DateTime.TryParse	[""]
+DateTime.TryParse	0001-01-01T00:00:00+01:00
+DateTime.TryParse	9999-12-31T23:59:59-01:00
+
+# ----------------------------------------------------------------------
+# Guid.TryParse (SyntaxToken.cs GetGuidValue)
+# ----------------------------------------------------------------------
+Guid.TryParse	0123456789abcdef0123456789abcdef
+Guid.TryParse	01234567-89ab-cdef-0123-456789abcdef
+Guid.TryParse	{01234567-89ab-cdef-0123-456789abcdef}
+Guid.TryParse	(01234567-89ab-cdef-0123-456789abcdef)
+Guid.TryParse	{0x01234567,0x89ab,0xcdef,{0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef}}
+Guid.TryParse	01234567-89AB-CDEF-0123-456789ABCDEF
+Guid.TryParse	[" 01234567-89ab-cdef-0123-456789abcdef "]
+Guid.TryParse	01234567 - 89ab-cdef-0123-456789abcdef
+Guid.TryParse	01234567-89ab-cdef-0123-456789abcde
+Guid.TryParse	01234567-89ab-cdef-0123-456789abcdef0
+Guid.TryParse	{}
+Guid.TryParse	[""]
+Guid.TryParse	{01234567-89ab-cdef-0123-456789abcdef)
+Guid.TryParse	00000000-0000-0000-0000-000000000000
+Guid.TryParse	01234567-89gb-cdef-0123-456789abcdef
+
+# ----------------------------------------------------------------------
+# Boolean.TryParse (PlugIns.cs)
+# ----------------------------------------------------------------------
+Boolean.TryParse	true
+Boolean.TryParse	TRUE
+Boolean.TryParse	False
+Boolean.TryParse	[" True "]
+Boolean.TryParse	1
+Boolean.TryParse	0
+Boolean.TryParse	yes
+Boolean.TryParse	t
+Boolean.TryParse	[""]
+Boolean.TryParse	["\u00a0true"]
+Boolean.TryParse	["true\u0000"]
+Boolean.TryParse	tru
+
+# ----------------------------------------------------------------------
+# Double.ToString (input parsed with Float|AllowThousands, invariant; then default ToString())
+# DotNet.str(double): shortest round-trip, E+XX exponent form
+# ----------------------------------------------------------------------
+Double.ToString	0
+Double.ToString	-0.0
+Double.ToString	0.1
+Double.ToString	1.5
+Double.ToString	100
+Double.ToString	1e15
+Double.ToString	1e16
+Double.ToString	1e21
+Double.ToString	1e-5
+Double.ToString	1e-7
+Double.ToString	123456789012345680000
+Double.ToString	0.30000000000000004
+Double.ToString	5e-324
+Double.ToString	1.7976931348623157E+308
+Double.ToString	NaN
+Double.ToString	-Infinity
+
+# ----------------------------------------------------------------------
+# Decimal.ToString (input parsed with Number|AllowExponent, invariant): scale is preserved
+# ----------------------------------------------------------------------
+Decimal.ToString	1.0
+Decimal.ToString	1.50
+Decimal.ToString	-0.0
+Decimal.ToString	0.0000000000000000000000000001
+Decimal.ToString	79228162514264337593543950335
+Decimal.ToString	1e5
+Decimal.ToString	1.2345678901234567890123456789
+Decimal.ToString	100
+
+# ----------------------------------------------------------------------
+# Single.ToString
+# ----------------------------------------------------------------------
+Single.ToString	0.1
+Single.ToString	1.5
+Single.ToString	1e10
+Single.ToString	3.4028235E+38
+Single.ToString	16777217
+Single.ToString	1e-45
+
+# ----------------------------------------------------------------------
+# TimeSpan.ToString (integer input = ticks, else TimeSpan.Parse invariant): the 'c' format
+# ----------------------------------------------------------------------
+TimeSpan.ToString	0
+TimeSpan.ToString	1
+TimeSpan.ToString	-1
+TimeSpan.ToString	10000000
+TimeSpan.ToString	864000000000
+TimeSpan.ToString	-864000000001
+TimeSpan.ToString	9223372036854775807
+TimeSpan.ToString	-9223372036854775808
+TimeSpan.ToString	1.02:03:04.5
+
+# ----------------------------------------------------------------------
+# DateTime.ToString (integer input = ticks with Kind Unspecified, else DateTime.Parse)
+# ----------------------------------------------------------------------
+DateTime.ToString	0
+DateTime.ToString	637134336000000000
+DateTime.ToString	3155378975999999999
+DateTime.ToString	2020-01-02T03:04:05.1234567Z
+DateTime.ToString	2020-01-02T03:04:05
+
+# ----------------------------------------------------------------------
+# Guid.ToString (default 'D', lower case)
+# ----------------------------------------------------------------------
+Guid.ToString	{01234567-89AB-CDEF-0123-456789ABCDEF}
+Guid.ToString	0123456789ABCDEF0123456789ABCDEF
+
+# ----------------------------------------------------------------------
+# String.Compare: culture-default overloads are ordinal under invariant globalization (D12)
+# [a, b] | [a, indexA, b, indexB, length] (length clamps to the remaining text) | [..., ignoreCase]
+# ----------------------------------------------------------------------
+String.Compare	["a", "B"]
+String.Compare	["A", "a"]
+String.Compare	["_", "a"]
+String.Compare	["a", "_"]
+String.Compare	["K", "\u212a"]
+String.Compare	["\u00df", "ss"]
+String.Compare	["\u0130", "i"]
+String.Compare	["\u0131", "I"]
+String.Compare	["\ud83d\ude00", "\uffff"]
+String.Compare	["abc", "abd"]
+String.Compare	["", ""]
+String.Compare	["a", ""]
+String.Compare	["a\u0000", "a"]
+String.Compare	["\u00e9", "e\u0301"]
+String.Compare	["hello", 0, "help", 0, 3]
+String.Compare	["hello", 0, "help", 0, 4]
+String.Compare	["abc", 1, "xbc", 1, 5]
+String.Compare	["abc", 0, "abcd", 0, 10]
+String.Compare	["ab", 2, "", 0, 1]
+String.Compare	["abc", 0, "ABC", 0, 3]
+String.Compare	["xnull)", 1, "null", 0, 4]
+String.Compare	["abc", -1, "abc", 0, 1]
+String.Compare	["abc", 4, "abc", 0, 1]
+String.Compare	["abc", 0, "abc", 0, -1]
+String.Compare	["xTRUE", 1, "true", 0, 4, true]
+String.Compare	["bool(False)", 5, "false", 0, 5, true]
+String.Compare	["K", 0, "k", 0, 1, true]
+String.Compare	["\u212a", 0, "k", 0, 1, true]
+String.Compare	["\u00df", 0, "SS", 0, 2, true]
+String.Compare	["abc", 0, "ABD", 0, 3, true]
+
+# ----------------------------------------------------------------------
+# String.CompareOrdinalIgnoreCase / EqualsOrdinalIgnoreCase (PORTING.md 5.3/5.4)
+# ----------------------------------------------------------------------
+String.CompareOrdinalIgnoreCase	["a", "B"]
+String.CompareOrdinalIgnoreCase	["_", "a"]
+String.CompareOrdinalIgnoreCase	["Z", "_"]
+String.CompareOrdinalIgnoreCase	["K", "\u212a"]
+String.CompareOrdinalIgnoreCase	["\u00df", "SS"]
+String.CompareOrdinalIgnoreCase	["\u0131", "I"]
+String.CompareOrdinalIgnoreCase	["\u00e9", "\u00c9"]
+String.CompareOrdinalIgnoreCase	["\u01c5", "\u01c4"]
+String.CompareOrdinalIgnoreCase	["\ud801\udc28", "\ud801\udc00"]
+String.EqualsOrdinalIgnoreCase	["K", "\u212a"]
+String.EqualsOrdinalIgnoreCase	["k", "\u212a"]
+String.EqualsOrdinalIgnoreCase	["ss", "\u00df"]
+String.EqualsOrdinalIgnoreCase	["i", "\u0130"]
+String.EqualsOrdinalIgnoreCase	["\u0131", "I"]
+String.EqualsOrdinalIgnoreCase	["abc", "ABC"]
+String.EqualsOrdinalIgnoreCase	["\u03c3", "\u03a3"]
+String.EqualsOrdinalIgnoreCase	["\u03c2", "\u03a3"]
+String.EqualsOrdinalIgnoreCase	["\u01c6", "\u01c4"]
+String.EqualsOrdinalIgnoreCase	["\ud801\udc28", "\ud801\udc00"]
+
+# ----------------------------------------------------------------------
+# String.ToUpperInvariant / ToLowerInvariant (PORTING.md 5.1)
+# ----------------------------------------------------------------------
+String.ToUpperInvariant	ß
+String.ToUpperInvariant	ı
+String.ToUpperInvariant	i
+String.ToUpperInvariant	ǆ
+String.ToUpperInvariant	ﬁ
+String.ToUpperInvariant	σς
+String.ToUpperInvariant	𐐨
+String.ToUpperInvariant	µ
+String.ToUpperInvariant	ÿ
+String.ToUpperInvariant	abcXYZ
+String.ToLowerInvariant	İ
+String.ToLowerInvariant	K
+String.ToLowerInvariant	Σ
+String.ToLowerInvariant	ǅ
+String.ToLowerInvariant	𐐀
+String.ToLowerInvariant	Ω
+String.ToLowerInvariant	ABCxyz
+
+# ----------------------------------------------------------------------
+# String.Trim / IsNullOrWhiteSpace: the .NET char.IsWhiteSpace set (PORTING.md 5.1)
+# ----------------------------------------------------------------------
+String.Trim	["\u00a0x\u00a0"]
+String.Trim	["\u200bx\u200b"]
+String.Trim	["\ufeffx\ufeff"]
+String.Trim	["\u0085x\u0085"]
+String.Trim	["\u3000x\u3000"]
+String.Trim	[" \t\r\nx \t"]
+String.Trim	["\u2028x\u2029"]
+String.Trim	["\u180ex"]
+String.Trim	["\u0000x\u0000"]
+String.Trim	["\u001cx\u001f"]
+String.Trim	["\u1680x\u202f"]
+String.Trim	["\u205fx\u2000"]
+String.IsNullOrWhiteSpace	[""]
+String.IsNullOrWhiteSpace	[" "]
+String.IsNullOrWhiteSpace	["\u00a0"]
+String.IsNullOrWhiteSpace	["\u200b"]
+String.IsNullOrWhiteSpace	["\ufeff"]
+String.IsNullOrWhiteSpace	["\u0085"]
+String.IsNullOrWhiteSpace	["\u3000"]
+String.IsNullOrWhiteSpace	["\u180e"]
+String.IsNullOrWhiteSpace	["\u001c"]
+String.IsNullOrWhiteSpace	["\u000b\f"]
+String.IsNullOrWhiteSpace	x
+String.IsNullOrWhiteSpace	["\u2028"]
+
+# ----------------------------------------------------------------------
+# String.Split [s, "c"] (value is the JSON array of parts)
+# ----------------------------------------------------------------------
+String.Split	["a,b,,c", ","]
+String.Split	["", ","]
+String.Split	[",", ","]
+String.Split	["abc", ","]
+String.Split	["a.b.", "."]
+
+# ----------------------------------------------------------------------
+# Convert.ChangeType [value, targetType, sourceType] (ValueComparer.cs)
+# value is first parsed as sourceType (invariant), then Convert.ChangeType(object, typeof(target))
+# ----------------------------------------------------------------------
+Convert.ChangeType	["1.5", "String", "Double"]
+Convert.ChangeType	["1.5", "Int64", "Double"]
+Convert.ChangeType	["2.5", "Int64", "Double"]
+Convert.ChangeType	["-1.5", "Int64", "Double"]
+Convert.ChangeType	["1e19", "Int64", "Double"]
+Convert.ChangeType	["NaN", "Int64", "Double"]
+Convert.ChangeType	["123", "Double", "Int64"]
+Convert.ChangeType	["9223372036854775807", "Double", "Int64"]
+Convert.ChangeType	["1.25", "Decimal", "Double"]
+Convert.ChangeType	["1.25", "Double", "Decimal"]
+Convert.ChangeType	["0.10", "String", "Decimal"]
+Convert.ChangeType	["true", "Int64", "Boolean"]
+Convert.ChangeType	["1", "Boolean", "Int64"]
+Convert.ChangeType	["abc", "Int64", "String"]
+Convert.ChangeType	["12", "Int64", "String"]
+Convert.ChangeType	[" 12 ", "Int64", "String"]
+Convert.ChangeType	["1.5", "Double", "String"]
+Convert.ChangeType	["1e3", "Double", "String"]
+Convert.ChangeType	["01:00:00", "String", "TimeSpan"]
+Convert.ChangeType	["01234567-89ab-cdef-0123-456789abcdef", "String", "Guid"]
+Convert.ChangeType	["true", "String", "Boolean"]
+Convert.ChangeType	["2020-01-02T03:04:05Z", "String", "DateTime"]
+Convert.ChangeType	["1e300", "Decimal", "Double"]
+
+# ----------------------------------------------------------------------
+# SyntaxFacts.TryGetKind (library; D13: the "" entry)
+# ----------------------------------------------------------------------
+SyntaxFacts.TryGetKind	[""]
+SyntaxFacts.TryGetKind	where
+SyntaxFacts.TryGetKind	WHERE
+SyntaxFacts.TryGetKind	|
+SyntaxFacts.TryGetKind	==
+SyntaxFacts.TryGetKind	foo
+SyntaxFacts.TryGetKind	!~
+SyntaxFacts.TryGetKind	$left
+SyntaxFacts.TryGetKind	and
+

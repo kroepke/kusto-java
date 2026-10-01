@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Runs upstream's T4 generator sources as a plain console app. Test tooling only. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS0168;CS0219;CS0414;CS0649;CS0169;CS1998;CS8981</NoWarn>
+    <RootNamespace>Kusto.Oracle.Gen</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenSrc>../../upstream/kusto-query-language/src/Kusto.Language.Generators</GenSrc>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="$(GenSrc)/CodeGenerator.cs" />
+    <Compile Include="$(GenSrc)/SyntaxNodeGenerator.cs" />
+    <Compile Include="$(GenSrc)/SyntaxNodeInfos.cs" />
+    <Compile Include="$(GenSrc)/Grammar.cs" />
+    <Compile Include="$(GenSrc)/CommandInfo.cs" />
+    <Compile Include="$(GenSrc)/CommandGenerator.cs" />
+    <Compile Include="$(GenSrc)/EngineCommandInfos.cs" />
+    <Compile Include="$(GenSrc)/DataManagerCommandInfos.cs" />
+    <Compile Include="$(GenSrc)/ClusterManagerCommandInfos.cs" />
+    <Compile Include="$(GenSrc)/AriaBridgeCommandInfos.cs" />
+  </ItemGroup>
+</Project>

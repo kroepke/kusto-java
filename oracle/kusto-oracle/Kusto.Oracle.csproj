@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Test oracle: the full upstream Kusto.Language library plus the T4 outputs. Not shipped. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- Mirrors upstream Kusto.Language.csproj -->
+    <DefineConstants>KUSTO_BUILD;$(DefineConstants)</DefineConstants>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>$(NoWarn);CS1591;CS0168;CS0219;CS0414;CS0649;CS0169;CS0162;CS0618;CS1998;CS8981;CS0108;CS0114;CS1717;CS0659;CS0661;CS0660</NoWarn>
+    <RootNamespace>Kusto.Oracle</RootNamespace>
+    <AssemblyName>Kusto.Oracle</AssemblyName>
+    <TieredPGO>true</TieredPGO>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpstreamSrc>../../upstream/kusto-query-language/src/Kusto.Language</UpstreamSrc>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UpstreamSrc)/**/*.cs"
+             Exclude="$(UpstreamSrc)/**/CodeGen/**;$(UpstreamSrc)/obj/**;$(UpstreamSrc)/bin/**" />
+    <Compile Include="../generated/*.cs" />
+    <Compile Include="src/*.cs" />
+  </ItemGroup>
+</Project>

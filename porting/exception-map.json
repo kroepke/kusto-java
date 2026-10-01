@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "description": "PORTING.md 3.16. 'dotnet' maps a .NET exception type name to the Java type name the port throws; the oracle writes the mapped name into golden outcome fields and prints unmapped .NET names unchanged. 'java' is the reverse, listing every .NET name that maps to the Java name, in 'dotnet' table order.",
+  "dotnet": {
+    "ArgumentNullException": "NullPointerException",
+    "ArgumentException": "IllegalArgumentException",
+    "ArgumentOutOfRangeException": "IndexOutOfBoundsException",
+    "IndexOutOfRangeException": "IndexOutOfBoundsException",
+    "InvalidOperationException": "IllegalStateException",
+    "NotImplementedException": "UnsupportedOperationException",
+    "NotSupportedException": "UnsupportedOperationException",
+    "InvalidCastException": "ClassCastException",
+    "OverflowException": "ArithmeticException",
+    "DivideByZeroException": "ArithmeticException",
+    "NullReferenceException": "NullPointerException",
+    "OperationCanceledException": "OperationCanceledException",
+    "KeyNotFoundException": "NoSuchElementException",
+    "FormatException": "IllegalArgumentException",
+    "StackOverflowException": "StackOverflowError",
+    "InsufficientExecutionStackException": "StackOverflowError"
+  },
+  "java": {
+    "NullPointerException": ["ArgumentNullException", "NullReferenceException"],
+    "IllegalArgumentException": ["ArgumentException", "FormatException"],
+    "IndexOutOfBoundsException": ["ArgumentOutOfRangeException", "IndexOutOfRangeException"],
+    "IllegalStateException": ["InvalidOperationException"],
+    "UnsupportedOperationException": ["NotImplementedException", "NotSupportedException"],
+    "ClassCastException": ["InvalidCastException"],
+    "ArithmeticException": ["OverflowException", "DivideByZeroException"],
+    "OperationCanceledException": ["OperationCanceledException"],
+    "NoSuchElementException": ["KeyNotFoundException"],
+    "StackOverflowError": ["StackOverflowException", "InsufficientExecutionStackException"]
+  }
+}
