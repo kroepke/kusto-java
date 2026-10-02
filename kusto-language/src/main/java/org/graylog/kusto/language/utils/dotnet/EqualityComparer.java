@@ -43,38 +43,19 @@ public interface EqualityComparer<T> {
     };
 
     /**
-     * Mirrors .NET {@code OrdinalIgnoreCase}: compares per UTF-16 char after
-     * {@code Character.toUpperCase(char)}. Never lower-cases.
+     * Mirrors .NET {@code StringComparer.OrdinalIgnoreCase}: equality via
+     * {@link DotNetStrings#equalsOrdinalIgnoreCase}; the hash upper-cases per code point with
+     * {@link DotNetStrings#toUpperInvariant} so equal strings hash equally.
      */
     EqualityComparer<String> ORDINAL_IGNORE_CASE = new EqualityComparer<String>() {
         @Override
         public boolean equals(String a, String b) {
-            if (a == b) {
-                return true;
-            }
-            if (a == null || b == null || a.length() != b.length()) {
-                return false;
-            }
-            for (int i = 0; i < a.length(); i++) {
-                char x = a.charAt(i);
-                char y = b.charAt(i);
-                if (x != y && Character.toUpperCase(x) != Character.toUpperCase(y)) {
-                    return false;
-                }
-            }
-            return true;
+            return DotNetStrings.equalsOrdinalIgnoreCase(a, b);
         }
 
         @Override
         public int hashCode(String a) {
-            if (a == null) {
-                return 0;
-            }
-            int h = 0;
-            for (int i = 0; i < a.length(); i++) {
-                h = 31 * h + Character.toUpperCase(a.charAt(i));
-            }
-            return h;
+            return a == null ? 0 : DotNetStrings.toUpperInvariant(a).hashCode();
         }
     };
 

@@ -20,6 +20,11 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -78,6 +83,7 @@
                     <include>org.opentest4j:*:*:*:test</include>
                     <include>org.apiguardian:*:*:*:test</include>
                     <include>org.jspecify:*:*:*:test</include>
+                    <include>com.fasterxml.jackson.core:*:*:*:test</include>
                   </includes>
                   <message>kusto-language must have zero compile/runtime dependencies.</message>
                 </bannedDependencies>
