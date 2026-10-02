@@ -450,7 +450,7 @@
    "upstreamPath": "src/Kusto.Language.Generators/CodeGenerator.cs",
    "upstreamBlob": "f2fc24bb7dbc7d06aa023e02b6d605bb44c2815d",
    "scope": "buildTime",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 879,
    "namespace": "Kusto.Language.Generator",
@@ -496,7 +496,7 @@
     "IndentedTextWriter ctor uses CultureInfo.InvariantCulture (line 403); newline handling via TextWriter.NewLine (Environment-dependent \\r\\n) - generated output line endings matter for diffing, use \\n",
     "GetCamelCase escapes 'operator' keyword with '@' (line ~348): C#-specific, Java needs different keyword escaping (e.g. none of C# keywords; Java keywords like 'default','class')"
    ],
-   "notes": "Writer helper used by SyntaxNodeGenerator (included by GeneratedSyntaxNodes.tt).",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -621,7 +621,7 @@
    "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
    "upstreamBlob": "412c54994bb9d6940c1ccfdf165bfa4a95db94bd",
    "scope": "buildTime",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 682,
    "namespace": "Kusto.Language.Generator",
@@ -698,7 +698,7 @@
     "Emits using aliases CompletionKind=Kusto.Language.Editor.CompletionKind (line 255-256): Java needs import of ported editor enums or stubs",
     "Emits partial classes: Java has no partials, so the generated Java must either contain the whole hand-written class body or use a base/helper split; hand-written halves live in Kusto.Language/Syntax/*.cs"
    ],
-   "notes": "Emits node classes, GetCompletionHintCore (549-561), visitors (314-370). Its emitted usings alias CompletionKind/CompletionHint to Kusto.Language.Editor (292-293).",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -706,7 +706,7 @@
    "upstreamPath": "src/Kusto.Language.Generators/SyntaxNodeInfos.cs",
    "upstreamBlob": "1e9cb0255f5a059eca2fd39fc64faf5bb42e6ae1",
    "scope": "buildTime",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 3344,
    "namespace": "Kusto.Language.Generator",
@@ -730,7 +730,7 @@
     "Array order of All determines emitted class order, Visit* method order and child index order (SyntaxNodeInfos.cs:16-3335); Java generator must preserve it",
     "Completion=\"...\" strings reference Kusto.Language.Editor.CompletionKind/CompletionHint by name (editor dependency leaks into every node's GetCompletionHintCore)"
    ],
-   "notes": "Authoritative schema for generated syntax nodes (226 entries). Must be ported to a Java generator input or the .tt must be run once to produce C# to mirror.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -789,7 +789,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_API.cs",
    "upstreamBlob": "7a08a17f8bc3865e672f7c00dcb4c30495425773",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 870,
    "namespace": "Kusto.Language.Binding",
@@ -819,7 +819,7 @@
     "Binder_API.cs:444-464 uses IsInsideControlCommandProper (command-aware code path)",
     "Binder_API.cs:749 nested class derives CustomAvailabilityContext (Symbols)"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 0,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -828,7 +828,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs",
    "upstreamBlob": "fd9cf8157033a9739e1d0e0599391dcee4d71f4e",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 63,
    "namespace": "Kusto.Language.Binding",
@@ -853,7 +853,7 @@
    "traps": [
     "Binder_AsContextBuilder.cs:13 nested class inside partial Binder; Java: static nested class inside Binder.java"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 1,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -862,7 +862,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_ContextBuilder.cs",
    "upstreamBlob": "a376d2c62b8e64cfe92d3e60f39ceeece5b6a934",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 565,
    "namespace": "Kusto.Language.Binding",
@@ -888,7 +888,7 @@
     "Binder_ContextBuilder.cs:256-270,474-490 depends on command syntax nodes (CommandBlock, Command, PartialCommand, CustomCommand) from the command grammar",
     "Used only for position-based queries (GetSymbolsInScope etc.), not full-tree TryBind"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 2,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -897,7 +897,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_FunctionCalls.cs",
    "upstreamBlob": "84d27c396becc6bb206a07f2f8a70b35c4e85157",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 2766,
    "namespace": "Kusto.Language.Binding",
@@ -934,7 +934,7 @@
     "Binder_FunctionCalls.cs:1605 public static GetParameterMatchKind huge switch on parameter ArgumentKind (ParameterMatchKind enum ordering matters: comparison by ordinal)",
     "Binder_FunctionCalls.cs:12 using static Symbols.TypeFacts -> Java static imports of TypeFacts members"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 3,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -943,7 +943,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_Misc.cs",
    "upstreamBlob": "6751d5a1244d841e26d09ef207f648052247f135",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 2803,
    "namespace": "Kusto.Language.Binding",
@@ -982,7 +982,7 @@
     "Binder_Misc.cs:2800 comment \"keep line for BRIDGE.NET bug\" before #endregion",
     "Binder_Misc.cs:1310 HashSet<string> param"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 4,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -991,7 +991,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_Names.cs",
    "upstreamBlob": "b95ac80966101c862ab9ffa509ae71ffffe359c3",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 866,
    "namespace": "Kusto.Language.Binding",
@@ -1020,7 +1020,7 @@
     "Binder_Names.cs:851-857 Editor.CompletionHint via SyntaxElement.GetCompletionHint(index) used in IsInTabularContext",
     "Binder_Names.cs:227-380 control command / create-function context detection (Command, CustomNode)"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 5,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1029,7 +1029,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
    "upstreamBlob": "fbef7bf53a69c683a828228b3e162740253edbe9",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 4681,
    "namespace": "Kusto.Language.Binding",
@@ -1063,7 +1063,7 @@
     "Binder_NodeBinder.cs:4605-4652 command visits (VisitCommandWithValueClause, VisitBadCommand, VisitCommandBlock, VisitCustomCommand, VisitPartialCommand, VisitUnknownCommand) use _binder._globals.GetCommand(node.CommandKind)",
     "Binder_NodeBinder.cs:4653 Directives region"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 6,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1072,7 +1072,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_Operators.cs",
    "upstreamBlob": "5d71d801d39a212c13e9cc80f69ce192bf69f647",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 304,
    "namespace": "Kusto.Language.Binding",
@@ -1098,7 +1098,7 @@
     "Binder_Operators.cs:164-285 large switch SyntaxKind -> OperatorKind; relies on enum values/names in both",
     "Binder_Operators.cs:138 location.ToString(IncludeTrivia.Interior) used in diagnostic text"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 7,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1107,7 +1107,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_Projection.cs",
    "upstreamBlob": "2f9ed4fcbcb5fa6351f757db0f626802faf81d9f",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 839,
    "namespace": "Kusto.Language.Binding",
@@ -1138,7 +1138,7 @@
     "Binder_Projection.cs:836 string.IsNullOrWhiteSpace -> uses Unicode whitespace; Java isBlank is similar but not identical",
     "Binder_Projection.cs:403 ConstantValue is string pattern"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 8,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1147,7 +1147,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs",
    "upstreamBlob": "25cab2f4e8c734d5eac160b468789aad35786705",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 105,
    "namespace": "Kusto.Language.Binding",
@@ -1172,7 +1172,7 @@
    "traps": [
     "Binder_SearchPredicateBinder.cs:18 nested class in partial Binder; 5 Visit overrides"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 9,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1181,7 +1181,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs",
    "upstreamBlob": "288bb0b2492d1fc36c41775765b0045fee03fb21",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 571,
    "namespace": "Kusto.Language.Binding",
@@ -1209,7 +1209,7 @@
     "Binder_TablesAndColumns.cs:366,387 overloaded GetCommonColumns with List<Symbol> vs List<ColumnSymbol> out lists: same erasure in Java! Overloads with List<Symbol>/List<ColumnSymbol> clash after erasure; rename or change signature",
     "Binder_TablesAndColumns.cs:475 UniqueNameTable (Utils)"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 10,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1218,7 +1218,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
    "upstreamBlob": "1c92a4e06f9acc27c4f1d6c4a9328612b12bee7e",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 1211,
    "namespace": "Kusto.Language.Binding",
@@ -1245,7 +1245,7 @@
     "Binder_TreeBinder.cs:1011-1050 IsCommandButNotQueryPart, VisitCommandBlock use Command / CommandBlock nodes",
     "Binder_TreeBinder.cs:751 node.OrderByClause?.Accept(this) null-conditional"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
    "mergeOrder": 11,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -1323,7 +1323,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/FunctionCallExpansion.cs",
    "upstreamBlob": "ece37bcbfcdd87eaeb450d4f3c7b919bfc54ab70",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 18,
    "namespace": "Kusto.Language",
@@ -1346,7 +1346,7 @@
    "traps": [
     "FunctionCallExpansion.cs:3 namespace is Kusto.Language (NOT Kusto.Language.Binding) -> Java package org.graylog.kusto.language, not binding"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallExpansion; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -1354,7 +1354,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/FunctionCallInfo.cs",
    "upstreamBlob": "3d9a16c8445ae0905f3cd23bab57f73a69ce5a15",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 99,
    "namespace": "Kusto.Language.Binding",
@@ -1380,7 +1380,7 @@
     "FunctionCallInfo.cs:73-95 Diagnostics lazily relocates expansion diagnostics via root.GetPositionInOriginalTree and Diagnostic.WithLocation",
     "FunctionCallInfo.cs:3 System.Collections.ObjectModel"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallInfo; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -1608,7 +1608,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/SemanticInfo.cs",
    "upstreamBlob": "d7a304bf4909e075137a6d7f3c9896f8f3a2a29b",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 244,
    "namespace": "Kusto.Language.Binding",
@@ -1633,7 +1633,7 @@
     "SemanticInfo.cs:242 public static readonly SemanticInfo Empty = new SemanticInfo((TypeSymbol)null) -> static final; cast disambiguates overloads (Java overloads with null need cast too)",
     "SemanticInfo.cs:110-150 overloaded constructors with optional parameters -> Java overloads/builder"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W0 skeleton (PORT-SKELETON W6): SemanticInfo; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -1641,7 +1641,7 @@
    "upstreamPath": "src/Kusto.Language/Diagnostics/Diagnostic.cs",
    "upstreamBlob": "73f1a0ed03d90228153cc8132f8ddfcf3020dbd4",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 239,
    "namespace": "Kusto.Language",
@@ -1703,7 +1703,7 @@
     "Line 7 'using Syntax' placed inside namespace; Diagnostic depends on SyntaxElement (Syntax area)",
     "Four public types in one C# file: Java requires one public top-level type per file => split into Diagnostic.java, DiagnosticCategory.java, DiagnosticSeverity.java, DiagnosticLocationKind.java (document as unavoidable deviation)"
    ],
-   "notes": "Diagnostic model; KustoCode.GetDiagnostics (KustoCode.cs:366-382). No Editor/command dependencies found.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -1711,7 +1711,7 @@
    "upstreamPath": "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs",
    "upstreamBlob": "ae9c7a3a2ffc8ec35e7abfc0ec320abc172c63dc",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 1127,
    "namespace": "Kusto.Language",
@@ -1744,7 +1744,7 @@
     "Line 1120 #region command diagnostics with KS300 (GetMissingCommand): command grammar related but single trivial entry",
     "Large file: mostly mechanical; can be partly generated mechanically, but must preserve order and names"
    ],
-   "notes": "Diagnostic model; KustoCode.GetDiagnostics (KustoCode.cs:366-382). No Editor/command dependencies found.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -1871,7 +1871,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/ClientDirective.cs",
    "upstreamBlob": "d2943a7ec5b0a3b9d581eda736b62aa95ba44013",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 219,
    "namespace": "Kusto.Language.Editor",
@@ -1897,7 +1897,7 @@
     "ClientDirectiveArgument.Value is object holding boxed double/long/string/null; port as Object with Double/Long boxing.",
     "Real/long parsing uses double.TryParse(argText out) on EditString-implicit string with current culture and ignores failure (value defaults to 0); Java Double.parseDouble throws and is invariant-culture - emulate default 0."
    ],
-   "notes": "(a) Semantically load-bearing: SyntaxNode.cs:267-295 (Directive.Name/ArgumentsText/Arguments) -> Binder_Misc.cs:700-760 applies #database/#connect to change current cluster/database; Binder_NodeBinder.cs:4665 adds diagnostics. Port as-is against a minimal EditString stub.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -1905,7 +1905,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/ClientDirectiveArgument.cs",
    "upstreamBlob": "8a5127b670520e015714a1d254ab49da7249e2df",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 30,
    "namespace": "Kusto.Language.Editor",
@@ -1926,7 +1926,7 @@
    "partialGroup": null,
    "purpose": "Name/text/value triple for a parsed client directive argument.",
    "traps": [],
-   "notes": "(a) 29-line value class. SyntaxNode.cs:277; Binder_Misc.cs:711-781 (Text, Value).",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -2021,7 +2021,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/CodeKinds.cs",
    "upstreamBlob": "827b42614c64e1be5c20a82f043c535419c8b9bc",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 33,
    "namespace": "Kusto.Language.Editor",
@@ -2044,7 +2044,7 @@
    "traps": [
     "String constants initialised with nameof; Java must write literal strings, switch-on-constant in KustoCode.cs:120-133,210-215 maps to Java switch on constants."
    ],
-   "notes": "(a) 4 string constants. KustoCode.cs:120,132,133,210,215,341,358.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -2156,7 +2156,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/CompletionHint.cs",
    "upstreamBlob": "1828c6915c6b1365316275700ac1553bacd5a46a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 174,
    "namespace": "Kusto.Language.Editor",
@@ -2180,7 +2180,7 @@
     "[Flags] enum: None=0, Inherit=1 ... GraphSnapshot=1<<30 (31 flag members; fits int). Verified by counting the 32 initialised members.",
     "Flag combinations are used in PredefinedRuleParsers.cs:237-315 (Database | Table), so Java needs int constants/EnumSet-like bitmask, not a plain enum; Binder_Names.cs:853-857 compares with ==."
    ],
-   "notes": "(a) [Flags] enum, semantically load-bearing: Binder_Names.cs:851-857 uses it to decide tabular context; NamedParameter.ExpressionHint is a generated syntax property (Generators/SyntaxNodeInfos.cs:727); every generated node overrides GetCompletionHintCore (SyntaxNodeGenerator.cs:549-561); SyntaxElement.cs:306-311; CustomNode.cs:108-234; SeparatedElement.cs:43-48; QueryParser.cs:3409-3417; QueryGrammar.cs (17); PredefinedRuleParsers.cs:179-315; CommandGrammar.cs:12,710-716.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -2205,7 +2205,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/CompletionItem.cs",
    "upstreamBlob": "361a5c84d96c0e4184e950b6772cbd1b6c730c35",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 434,
    "namespace": "Kusto.Language.Editor",
@@ -2230,7 +2230,7 @@
     "Obsolete members EditText/WithEditText (lines 100, 340ish) may be dropped.",
     "Lazy string caching _beforeText/_afterText without locks (benign race)."
    ],
-   "notes": "(a) Parser annotation object. Constructed in SyntaxParsers.cs:409,664 and QueryGrammar.cs:578-3601 (18 sites); WithApplyTexts(string) at SyntaxParsers.cs:413; DisplayText read at CommandGrammar.cs:190. Annotations are opaque to in-scope code (only Editor reads them), so a stub is possible, but the class is self-contained (deps: CompletionText, Utils) and needed by any later completion port.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -2238,7 +2238,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/CompletionKind.cs",
    "upstreamBlob": "3c3d9de6aac1c1e9f20a1f16c3c3c4b566b0b487",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 154,
    "namespace": "Kusto.Language.Editor",
@@ -2259,7 +2259,7 @@
    "partialGroup": null,
    "purpose": "Enum of completion item kinds.",
    "traps": [],
-   "notes": "(a) enum. SyntaxParsers.cs (23 refs), QueryGrammar.cs (148), CommandGrammar.cs:13,749-779.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -2284,7 +2284,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/CompletionPriority.cs",
    "upstreamBlob": "dc2c82413931a7015e8c51a73b37e0f2a149ac94",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 35,
    "namespace": "Kusto.Language.Editor",
@@ -2315,7 +2315,7 @@
    "partialGroup": null,
    "purpose": "Declares CompletionRank and CompletionPriority enums (file name differs from first type).",
    "traps": [],
-   "notes": "(a) holds both CompletionPriority and CompletionRank enums. SyntaxParsers.cs:105-456; QueryGrammar.cs (32 Priority refs, 9 Rank refs at 578-782).",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -2323,7 +2323,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/CompletionText.cs",
    "upstreamBlob": "bdce67420043998cb61d40da81d1ad37910b9e88",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 101,
    "namespace": "Kusto.Language.Editor",
@@ -2346,7 +2346,7 @@
    "traps": [
     "string.IndexOf(string) is culture-sensitive in .NET; Java String.indexOf is ordinal (lines 63, 76)"
    ],
-   "notes": "(a) Transitive dep of CompletionItem (ApplyTexts, CreateApplyTexts 205-211, WithApplyTexts 284-311). Deps: Utils only.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3548,7 +3548,7 @@
    "upstreamPath": "src/Kusto.Language/FunctionBodyFacts.cs",
    "upstreamBlob": "c60d5d7b6d194baefdad1fb3a52963e139a55a42",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 3,
    "lines": 363,
    "namespace": "Kusto.Language",
@@ -3573,7 +3573,7 @@
     "Optional<T> struct (Utils) used in With(...) at 61 and 154-170: need Java Optional-like class distinguishing 'unset' from null (do not use java.util.Optional)",
     "static readonly Default singleton (line 40)"
    ],
-   "notes": "Used by Binder caches (GlobalBindingCache, LocalBindingCache, Binder_FunctionCalls, FunctionCallInfo) and SyntaxNode_Semantics.",
+   "notes": "W0 skeleton (PORT-SKELETON W3): FunctionBodyFacts; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3690,7 +3690,7 @@
    "upstreamPath": "src/Kusto.Language/GlobalState.cs",
    "upstreamBlob": "7376685121dc6380c10e42c1e3a55e596213cfab",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 4,
    "lines": 1218,
    "namespace": "Kusto.Language",
@@ -3740,7 +3740,7 @@
     "using Kusto.Language.Editor at line 7: verify unused; ported file should not import editor package",
     "GetCommands (869) switches on ServerKind strings from ServerKinds"
    ],
-   "notes": "Entry-point argument; holds catalogs, ParseOptions, Cache, ServerKind, commandMap (118) and GetCommand (847). Default (1150-1196) wires Functions/Aggregates/PlugIns/Operators/Options.All.",
+   "notes": "W0 skeleton (PORT-SKELETON W4): GlobalState, GlobalStateProperty; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5673,7 +5673,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/KustoFacts.cs",
    "upstreamBlob": "ec8e0b97094ca16bba08f99d16b9b0906c94ef2e",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 2,
    "lines": 1483,
    "namespace": "Kusto.Language",
@@ -5706,7 +5706,7 @@
     "StringComparison.OrdinalIgnoreCase at 1045,1187,1205 -> equalsIgnoreCase/regionMatches (Unicode folding differences negligible)",
     "Lazy init of _knownQueryOperatorParameterNames (77-95) to avoid static-init cycle with QueryOperatorParameters: preserve lazy init in Java (holder class) to avoid class-init cycle"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
    "mergeOrder": 0,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -5715,7 +5715,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
    "upstreamBlob": "758b43641842bbb7278b2b6f820d2b2cea70226a",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 2,
    "lines": 187,
    "namespace": "Kusto.Language",
@@ -5740,7 +5740,7 @@
    "traps": [
     "HashSet<string> default comparer is ordinal (line 14); use HashSet<String> in Java, no ordering reliance expected - verify consumers (CanBeIdentifier in KustoFacts.cs:607) only call Contains"
    ],
-   "notes": "partial class KustoFacts; s_engineCommandKeywordsThatNeedBrackets (14) is a static string set, not generated. Merge into KustoFacts.java.",
+   "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
    "mergeOrder": 1,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -5749,7 +5749,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/LexicalToken.cs",
    "upstreamBlob": "0ba2e8a163b768cb122a3ef7988050cb43596b18",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 2,
    "lines": 57,
    "namespace": "Kusto.Language.Parsing",
@@ -5773,7 +5773,7 @@
     "Diagnostics defaults to Diagnostic.NoDiagnostics (line 41); trivia/text null coerced to \"\" (lines 39-40)",
     "[DebuggerDisplay] attribute at line 13 is droppable"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W0 skeleton (PORT-SKELETON W2): LexicalToken; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6033,7 +6033,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/TextFacts.cs",
    "upstreamBlob": "1a0eac2127c5add2910d1934f02c30cfbb418739",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 2,
    "lines": 656,
    "namespace": "Kusto.Language.Parsing",
@@ -6059,7 +6059,7 @@
     "Line break set (117-150) includes U+2028/U+2029; \\r\\n pairing logic in GetLineBreakLength (132)",
     "Line start tables are UTF-16 code unit offsets; Java String indices match"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W0 skeleton (PORT-SKELETON W2): TextFacts; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6067,7 +6067,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/TokenParser.cs",
    "upstreamBlob": "17bc5a7892b1187eb55f08026665fc3f1207ac95",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 2,
    "lines": 1321,
    "namespace": "Kusto.Language.Parsing",
@@ -6098,7 +6098,7 @@
     "Token reuse 'trivia == \" \"' fast path (1275)",
     "Static init order: 18 TokenInfo static readonly fields (1283-1315) depend on s_kindToTokenInfoMap being initialised first"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W0 skeleton (PORT-SKELETON W2): TokenParser; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6174,7 +6174,7 @@
    "upstreamPath": "src/Kusto.Language/Properties.cs",
    "upstreamBlob": "1498a7df58112e14161bd03daa059a6ee2e8365f",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 46,
    "namespace": "Kusto.Language",
@@ -6199,7 +6199,7 @@
     "Name clash with GlobalState.Properties private property and java.util.Properties: name class Properties but avoid importing java.util.*",
     "File has UTF-8 BOM"
    ],
-   "notes": "GlobalStateProperty constants read by in-scope code: MaxAnalysisDepth (Syntax/SyntaxTree.cs:54), MaxCachedResultTypes (Binder/Binder_FunctionCalls.cs:1992), MaxCachedExpansions (Binder_FunctionCalls.cs:2202), AllowClientParameters (Binder/Binder_NodeBinder.cs:586). MaxParseTextSize is only read by Editor (KustoCodeService.cs:74) but is one field of the same static class; keep for mirror fidelity.",
+   "notes": "W0 skeleton (PORT-SKELETON W1): Properties; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6226,7 +6226,7 @@
    "upstreamPath": "src/Kusto.Language/QueryOperatorParameters.cs",
    "upstreamBlob": "f8b2cfab5f62c2ff039acd268135db24c1ea0032",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 3,
    "lines": 639,
    "namespace": "Kusto.Language",
@@ -6272,7 +6272,7 @@
     "Enum QueryOperatorParameterValueKind declared at 445: keep member order",
     "Symbol subclass: overrides IsHidden, Kind (115-117) -> SymbolKind.QueryOperatorParameter"
    ],
-   "notes": "Operator parameter catalog; QueryParser, QueryGrammar, KustoFacts, Binder_TreeBinder, Binder_NodeBinder.",
+   "notes": "W0 skeleton (PORT-SKELETON W3): QueryOperatorParameter; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6377,7 +6377,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ColumnSymbol.cs",
    "upstreamBlob": "4ac3446f35961fda28c82f6fa2673f37dc35ce6e",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 223,
    "namespace": "Kusto.Language.Symbols",
@@ -6404,7 +6404,7 @@
     "Combine() (lines ~190-215) calls into Binding.Binder statics: dependency cycle Symbols <-> Binder",
     "Examples uses ToReadOnly() on possibly-null list (Utils extension must tolerate null)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): ColumnSymbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6799,7 +6799,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs",
    "upstreamBlob": "b8a8e750041b96467d03e0537d8880a416aaa1c6",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 67,
    "namespace": "Kusto.Language.Symbols",
@@ -6824,7 +6824,7 @@
     "SpecialMembers static array (line 60) built at class init using ScalarTypes.String -> triggers ScalarTypes init",
     "Members always returns SpecialMembers, not the underlying symbol's members"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): EntityGroupElementSymbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7045,7 +7045,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/OperatorKind.cs",
    "upstreamBlob": "f044dd4861bb00400709a0251c1f83982d7da32e",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 78,
    "namespace": "Kusto.Language.Symbols",
@@ -7068,7 +7068,7 @@
    "traps": [
     "OperatorSymbol.cs:25 base(kind.ToString()) - enum name text is observable"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): OperatorKind; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7458,7 +7458,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ScalarSymbol.cs",
    "upstreamBlob": "73874e521895b2fd3a6be60260be553e0fca3eff",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 120,
    "namespace": "Kusto.Language.Symbols",
@@ -7504,7 +7504,7 @@
     "ScalarFlags uses binary literals 0b0001_0000 and All composite - Java int constants",
     "IsWiderThan loops over _widerThan with reference equality (lines 71-79); aliases for 'int' include 'uint' etc."
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): ScalarSymbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7612,7 +7612,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Signature.cs",
    "upstreamBlob": "6a713307e9e2565c5c94b237dbff22403194de11",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 694,
    "namespace": "Kusto.Language.Symbols",
@@ -7648,7 +7648,7 @@
     "Private ctor validation uses `body != null | declaration != null` (non-short-circuit |) - harmless",
     "ObjectPool<List<Parameter>> static (line 516)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): Signature; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7656,7 +7656,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Symbol.cs",
    "upstreamBlob": "6edee9fb5ade24349f7eb15b4633bf7d2c15a4b0",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 362,
    "namespace": "Kusto.Language.Symbols",
@@ -7684,7 +7684,7 @@
     "Symbol equality is reference identity throughout (no Equals/GetHashCode overrides) - do NOT override equals/hashCode in Java",
     "GetResultType recursion on GroupSymbol builds a GroupSymbol from result TYPES"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): Symbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7723,7 +7723,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/SymbolMatch.cs",
    "upstreamBlob": "c60c79f69926970f55ab4c31604a10bd96e4da80",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 228,
    "namespace": "Kusto.Language.Symbols",
@@ -7760,7 +7760,7 @@
     "Matches flows through many `symbol is X` checks; ExternalTable vs Table distinguished via IsExternal/IsMaterializedView/IsStoredQueryResult",
     "Extension method on Symbol -> static helper SymbolMatchExtensions.matches(symbol,...) or instance method on Symbol (deviation)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): SymbolMatch; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7922,7 +7922,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TupleSymbol.cs",
    "upstreamBlob": "4a6c92f93e38d66f3b8f0b5f258e6533ae66ab08",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 64,
    "namespace": "Kusto.Language.Symbols",
@@ -7947,7 +7947,7 @@
     "Empty (line 62) = new TupleSymbol(null): C# overload resolution picks the `params ColumnSymbol[]` ctor with a null array (array more specific than IEnumerable), which then casts to IEnumerable null -> ToReadOnly(null) must yield empty list; verify Utils.ToReadOnly/CheckArgumentNullOrElementNull behaviour",
     "Base name is literal 'tuple'"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): TupleSymbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7994,7 +7994,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TypeSymbol.cs",
    "upstreamBlob": "68b2b048855eec92481a6cfb7d671cddbb55671d",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 19,
    "namespace": "Kusto.Language.Symbols",
@@ -8015,7 +8015,7 @@
    "partialGroup": null,
    "purpose": "Base class for symbols that are types.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): TypeSymbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -8023,7 +8023,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/VariableSymbol.cs",
    "upstreamBlob": "f4fc1a2922f529268344d089e5d2ed4fa5e446d8",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 1,
    "lines": 57,
    "namespace": "Kusto.Language.Symbols",
@@ -8046,7 +8046,7 @@
    "traps": [
     "Type.CheckArgumentNull throws ArgumentNullException on null type"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W0 skeleton (PORT-SKELETON W1): VariableSymbol; see porting/skeletons-w0.md",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -8083,7 +8083,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt",
    "upstreamBlob": "13aece7492c38c7a5e5874ded0bc968d7f26ee2b",
    "scope": "buildTime",
-   "status": "generated",
+   "status": "generated+handwritten",
    "wave": 0,
    "lines": 14,
    "namespace": "Kusto.Language.Syntax",
@@ -10671,7 +10671,7 @@
    ],
    "purpose": "T4 template: compilerOptions /d:T4, includes CodeGenerator.cs, SyntaxNodeGenerator.cs, SyntaxNodeInfos.cs from Kusto.Language.Generators and outputs SyntaxNodeGenerator.Generate(SyntaxNodeInfos.All, SyntaxNodeInfos.KnownTypes) to GeneratedSyntaxNodes.cs. OUTPUT: src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.cs (build-time, not committed, git-ignored).",
    "traps": [],
-   "notes": "Driver for the ~226 concrete SyntaxNode classes plus SyntaxVisitor/DefaultSyntaxVisitor Visit* methods. Output (GeneratedSyntaxNodes.cs) is NOT checked in (grep for 'class BinaryExpression' finds nothing). Every in-scope layer depends on these classes, including command nodes (Command, CustomCommand, UnknownCommand, PartialCommand, BadCommand, CommandBlock, CommandAndSkippedTokens, CommandWith*Clause).",
+   "notes": "W0; hand-written regions: BracedName, BracketedName, BracketedWildcardedName, CompoundStringLiteralExpression, DefaultSyntaxVisitor, DefaultSyntaxVisitor1, Directive, DynamicExpression, Expression, LiteralExpression, Name, NameDeclaration, NameReference, NamedParameter, SyntaxVisitor, SyntaxVisitor1, TokenName, TypeOfLiteralExpression, WildcardedName",
    "generatedNodeCount": 225,
    "mergeOrder": [
     0,
@@ -10701,7 +10701,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/CustomNode.cs",
    "upstreamBlob": "cf02119fba7507037a0c96dcc1a6c2b4a3bc0b22",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 236,
    "namespace": "Kusto.Language.Syntax",
@@ -10738,7 +10738,7 @@
     "CloneCore (L~126) drops diagnostics when includeDiagnostics is true? It clones children with diagnostics but constructs new CustomNode(shape, clonedElements) without the node's own SyntaxDiagnostics",
     "IReadOnlyList<CustomElementDescriptor> shape compared by reference; IsDefault uses == (reference) OR value check (L224-231)"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -10746,7 +10746,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/FakeExpression.cs",
    "upstreamBlob": "74aa581383abeac48d0e9b815ba7a76709095aee",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 28,
    "namespace": "Kusto.Language.Syntax",
@@ -10769,7 +10769,7 @@
    "traps": [
     "Depends on generated node types and Binder.DefaultSetSemanticInfo; creates a Missing IdentifierToken inside a TokenLiteralExpression (L14) - mirror verbatim"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -10777,7 +10777,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SeparatedElement.cs",
    "upstreamBlob": "ef0c259ced344dcaee984cdfae50018e2d54c6f8",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 87,
    "namespace": "Kusto.Language.Syntax",
@@ -10813,7 +10813,7 @@
     "GetCompletionHint switch uses CompletionHint.Inherit/Syntax (L~40-48)",
     "Generic erasure: (TElement) casts are unchecked in Java; type-driven ElementType not used here"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -10821,7 +10821,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxCategory.cs",
    "upstreamBlob": "6ccf3c741061cdb7f75750f7bfdbd18ae218a8c3",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 47,
    "namespace": "Kusto.Language.Syntax",
@@ -10842,7 +10842,7 @@
    "partialGroup": null,
    "purpose": "Enum classifying SyntaxKind into Keyword, Identifier, Punctuation, Operator, Literal, List, Node, Other.",
    "traps": [],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -10850,7 +10850,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxElement.cs",
    "upstreamBlob": "70e9fb65596437ff4c2633260393d3662d9ed10e",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 1219,
    "namespace": "Kusto.Language.Syntax",
@@ -10899,7 +10899,7 @@
     "ToString(IncludeTrivia, maxLength) L1171-1190: StringBuilder.Length truncation = setLength; includeTrivia passed through token.Write using initial TriviaStart",
     "Nullable-free: Attach(optional) throws ArgumentNullException with a message (L87) - mirror as NullPointerException/IllegalArgumentException consistently"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "mergeOrder": 0,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -10908,7 +10908,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxExtensions.cs",
    "upstreamBlob": "965bd9e42162d86f536586940891d0dd375b68be",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 57,
    "namespace": "Kusto.Language.Syntax",
@@ -10933,7 +10933,7 @@
     "string comparison np.Name.SimpleName == parameter.Name uses ordinal == (L12): Java equals",
     "parameter.Aliases.Contains: Aliases is IReadOnlyList<string> -> List.contains (ordinal)"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -10941,7 +10941,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxFacts.cs",
    "upstreamBlob": "11332ae18dfed4a1104dc17f866f8aea26d202e4",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 930,
    "namespace": "Kusto.Language.Syntax",
@@ -10971,7 +10971,7 @@
     "OperatorKind dependency lives in Symbols namespace (Symbols/Operator*.cs) - cross-area dependency",
     "LINQ Select(GetText) method-group conversion L915-929 -> Java stream map(SyntaxFacts::getText) (extension method call style differs)"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -10979,7 +10979,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxKind.cs",
    "upstreamBlob": "908b6e891971c14f5fe8bd94ba7ef165b5088c8f",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 735,
    "namespace": "Kusto.Language.Syntax",
@@ -11006,7 +11006,7 @@
     "Section comment markers (// keywords L15, // scalar type keyword tokens L295, // punctuation tokens L325, // literal tokens L359, // identifier L371, // other tokens L374, // pseudo tokens L379, // nodes L388 ...) must be preserved per mirror rules",
     "Some kinds are not unique-per-node: Contains_CsKeyword vs ContainsCsKeyword, BinLegacy lacks 'Keyword' suffix - mirror exactly"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11014,7 +11014,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxList.cs",
    "upstreamBlob": "7dc88ba1a1d8ac5c08f6c23fc92ca3550a4b4499",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 142,
    "namespace": "Kusto.Language.Syntax",
@@ -11053,7 +11053,7 @@
     "Implements IReadOnlyList<TElement> -> Java: implement java.util.List? Prefer Iterable<TElement> + size()/get(i) to avoid mutable List contract; decide once for whole port",
     "Empty() allocates a new list each call (L140) - keep (identity matters because Attach requires a single parent)"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11061,7 +11061,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode.cs",
    "upstreamBlob": "5659f5a9b8c4267a026aadaf9733a280ce400ebf",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 297,
    "namespace": "Kusto.Language.Syntax",
@@ -11334,7 +11334,7 @@
     "CopyAsFragment<T> generic extension L92-103: creates new SyntaxTree(cloned, node.Tree, node.TriviaStart); 'var _ =' discards result but constructor has side effects (SetTree) - keep",
     "TextStart/TriviaStart reads from original tree: node.TextStart used with Original.Root.GetNodeAt"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "mergeNote": "hand-written partial merged into generated class via protected region",
    "mergeOrder": [
     0,
@@ -11361,7 +11361,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs",
    "upstreamBlob": "b9a52700956ec6f25d0277c239eb3409b7600c28",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 281,
    "namespace": "Kusto.Language.Syntax",
@@ -11436,7 +11436,7 @@
     "ConstantValueInfo L275-278 chained ?:  with 'is VariableSymbol v && v.IsConstant' pattern",
     "Depends on Binder.SemanticInfo (CalledFunctionInfo.Expansion/Facts/Diagnostics/HasErrors) - binder area"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "mergeNote": "hand-written partial merged into generated class via protected region",
    "mergeOrder": [
     1,
@@ -11450,7 +11450,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxToken.cs",
    "upstreamBlob": "43c44adbaa6a1e929b1308f77d4b7450d29e5a00",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 771,
    "namespace": "Kusto.Language.Syntax",
@@ -11500,7 +11500,7 @@
     "FullWidth virtual overrides with cached field, TriviaWidth => Trivia.Length (L47); Text.Length is UTF-16 code units - Java String.length() is same, good",
     "#if !BRIDGE L641-647: BRIDGE build lacks TimeSpan.TryParse; Java port is NON-bridge behavior (include the TryParse branch)"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11508,7 +11508,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxTree.cs",
    "upstreamBlob": "b8c0c3302eb450785d3c2901dce110d1ffdb55a5",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 77,
    "namespace": "Kusto.Language.Syntax",
@@ -11534,7 +11534,7 @@
     "IsSafeToRecurse is internal and reads GlobalState.GetProperty(Properties.MaxAnalysisDepth) L50-51: binder/GlobalState dependency",
     "ComputeMaxDepth L56-72 counts node depth via fnBefore/fnAfter closures that mutate captured locals: Java needs int[]/AtomicInteger or an explicit class"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11542,7 +11542,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxVisitor.cs",
    "upstreamBlob": "9a79d4709dc68102256285a3b013f0286141504b",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 63,
    "namespace": "Kusto.Language.Syntax",
@@ -11614,7 +11614,7 @@
     "Generic SyntaxVisitor<TResult> returns TResult; value types need boxing in Java (Boolean/Integer) - decide null-handling for primitive TResult",
     "DefaultSyntaxVisitor<TResult>'s parent 'SyntaxVisitor<TResult>' appears only in generated partial (L364); this file's partial declaration omits base class (valid in C# since partials merge)"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "mergeNote": "hand-written partial merged into generated class via protected region",
    "mergeOrder": [
     1,
@@ -11629,7 +11629,7 @@
    "upstreamPath": "src/Kusto.Language/Syntax/ValueInfo.cs",
    "upstreamBlob": "7e1d5b32fea1212820aa417b056d434e7975d87d",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 31,
    "namespace": "Kusto.Language.Syntax",
@@ -11653,7 +11653,7 @@
     "Value is System.Object: Java Object; boxed types (Integer/Long/Double/BigDecimal/TimeSpan/DateTime/UUID/String) must match C# CLR types chosen in SyntaxToken",
     "internal ctor (L22): package-private"
    ],
-   "notes": "Syntax tree is in scope. NOTE: concrete node classes are NOT in this directory; they are T4-generated (see Syntax/CodeGen/GeneratedSyntaxNodes.tt) and absent from the repo.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11680,7 +11680,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/ArgumentCheckers.cs",
    "upstreamBlob": "8d3a266740b5894da20700456211d2697210ad04",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 59,
    "namespace": "Kusto.Language.Utils",
@@ -11706,7 +11706,7 @@
     "Line 54-55 order: element-null check runs before empty check",
     "Interpolated message strings (27,43) must be copied verbatim"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11714,7 +11714,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/Cancellation.cs",
    "upstreamBlob": "c63b70e285b0571ab0975de4b73f562c3f7f12a5",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 41,
    "namespace": "Kusto.Language.Utils",
@@ -11739,7 +11739,7 @@
     "Default(CancellationToken) struct value is non-cancelable; Java needs a null-safe/NONE singleton since structs can't be defaulted",
     "Implicit conversion from System.Threading.CancellationToken (30-33) has no Java counterpart; offer constructors taking BooleanSupplier"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11747,7 +11747,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/ConnectionInfo.cs",
    "upstreamBlob": "5f71ff1ad19f469aa4360e507306f8b6bbf9e01c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 104,
    "namespace": "Kusto.Language.Utils",
@@ -11774,7 +11774,7 @@
     "Line 33-34 assignment inside while condition; port carefully",
     "Line 62 parts[name]=value: last duplicate wins, name is NOT trimmed"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11782,7 +11782,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/DictionaryExtensions.cs",
    "upstreamBlob": "6cb2d93f2f66112fa948ce3bcc8d356a34077bfa",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 59,
    "namespace": "Kusto.Language.Utils",
@@ -11807,7 +11807,7 @@
     "Lines 33-57: AddOrUpdate overloads with differing Func arity (2-arg add/3-arg update with extra value param at 45); keep overload set distinct in Java (static methods taking Map)",
     "Java HashMap permits null values; .NET Dictionary permits null values but not null keys; Java permits null keys"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11815,7 +11815,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/EmptyReadOnlyList.cs",
    "upstreamBlob": "f6ba01f2431d9af5644896b3a5048ed433731dd8",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 10,
    "namespace": "Kusto.Language.Utils",
@@ -11838,7 +11838,7 @@
    "traps": [
     "Line 8 Instance is a public static FIELD (not readonly) wrapping new List<T>().AsReadOnly(); identity compared with == in ListExtensions.cs:16,40; Java generic static singleton must return a typed unmodifiable list (Collections.emptyList() identity is shared across T, which is fine and matches the identity check)"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11846,7 +11846,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/Ensure.cs",
    "upstreamBlob": "1c87e0874d5bdf1f52c96e51722dab53647f2ff6",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 67,
    "namespace": "Kusto.Language.Utils",
@@ -11871,7 +11871,7 @@
     "Line 19 AreEqual<T> where T: IEquatable<T>; uses object.Equals",
     "Line 62 interpolated message $\"{listName}[{i}] is null\""
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11879,7 +11879,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/HashSetExtensions.cs",
    "upstreamBlob": "283c3d04e9faf5a901b8209cb946e611ba6dd00b",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 21,
    "namespace": "Kusto.Language.Utils",
@@ -11902,7 +11902,7 @@
    "traps": [
     "Java Set.addAll covers it; keep as static helper only if call sites need identical shape. Unused imports (Linq, Threading) irrelevant"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -11910,7 +11910,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/Interlocked.cs",
    "upstreamBlob": "162747373bd3b0880204487ca12e7a38da06ec13",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 118,
    "namespace": "Kusto.Language.Utils",
@@ -11936,7 +11936,7 @@
     "Lines 74-114 CacheLineSeparated uses StructLayout, FieldOffset, sizeof(int): grep shows no users outside Interlocked.cs; Bridge-incompatible padding trick",
     "Lines 93-97 #if TARGET_ARM64 || TARGET_LOONGARCH64 preprocessor constant (conditional compilation)"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "droppedTypes": [
     {
      "type": "CacheLineSeparated",
@@ -11951,7 +11951,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/ListExtensions.cs",
    "upstreamBlob": "46ca9e8ce628500e7ff6f6c2bcaa49bd574aaa05",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 431,
    "namespace": "Kusto.Language.Utils",
@@ -11997,7 +11997,7 @@
     "Line 392 ArgumentNullException(nameof(comparer)) -> NullPointerException/IllegalArgumentException",
     "Line 62 ToHashSetEx exists only for Bridge; Java can use new HashSet<>(...) but HashSet iteration order differs from .NET HashSet (insertion order for .NET w/o removals) - use LinkedHashSet to preserve observable order"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12005,7 +12005,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/MostRecentlyUsedCache.cs",
    "upstreamBlob": "4137f8fd1c84f53a898fd516a7700ea308ed3b78",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 83,
    "namespace": "Kusto.Language.Utils",
@@ -12032,7 +12032,7 @@
     "Line 25 Count reads _pairs.Count without lock",
     "Line 49 default(TValue) -> null/0 in Java; TValue generic over primitives needs boxing"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12040,7 +12040,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/ObjectPool.cs",
    "upstreamBlob": "ca0ed96f8b3a63df1a7207e15d188d3e85f1a55c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 61,
    "namespace": "Kusto.Language.Utils",
@@ -12066,7 +12066,7 @@
     "Pooled objects (parsers, builders, lists) are reused: reset correctness (resetter) is critical; pool usage sites in Binder_Misc, Binder_NodeBinder, Combinators, TypeFacts, etc. Consider replacing with ThreadLocal or no pooling but keep API",
     "Line 44 resetter called before returning to pool even if pool full"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12074,7 +12074,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/Optional.cs",
    "upstreamBlob": "28594e8c852a80150dc50070f344c7177be17d4f",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 22,
    "namespace": "Kusto.Language.Utils",
@@ -12099,7 +12099,7 @@
     "default(Optional<T>) = HasValue false; Java immutable class with static EMPTY/none factory",
     "Name clash with java.util.Optional - use fully qualified or rename (e.g. KustoOptional) while keeping file mapping documented"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12107,7 +12107,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/SafeList.cs",
    "upstreamBlob": "a6a327c988d5d42ddca18de62c13ab53d1ab1032",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 136,
    "namespace": "Kusto.Language.Utils",
@@ -12137,7 +12137,7 @@
     "Line 133 static readonly Empty with isOwner:false",
     "Line 80 AddItems copies length items (capacity _length) then AddRange; line 60 capacity length+1"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12145,7 +12145,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/StringAndNumberComparer.cs",
    "upstreamBlob": "50e4dc769dbeb3f312ea935f2197bce7d990ac3f",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 131,
    "namespace": "Kusto.Language.Utils",
@@ -12173,7 +12173,7 @@
     "Line 117 returns xLength - yLength (length diff), not clamped",
     "Public static fields (not readonly) Ordinal/OrdinalIgnoreCase lines 18-22"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12181,7 +12181,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/StringExtensions.cs",
    "upstreamBlob": "82bb62e1f5e49bad482ec1b24d519f0bf0848c07",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 28,
    "namespace": "Kusto.Language.Utils",
@@ -12205,7 +12205,7 @@
     "Line 14 text.All(...) over chars: Java String.chars()/loop; null text NPE in both",
     "Predicate receives UTF-16 code units; Java char equivalent, do not use codePoints"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12213,7 +12213,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/StringTable.cs",
    "upstreamBlob": "fa0c7e42c1132a90ebce73c708205312464eb7d1",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 98,
    "namespace": "Kusto.Language.Utils",
@@ -12238,7 +12238,7 @@
     "Line 37 lambda captures substring only when range is not whole string (keeps original instance - reference identity of interned string may be observable)",
     "Line 73 Contains(string) delegates to ContainsKey(text,0,len) which returns false for empty string (length<1 check in TextKeyedDictionary.cs:529)"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12246,7 +12246,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/SubstringMap.cs",
    "upstreamBlob": "ad982c568eeb68cae7bb5bde69a6b5d3e317a7fc",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 212,
    "namespace": "Kusto.Language.Utils",
@@ -12275,7 +12275,7 @@
     "Line 160 GetSubNode(text[pos]) char-by-char UTF-16 ordinal; case-sensitive",
     "Line 212 foreach over pair.Key chars; empty key sets value on root"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12283,7 +12283,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/TextKeyedDictionary.cs",
    "upstreamBlob": "2e9a52874ced1ff8f6195e2a3c5066c10129aaac",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 223,
    "namespace": "Kusto.Language.Utils",
@@ -12323,7 +12323,7 @@
     "Key struct as HashMap key: Java needs final class with equals/hashCode (allocation per lookup; acceptable)",
     "Lines 636-652 extension with first-wins semantics (GetOrAddValue) for duplicate keys"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12331,7 +12331,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/ThreadSafeDictionary.cs",
    "upstreamBlob": "9020a3039fbbb92e4488fea5cb4d592d7a79b32b",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 70,
    "namespace": "Kusto.Language.Utils",
@@ -12359,7 +12359,7 @@
     "Constructor taking IEqualityComparer<TKey> (19,33): Java has no comparer injection for HashMap; need wrapper key or normalised keys for case-insensitive use (check GlobalBindingCache usage)",
     "#if NET472_OR_GREATER || NET || BRIDGE at 62-68 chooses overload; port only one branch"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12367,7 +12367,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/UniqueNameTable.cs",
    "upstreamBlob": "e7f3eeb147e709f934681bee78ac3ee15881d1c8",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 77,
    "namespace": "Kusto.Language.Utils",
@@ -12393,7 +12393,7 @@
     "Line 50 string concat baseName + int suffix uses invariant digits (int.ToString culture-sensitive only for negative sign; suffix always positive)",
     "Line 54 mutates nameMap[name] inside loop before Add: ordering matters"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12401,7 +12401,7 @@
    "upstreamPath": "src/Kusto.Language/Utils/ValueComparer.cs",
    "upstreamBlob": "bd12397aefc298e09e38f88e3d3597109633a2c7",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 0,
    "lines": 108,
    "namespace": "Kusto.Language.Utils",
@@ -12429,7 +12429,7 @@
     "Lines 87-106 TypeCode-based IsNumeric includes SByte/Byte/UInt16/UInt32/UInt64/Decimal",
     "Convert.ChangeType of negative to UInt64 throws OverflowException; Java must emulate or avoid"
    ],
-   "notes": "Shared helpers used across parser/binder/symbols (ObjectPool, SafeList, Interlocked, ThreadSafeDictionary, Optional, Ensure, EmptyReadOnlyList, ...). Bridge-only #if blocks in Interlocked.cs, ThreadSafeDictionary.cs, Cancellation.cs: take the !BRIDGE branch.",
+   "notes": "W0",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },

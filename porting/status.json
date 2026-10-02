@@ -94,5 +94,341 @@
  "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/TimeSpan.java": {
   "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
   "status": "ported"
+ },
+ "src/Kusto.Language.Generators/CodeGenerator.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language.Generators/SyntaxNodeInfos.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/Binder_API.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_ContextBuilder.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_FunctionCalls.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_Misc.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_Names.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_NodeBinder.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_Operators.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_Projection.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/Binder_TreeBinder.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/FunctionCallExpansion.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallExpansion; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/FunctionCallInfo.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallInfo; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Binder/SemanticInfo.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W6): SemanticInfo; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Diagnostics/Diagnostic.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/ClientDirective.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/ClientDirectiveArgument.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/CodeKinds.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/CompletionHint.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/CompletionItem.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/CompletionKind.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/CompletionPriority.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Editor/CompletionText.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/FunctionBodyFacts.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W3): FunctionBodyFacts; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/GlobalState.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W4): GlobalState, GlobalStateProperty; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Parser/KustoFacts.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Parser/KustoFacts_Keywords.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Parser/LexicalToken.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W2): LexicalToken; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Parser/TextFacts.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W2): TextFacts; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Parser/TokenParser.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W2): TokenParser; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Properties.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): Properties; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/QueryOperatorParameters.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W3): QueryOperatorParameter; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/ColumnSymbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): ColumnSymbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): EntityGroupElementSymbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/OperatorKind.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): OperatorKind; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/ScalarSymbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): ScalarSymbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/Signature.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): Signature; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/Symbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): Symbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/SymbolMatch.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): SymbolMatch; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/TupleSymbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): TupleSymbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/TypeSymbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): TypeSymbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Symbols/VariableSymbol.cs": {
+  "notes": "W0 skeleton (PORT-SKELETON W1): VariableSymbol; see porting/skeletons-w0.md",
+  "status": "partial"
+ },
+ "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt": {
+  "notes": "W0; hand-written regions: BracedName, BracketedName, BracketedWildcardedName, CompoundStringLiteralExpression, DefaultSyntaxVisitor, DefaultSyntaxVisitor1, Directive, DynamicExpression, Expression, LiteralExpression, Name, NameDeclaration, NameReference, NamedParameter, SyntaxVisitor, SyntaxVisitor1, TokenName, TypeOfLiteralExpression, WildcardedName",
+  "status": "generated+handwritten"
+ },
+ "src/Kusto.Language/Syntax/CustomNode.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/FakeExpression.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SeparatedElement.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxCategory.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxElement.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxExtensions.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxFacts.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxKind.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxList.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxNode.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxNode_Semantics.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxToken.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxTree.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/SyntaxVisitor.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Syntax/ValueInfo.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/ArgumentCheckers.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/Cancellation.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/ConnectionInfo.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/DictionaryExtensions.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/EmptyReadOnlyList.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/Ensure.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/HashSetExtensions.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/Interlocked.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/ListExtensions.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/MostRecentlyUsedCache.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/ObjectPool.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/Optional.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/SafeList.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/StringAndNumberComparer.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/StringExtensions.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/StringTable.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/SubstringMap.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/TextKeyedDictionary.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/ThreadSafeDictionary.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/UniqueNameTable.cs": {
+  "notes": "W0",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Utils/ValueComparer.cs": {
+  "notes": "W0",
+  "status": "ported"
  }
 }

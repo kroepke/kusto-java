@@ -641,7 +641,12 @@ public final class BinaryExpression extends Expression {
 }
 ```
 `NamedParameter` additionally gets a third constructor without `expressionHint`, and its
-`IsSyntax=false` property is assigned without `attach`. Member order is the upstream emit order
+`IsSyntax=false` property is assigned without `attach`. Property type map in the emitter:
+`string` → `String`, `IReadOnlyList<string>` → `List<String>`, `CompletionHint` → `int` and
+`SymbolMatch` → `int` (both are `[Flags]` holders, 3.17/D23), generic node types get the arity
+suffix (`SyntaxList<SeparatedElement<X>>` → `SyntaxList1<SeparatedElement1<X>>`). Region files
+also carry a `// <hand-written-imports>` region after the generated imports and one
+`// Ported from:` line per upstream origin (W0 decision). Member order is the upstream emit order
 (kind, properties, constructor, child accessors, visitor, clone).
 
 ### 4.4 Hand-written regions

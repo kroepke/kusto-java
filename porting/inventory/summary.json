@@ -47,10 +47,11 @@
  },
  "perStatus": {
   "excluded": 124,
-  "pending": 193,
+  "ported": 73,
+  "pending": 110,
+  "partial": 34,
   "stubbed": 9,
-  "generated": 1,
-  "ported": 24
+  "generated+handwritten": 1
  },
  "entriesTotal": 351,
  "syntheticCount": 26,
@@ -193,6 +194,10 @@
   }
  ],
  "multiTypeFiles": [
+  {
+   "upstreamPath": "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt",
+   "topLevelTypes": 229
+  },
   {
    "upstreamPath": "src/Kusto.Language/Syntax/SyntaxNode.cs",
    "topLevelTypes": 17

@@ -32,3 +32,11 @@ Re-run `extract_docs_corpus.py` after adding it.
 - Output is deterministic (sorted paths) apart from `extractedAt` in `PROVENANCE.json`.
 - To bump a pin, edit `commit` in `corpora.json`, re-run everything, review the diff.
 - `readme-v1.json` is hand-transcribed; the readme extractor does not generate it.
+
+## Generator tools (W0)
+
+- `convert_syntax_node_infos.py`: mechanical C# → Java conversion of `SyntaxNodeInfos.cs` into
+  `kusto-language-generator/.../SyntaxNodeInfos.java` (`--check` verifies it is up to date).
+- `check_generated_structure.py`: diffs node/visitor structure between
+  `porting/reference/GeneratedSyntaxNodes.cs` and the generated Java (W0 gate).
+- `check_headers.py`, `check_pending.py`: review-gate scripts (headers/markers, PORT-PENDING list).
