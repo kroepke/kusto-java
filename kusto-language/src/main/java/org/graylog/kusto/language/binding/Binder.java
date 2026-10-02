@@ -19,11 +19,13 @@
 package org.graylog.kusto.language.binding;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.graylog.kusto.language.GlobalState;
 import org.graylog.kusto.language.symbols.ColumnSymbol;
 import org.graylog.kusto.language.symbols.Parameter;
 import org.graylog.kusto.language.symbols.Signature;
+import org.graylog.kusto.language.symbols.Symbol;
 import org.graylog.kusto.language.symbols.TableSymbol;
 import org.graylog.kusto.language.symbols.TypeSymbol;
 import org.graylog.kusto.language.syntax.Expression;
@@ -31,13 +33,43 @@ import org.graylog.kusto.language.syntax.NameAndTypeDeclaration;
 import org.graylog.kusto.language.syntax.SeparatedElement1;
 import org.graylog.kusto.language.syntax.SyntaxList1;
 import org.graylog.kusto.language.syntax.SyntaxNode;
+import org.graylog.kusto.language.syntax.SyntaxTree;
 import org.graylog.kusto.language.syntax.TypeExpression;
+import org.graylog.kusto.language.utils.CancellationToken;
 import org.graylog.kusto.language.utils.dotnet.Internal;
 
 @Internal
 public final class Binder
 {
     // ===== upstream part: Binder_API.cs =====
+
+    /// <summary>
+    /// Do semantic analysis over the syntax tree.
+    /// </summary>
+    public static boolean tryBind( // PORT-PENDING: W6
+        SyntaxTree tree,
+        GlobalState globals,
+        LocalBindingCache localBindingCache,
+        BiConsumer<SyntaxNode, SemanticInfo> semanticInfoSetter,
+        CancellationToken cancellationToken)
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    public static boolean tryBind(SyntaxTree tree, GlobalState globals, LocalBindingCache localBindingCache, BiConsumer<SyntaxNode, SemanticInfo> semanticInfoSetter) // PORT: §3.12 cancellationToken = default
+    {
+        return tryBind(tree, globals, localBindingCache, semanticInfoSetter, CancellationToken.NONE);
+    }
+
+    public static boolean tryBind(SyntaxTree tree, GlobalState globals, LocalBindingCache localBindingCache) // PORT: §3.12 semanticInfoSetter = null
+    {
+        return tryBind(tree, globals, localBindingCache, null, CancellationToken.NONE);
+    }
+
+    public static boolean tryBind(SyntaxTree tree, GlobalState globals) // PORT: §3.12 localBindingCache = null
+    {
+        return tryBind(tree, globals, null, null, CancellationToken.NONE);
+    }
 
     @Internal
     public static void defaultSetSemanticInfo(SyntaxNode node, SemanticInfo info) // PORT-PENDING: W6
@@ -54,6 +86,35 @@ public final class Binder
     }
 
     public static TypeSymbol getComputedReturnType(Signature signature, GlobalState globals) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    /// <summary>
+    /// Gets the symbol that would be referenced at the specified location.
+    /// </summary>
+    public static Symbol getReferencedSymbol(SyntaxTree tree, int position, String name, GlobalState globals, int match, CancellationToken cancellationToken) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    /// <summary>
+    /// Gets the <see cref="TableSymbol"/> that is in scope as the implicit set of columns accessible within a query.
+    /// </summary>
+    public static TableSymbol getRowScope(SyntaxTree tree, int position, GlobalState globals, CancellationToken cancellationToken) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    public static TableSymbol getRowScope(SyntaxTree tree, int position, GlobalState globals) // PORT: §3.12 cancellationToken = default
+    {
+        return getRowScope(tree, position, globals, CancellationToken.NONE);
+    }
+
+    /// <summary>
+    /// Gets all the symbols that are in scope at the text position.
+    /// </summary>
+    public static void getSymbolsInScope(SyntaxTree tree, int position, GlobalState globals, int match, int include, List<Symbol> list, CancellationToken cancellationToken) // PORT-PENDING: W6
     {
         throw new UnsupportedOperationException("PORT-PENDING: W6");
     }

@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0
 // Upstream license: Apache-2.0, Copyright (c) 2019 Microsoft Corporation.
 // This file is a derived work; see NOTICE. Modifications are marked "// PORT:".
-// PORT-SKELETON: W4
 
 package org.graylog.kusto.language;
 
