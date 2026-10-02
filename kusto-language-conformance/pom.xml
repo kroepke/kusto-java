@@ -14,6 +14,14 @@
   <name>Kusto Language Conformance</name>
   <description>Conformance tests comparing the port against .NET oracle goldens (tests only).</description>
 
+  <properties>
+    <!-- Passed through to the tests; empty means unset (see Harness). -->
+    <kusto.goldens></kusto.goldens>
+    <kusto.port></kusto.port>
+    <kusto.requireGoldens>false</kusto.requireGoldens>
+    <kusto.fuzzSeed></kusto.fuzzSeed>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.graylog.kusto</groupId>
@@ -38,6 +46,14 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>-Xss16m</argLine>
+          <trimStackTrace>false</trimStackTrace>
+          <systemPropertyVariables>
+            <kusto.basedir>${project.basedir}</kusto.basedir>
+            <kusto.goldens>${kusto.goldens}</kusto.goldens>
+            <kusto.port>${kusto.port}</kusto.port>
+            <kusto.requireGoldens>${kusto.requireGoldens}</kusto.requireGoldens>
+            <kusto.fuzzSeed>${kusto.fuzzSeed}</kusto.fuzzSeed>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>

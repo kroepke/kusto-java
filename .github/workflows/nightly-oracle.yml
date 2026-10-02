@@ -19,4 +19,4 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: bash oracle/run.sh regenerate --all
-      - run: mvn -B -ntp verify
+      - run: mvn -B -ntp verify -Dkusto.requireGoldens=true
