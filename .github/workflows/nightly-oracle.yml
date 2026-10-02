@@ -18,5 +18,5 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-      - run: bash oracle/run.sh regenerate
+      - run: bash oracle/run.sh regenerate --all
       - run: mvn -B -ntp verify

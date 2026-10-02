@@ -213,6 +213,12 @@ where both sides throw the same mapped exception type matches.
 Corpus pins: `MicrosoftDocs/dataexplorer-docs` and `Azure/Azure-Sentinel` main-branch heads at
 T0 unless commits are named (section 9).
 
+Golden size (T0b decision): a full sentinel dump is 37 MB gzipped, so committed goldens for
+large corpora are a deterministic sample (every k-th record; sizes in `porting/corpora.json`
+`goldenSample`, sentinel = 1200 → 1181 records, 9.7 MB). The corpus files stay complete;
+`run.sh regenerate --all` (nightly) dumps everything and the harness compares whatever records
+the golden holds.
+
 ### 5.4 Conformance harness (`kusto-language-conformance`)
 
 - `GoldenWriter` (Java side of `golden-format.md`), `GoldenComparator` (field-wise, cause
