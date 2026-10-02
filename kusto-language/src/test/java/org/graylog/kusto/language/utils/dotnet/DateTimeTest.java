@@ -53,11 +53,35 @@ class DateTimeTest {
         assertEquals("01/02/2020 05:04:05", DateTime.tryParse("2020-01-02T03:04:05-0200").toString());
         assertEquals(DateTime.Kind.Utc, DateTime.tryParse("2020-01-02T03:04:05z").kind());
         assertNull(DateTime.tryParse("Fri, 02 Jan 2020"));
-        assertNull(DateTime.tryParse("1/2/2020 13:00 PM"));
+        // .NET AdjustHour: PM accepts hours up to 23 and leaves 12..23 unchanged.
+        assertEquals("01/02/2020 13:00:00", DateTime.tryParse("1/2/2020 13:00 PM").toString());
+        assertNull(DateTime.tryParse("1/2/2020 13:00 AM"));
         assertNull(DateTime.tryParse("2020-01-02T03:04:05 +01:00 x"));
         assertNull(DateTime.tryParse("2020-01-02T03:04:05+15:00"));
         assertNull(DateTime.tryParse("2020-01-02X03:04"));
         assertNull(DateTime.tryParse(null));
+    }
+
+    @Test
+    void goldenLiteralsWithCommasAndSpacedSeparators() {
+        // docs/0281, docs/1283: datetime(2025, 6, 14); ',' is ignorable, so this is "y M d".
+        assertEquals("06/14/2025 00:00:00", DateTime.tryParse("2025, 6, 14").toString());
+        assertEquals("06/17/2025 00:00:00", DateTime.tryParse("2025, 6, 17").toString());
+        // docs/1272: datetime(2017 - 08 - 01); white space may surround a date separator.
+        assertEquals("08/01/2017 00:00:00", DateTime.tryParse("2017 - 08 - 01").toString());
+        assertEquals("08/07/2017 00:00:00", DateTime.tryParse("2017 - 08 - 07").toString());
+        assertEquals(DateTime.Kind.Unspecified, DateTime.tryParse("2025, 6, 14").kind());
+    }
+
+    @Test
+    void lenientTokenForms() {
+        assertEquals("06/01/2014 00:00:00", DateTime.tryParse("14 June").toString()); // d MMMM reads a year
+        assertEquals("06/14/2025 15:04:00", DateTime.tryParse("15:04 2025-6-14").toString());
+        assertEquals("01/02/2049 00:00:00", DateTime.tryParse("1/2/49").toString());
+        assertEquals("01/02/2020 20:04:05", DateTime.tryParse("2020/1/2 3:04:05.123 PM -05").toString());
+        assertNull(DateTime.tryParse("14/6/2025")); // MDY only
+        assertNull(DateTime.tryParse("2025 1 2 3"));
+        assertNull(DateTime.tryParse("2020-01-02 03:04:05 -08:00 GMT")); // two zones
     }
 
     @Test

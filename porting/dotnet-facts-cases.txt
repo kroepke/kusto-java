@@ -341,6 +341,42 @@ DateTime.TryParse	2020-01-02T03:04:05.123
 DateTime.TryParse	[""]
 DateTime.TryParse	0001-01-01T00:00:00+01:00
 DateTime.TryParse	9999-12-31T23:59:59-01:00
+# lenient token forms (DateTimeParse state machine): ignorable ',' / '.', spaced separators,
+# MDY short-date order, two-digit years (max 2049), month names, AM/PM, eras, CJK suffixes, '#' wrapping
+DateTime.TryParse	2025, 6, 14
+DateTime.TryParse	2025,6,14
+DateTime.TryParse	2025 6 14
+DateTime.TryParse	2025, 6, 14, 3, 4, 5
+DateTime.TryParse	2017 - 08 - 01
+DateTime.TryParse	2017 / 08 / 01
+DateTime.TryParse	["2017\t-\t08\t-\t01"]
+DateTime.TryParse	2017.08.01
+DateTime.TryParse	8.1.2017
+DateTime.TryParse	08 - 01 - 2017
+DateTime.TryParse	13 - 01 - 2017
+DateTime.TryParse	2025-14-6
+DateTime.TryParse	6/14/25
+DateTime.TryParse	1/2/50
+DateTime.TryParse	2017-08-01 3:04 PM
+DateTime.TryParse	2017-08-01  03:04
+DateTime.TryParse	2017-08-01.
+DateTime.TryParse	2017, Aug 1
+DateTime.TryParse	Aug 1, 2017 3:04 PM
+DateTime.TryParse	1 August, 2017
+DateTime.TryParse	14 June
+DateTime.TryParse	2025 June
+DateTime.TryParse	06/2025
+DateTime.TryParse	2025-6-14 3 PM
+DateTime.TryParse	1/2/2020 13:00 PM
+DateTime.TryParse	2025-6-14 15:04:05 +2
+DateTime.TryParse	15:04 2025-6-14
+DateTime.TryParse	Saturday, June 14, 2025
+DateTime.TryParse	2025-6-14 T 15:04
+DateTime.TryParse	2020-01-02T3:04
+DateTime.TryParse	2020-01-02 03:04:05,123
+DateTime.TryParse	1/2/2020 AD
+DateTime.TryParse	#2020-01-02#
+DateTime.TryParse	2020年1月2日
 
 # ----------------------------------------------------------------------
 # Guid.TryParse (SyntaxToken.cs GetGuidValue)
