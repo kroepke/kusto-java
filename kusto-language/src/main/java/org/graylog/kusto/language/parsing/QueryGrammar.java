@@ -1183,6 +1183,8 @@ public class QueryGrammar
                                 (Expression)new SimpleNamedExpression(name, equals, expr))),
 
                     // special case for invalid named-expression names
+                    // PORT-BUG: D33 upstream grammar-mode bug: scanDashedName returns 0 for a non-name token, so a bare '=' in
+                    // name position yields an IdentifierToken "=" (KS228) AND the EqualToken at the same offset (print f(=) -> print f(==)).
                     if_(and(DashedName, token(SyntaxKind.EqualToken)),
                         rule(DashedName, token(SyntaxKind.EqualToken), required(this.unnamedExpression, (source, start) -> createMissingExpression(source, start)), // PORT: §3.8 method group
                             (name, equals, expr) ->

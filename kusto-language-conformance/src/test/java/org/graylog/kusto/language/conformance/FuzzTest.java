@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
@@ -56,6 +58,8 @@ class FuzzTest {
         List<String> lines = new ArrayList<>();
         List<String> summary = new ArrayList<>();
         java.util.Set<String> reducedTexts = new java.util.HashSet<>();
+        Set<String> knownTexts = readKnownFailures();
+        Set<String> knownHit = new TreeSet<>();
         int mutants = 0;
         int failing = 0;
         for (String seedId : seedIds) {
@@ -73,6 +77,10 @@ class FuzzTest {
                     Invariants.Check rc = Invariants.check(port, new CorpusRecord("fuzz/tmp", t, seed.schema(), null, false));
                     return category.equals(rc.category());
                 });
+                if (knownTexts.contains(reduced)) {
+                    knownHit.add(reduced);
+                    continue;
+                }
                 if (!reducedTexts.add(seed.schema() + "\u0000" + reduced)) {
                     continue;
                 }
@@ -90,11 +98,38 @@ class FuzzTest {
             throw new UncheckedIOException(e);
         }
         System.out.println("fuzz: " + seedIds.size() + " seeds, " + mutants + " mutants, " + failing
-                + " failing, " + lines.size() + " distinct after reduction");
+                + " failing, " + lines.size() + " distinct after reduction, " + knownHit.size() + " known (D33)");
+        List<String> stale = new ArrayList<>();
+        for (String t : knownTexts) {
+            if (!knownHit.contains(t)) {
+                stale.add(t);
+            }
+        }
+        if (!stale.isEmpty()) {
+            fail("stale known failure(s) in fuzz-known-failures.json (no longer failing): " + stale);
+        }
         if (!lines.isEmpty()) {
             fail(failing + " failing mutants, " + lines.size() + " distinct after reduction (in " + out + "):\n  "
                     + String.join("\n  ", summary.subList(0, Math.min(50, summary.size()))));
         }
+    }
+
+    /** Exact reduced texts exempt from the round-trip invariant ({@code fuzz-known-failures.json}). */
+    static Set<String> readKnownFailures() {
+        Set<String> texts = new TreeSet<>();
+        try (var in = FuzzTest.class.getResourceAsStream("/fuzz-known-failures.json")) {
+            if (in == null) {
+                return texts;
+            }
+            String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            var m = java.util.regex.Pattern.compile("\"text\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"").matcher(json);
+            while (m.find()) {
+                texts.add(m.group(1).replace("\\\"", "\"").replace("\\\\", "\\"));
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return texts;
     }
 
     static List<String> readSeeds(Path file) {

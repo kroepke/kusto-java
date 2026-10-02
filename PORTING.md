@@ -883,6 +883,7 @@ Command text (`.`-prefixed), decided:
 | D30 | module/tool names | `oracle/kusto-oracle` is not a Maven module; `porting/upstream-diff/` holds the tool | .NET is not Maven |
 | D31 | time-only `datetime(...)` literals | both sides fill in the run date (`DateTime.TryParse` semantics); goldens pin the oracle's generation day, so such records are known differences (`KD-001`) rather than corpus edits | date-dependent behaviour |
 | D32 | `PlugIns` `ArgumentKind.Column \| ArgumentKind.Literal` (4 `ai_*` sites) | `ArgumentKind` is not `[Flags]`; the value `(ArgumentKind)13` names no member and behaves like `Expression` everywhere; Java uses `ArgumentKind.Expression` with `// PORT-BUG` (oracle globals show `"13"`) | Java enums cannot hold 13 |
+| D33 | QueryGrammar name-declaration fallback | upstream grammar-mode bug: a bare `=` in name position yields an `IdentifierToken "="` (KS228) AND the `EqualToken` at the same offset, so `root.toString()` gains one `=` (`print f(=)` → `print f(==)`); verified identical in .NET `ParserKind.Grammar`; mirrored with `// PORT-BUG`; the local fuzz round-trip invariant exempts exact reduced texts listed in `fuzz-known-failures.json` | upstream bug |
 
 Rows are added as porting proceeds. The manifest `notes` field points at the row.
 
