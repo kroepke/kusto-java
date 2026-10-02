@@ -16,6 +16,12 @@ import org.graylog.kusto.language.symbols.Symbol;
 /// </summary>
 public class QueryOperatorParameter extends Symbol
 {
+    protected QueryOperatorParameter(String name) // PORT-PENDING: W3
+    {
+        super(name);
+        throw new UnsupportedOperationException("PORT-PENDING: W3");
+    }
+
     public List<String> aliases() // PORT-PENDING: W3
     {
         throw new UnsupportedOperationException("PORT-PENDING: W3");

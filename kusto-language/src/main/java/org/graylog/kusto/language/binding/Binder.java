@@ -18,7 +18,19 @@
 
 package org.graylog.kusto.language.binding;
 
+import java.util.List;
+
+import org.graylog.kusto.language.GlobalState;
+import org.graylog.kusto.language.symbols.ColumnSymbol;
+import org.graylog.kusto.language.symbols.Parameter;
+import org.graylog.kusto.language.symbols.Signature;
+import org.graylog.kusto.language.symbols.TypeSymbol;
+import org.graylog.kusto.language.syntax.Expression;
+import org.graylog.kusto.language.syntax.NameAndTypeDeclaration;
+import org.graylog.kusto.language.syntax.SeparatedElement1;
+import org.graylog.kusto.language.syntax.SyntaxList1;
 import org.graylog.kusto.language.syntax.SyntaxNode;
+import org.graylog.kusto.language.syntax.TypeExpression;
 import org.graylog.kusto.language.utils.dotnet.Internal;
 
 @Internal
@@ -28,6 +40,69 @@ public final class Binder
 
     @Internal
     public static void defaultSetSemanticInfo(SyntaxNode node, SemanticInfo info) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    /// <summary>
+    /// Gets the computed return type for functions specified with a body or declaration.
+    /// </summary>
+    public static TypeSymbol getComputedReturnType(Signature signature, GlobalState globals, List<TypeSymbol> argumentTypes) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    public static TypeSymbol getComputedReturnType(Signature signature, GlobalState globals) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    // ===== upstream part: Binder_FunctionCalls.cs =====
+
+    /// <summary>
+    /// Determines the kind of match that the argument has with its corresponding signature parameter.
+    /// </summary>
+    public static ParameterMatchKind getParameterMatchKind( // PORT-PENDING: W6
+        Signature signature,
+        List<Parameter> argumentParameters,
+        List<TypeSymbol> argumentTypes,
+        Parameter parameter,
+        Expression argument,
+        TypeSymbol argumentType,
+        boolean allowImplicitArgumentCoercion)
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    // ===== upstream part: Binder_Misc.cs =====
+
+    @Internal
+    public static TypeSymbol getDeclaredType(TypeExpression typeExpression) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    // ===== upstream part: Binder_TablesAndColumns.cs =====
+
+    @Internal
+    public static void unifyColumnsWithSameNameAndType(List<ColumnSymbol> columns) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    @Internal
+    public static void unifyColumnsWithSameName(List<ColumnSymbol> columns) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    @Internal
+    public static void makeColumnNamesUnique(List<ColumnSymbol> columns) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    public static void createColumnsFromRowSchema(SyntaxList1<SeparatedElement1<NameAndTypeDeclaration>> schemaColumns, List<ColumnSymbol> columns) // PORT-PENDING: W6
     {
         throw new UnsupportedOperationException("PORT-PENDING: W6");
     }

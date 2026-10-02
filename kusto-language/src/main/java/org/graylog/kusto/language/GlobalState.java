@@ -7,15 +7,34 @@
 
 package org.graylog.kusto.language;
 
+import org.graylog.kusto.language.symbols.FunctionSymbol;
+
 /// <summary>
 /// The global state that a kusto query is associated with.
 /// </summary>
 public final class GlobalState
 {
     /// <summary>
+    /// Returns true if the function is a built-in function.
+    /// </summary>
+    public boolean isBuiltInFunction(FunctionSymbol fn) // PORT-PENDING: W4
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W4");
+    }
+
+    /// <summary>
     /// Gets the value for the specified property
     /// </summary>
     public <T> T getProperty(GlobalStateProperty1<T> property) // PORT-PENDING: W4
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W4");
+    }
+
+    /// <summary>
+    /// The default <see cref="GlobalState"/>
+    /// </summary>
+    // PORT: §2.3 property Default → default_() (keyword); §3.9 W4 makes it a CAS-published lazy singleton
+    public static GlobalState default_() // PORT-PENDING: W4
     {
         throw new UnsupportedOperationException("PORT-PENDING: W4");
     }
