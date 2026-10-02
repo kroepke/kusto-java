@@ -107,10 +107,12 @@ class SourceRulesTest {
         assertEquals(List.of(), scan("org/x/A.java", "String r = s.substring(a, a + b);\n"));
         assertEquals(List.of(), scan("org/x/A.java", "String r = s.substring(f(a, c), (start + len));\n"));
         assertEquals(List.of(), scan("org/x/A.java", "String r = s.substring(i,\n    i + g(x, y));\n"));
-        assertEquals(1, scan("org/x/A.java", "String r = s.substring(0, len - 1);\n").size());
-        assertEquals(1, scan("org/x/A.java", "String r = s.substring(0, f(a + b));\n").size());
-        assertEquals(1, scan("org/x/A.java", "String r = s.substring(0, i++);\n").size());
-        assertEquals(1, scan("org/x/A.java", "String r = s.substring(0, +n);\n").size());
+        assertEquals(List.of(), scan("org/x/A.java", "String r = s.substring(0, len - 1);\n"));
+        assertEquals(List.of(), scan("org/x/A.java", "String r = e.substring(a, len); // PORT: \u00a75.4 (start, length)\n"));
+        assertEquals(1, scan("org/x/A.java", "String r = s.substring(1, len - 1);\n").size());
+        assertEquals(1, scan("org/x/A.java", "String r = s.substring(1, f(a + b));\n").size());
+        assertEquals(1, scan("org/x/A.java", "String r = s.substring(1, i++);\n").size());
+        assertEquals(1, scan("org/x/A.java", "String r = s.substring(1, +n);\n").size());
         List<SourceRules.Violation> multi = scan("org/x/A.java", "int x;\nString r = s\n    .substring(a, b);\n");
         assertEquals(1, multi.size());
         assertEquals(7, multi.get(0).line(), "line of the .substring call");

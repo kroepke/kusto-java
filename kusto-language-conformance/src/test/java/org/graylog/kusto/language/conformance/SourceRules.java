@@ -105,7 +105,7 @@ public final class SourceRules {
     }
 
     /** Source with comment/literal contents blanked, plus its line comments. */
-    record Lexed(String code, List<int[]> lineComments) {
+    record Lexed(String code, List<int[]> lineComments, String raw) {
     }
 
     private SourceRules() {
@@ -211,12 +211,26 @@ public final class SourceRules {
         Matcher m = SUBSTRING.matcher(code);
         while (m.find()) {
             List<String> args = arguments(code, m.end());
-            if (args != null && args.size() == 2 && !additive(args.get(1))) {
+            // Exempt: a literal 0 start (0 + len == len) and sites marked "// PORT: §5.4", which
+            // are EditString.substring(start, length) calls that mirror upstream by design.
+            if (args != null && args.size() == 2 && !additive(args.get(1))
+                    && !"0".equals(args.get(0).strip()) && !lineHasMarker(lx, code, m.start(), "\u00a75.4")) {
                 v.add(new Violation(rel, lineOf(code, m.start()), "banned",
                         "substring end argument '" + args.get(1).strip() + "' is not '<expr> + <expr>' (PORTING.md 5.4)"));
             }
         }
         return v;
+    }
+
+    /** True when the line containing {@code offset} ends in a line comment containing {@code text}. */
+    static boolean lineHasMarker(Lexed lx, String code, int offset, String text) {
+        int line = lineOf(code, offset);
+        for (int[] c : lx.lineComments()) {
+            if (lineOf(code, c[0]) == line && lx.raw().substring(c[0], c[1]).contains(text)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Top-level arguments of the call whose '(' ends just before {@code from}; null if unbalanced. */
@@ -358,7 +372,7 @@ public final class SourceRules {
                 i++;
             }
         }
-        return new Lexed(code.toString(), comments);
+        return new Lexed(code.toString(), comments, src);
     }
 
     private static void blank(StringBuilder b, int from, int to) {

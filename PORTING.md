@@ -743,8 +743,10 @@ output `{api, input, ok, value}` is committed as `dotnet-facts.json` and every c
 - `OrdinalIgnoreCase` equality → `DotNetStrings.equalsOrdinalIgnoreCase` (upper-case only;
   Java `equalsIgnoreCase` also tries lower-case and differs on `K`/`K`). Banned in `kusto-language`.
 - `(start, length)` vs `(begin, end)`: every `Substring(start, length)` (48 sites),
-  `RemoveRange`, `InsertRange` call is translated with explicit `start + length`; the gate grep
-  flags `substring(` calls whose second argument is not of the form `x + y`.
+  `RemoveRange`, `InsertRange` call is translated with explicit `start + length`; the gate
+  (`SourceRulesTest`) flags `substring(` calls whose second argument is not of the form `x + y`,
+  except a literal `0` start and lines marked `// PORT: §5.4`, which is required on every
+  `EditString.substring(start, length)` call (the stub keeps upstream's `(start, length)` shape).
 
 ---
 
