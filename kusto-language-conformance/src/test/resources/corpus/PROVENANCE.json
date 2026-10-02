@@ -9,7 +9,7 @@
     "emptyBlocksSkipped": 0,
     "duplicatesSkipped": 26,
     "extractionScript": "porting/tools/extract_docs_corpus.py",
-    "extractedAt": "2026-10-01T23:34:25Z"
+    "extractedAt": "2026-10-02T07:43:06Z"
   },
   "readme": {
     "repo": "microsoft/Kusto-Query-Language (upstream submodule)",
