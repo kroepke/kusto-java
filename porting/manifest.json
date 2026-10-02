@@ -3690,7 +3690,7 @@
    "upstreamPath": "src/Kusto.Language/GlobalState.cs",
    "upstreamBlob": "7376685121dc6380c10e42c1e3a55e596213cfab",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 4,
    "lines": 1218,
    "namespace": "Kusto.Language",
@@ -3740,7 +3740,7 @@
     "using Kusto.Language.Editor at line 7: verify unused; ported file should not import editor package",
     "GetCommands (869) switches on ServerKind strings from ServerKinds"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W4): GlobalState, GlobalStateProperty; see porting/skeletons-w0.md",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3765,7 +3765,7 @@
    "upstreamPath": "src/Kusto.Language/KustoCache.cs",
    "upstreamBlob": "3234fcd46e4aba375d3e27b367afa177b1cde9f1",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 4,
    "lines": 76,
    "namespace": "Kusto.Language",
@@ -3790,7 +3790,7 @@
     "GetOrCreate(creator) at 54-56 calls creator twice (once discarded): mirror but harmless",
     "TryGetValue out param -> return Optional/nullable"
    ],
-   "notes": "Required: Binder.TryBind calls globals.WithCache() and Cache.GetOrCreate<GlobalBindingCache>() (Binder/Binder_API.cs:168-169, also 283/288, 314-315, 349-350, 383-384); QueryGrammar.From (Parser/QueryGrammar.cs:41-43); CommandGrammar.From (Parser/CommandGrammar.cs:385,411). Java: key the map by Class<?>.",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3798,7 +3798,7 @@
    "upstreamPath": "src/Kusto.Language/KustoCode.cs",
    "upstreamBlob": "6a991f0b28d82b21443260dacd2aaeeeef70ba83",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 4,
    "lines": 518,
    "namespace": "Kusto.Language",
@@ -3847,7 +3847,7 @@
     "ParserKind.Grammar (QueryGrammar path 226) vs Default QueryParser",
     "internal members used by TestHelpers (_localCache)"
    ],
-   "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5608,7 +5608,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/CommandGrammar.cs",
    "upstreamBlob": "feaa44e7cf0dba23116316b3598a7b1f9b3af10f",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 4,
    "lines": 872,
    "namespace": "Kusto.Language.Parsing",
@@ -5633,7 +5633,7 @@
     "Interlocked.CompareExchange on static caches (404,438) -> AtomicReference",
     "Reachability: only KustoCode.Create:211 when GetKind(text)==CodeKinds.Command (text starting with '.' per KustoCode.GetKind); NOT reachable from query parsing"
    ],
-   "notes": "Reached by KustoCode.Create for any text whose first token is '.' (KustoCode.cs:210-214, GetKind 331-359). Base class supplies UnknownCommand fallback (CommandGrammar.cs:519-525), CommandBlock, pipe-to-query and CreateCommandGrammar switch (448-463). Port fully; the four generated subclasses are stubs.",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5815,7 +5815,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/PredefinedRuleParsers.cs",
    "upstreamBlob": "2bdb0e4ba82a32e4c53d4080ee8bd1038771bd8d",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 4,
    "lines": 396,
    "namespace": "Kusto.Language.Parsing",
@@ -5838,7 +5838,7 @@
    "traps": [
     "Constructor (queryParser, queryInput, scriptInput) builds many Parser<LexicalToken,...> rule objects eagerly"
    ],
-   "notes": "Constructed unconditionally in CommandGrammar ctor (CommandGrammar.cs:45). Only consumed by generated command grammars, but needed to keep the ctor intact. 17 Editor.CompletionHint uses (179-315).",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5846,7 +5846,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/QueryGrammar.cs",
    "upstreamBlob": "7f64f9df01670b74bec8b1bce6e29d7fcc457772",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 4,
    "lines": 4101,
    "namespace": "Kusto.Language.Parsing",
@@ -5876,7 +5876,7 @@
     "Grammar results are ordered-choice (First/Or) - semantics depend on combinator implementation; behavioral parity with QueryParser is test-checked upstream",
     "Rule(...) lambdas build syntax nodes with arity up to ~10 (generic delegate overloads in Parsers<T>)"
    ],
-   "notes": "Always constructed: KustoCode.Create calls QueryGrammar.From(globals).QueryBlock even for ParserKind.Default (KustoCode.cs:217-218), stored in KustoCode.Grammar (42, consumed only by Editor). Also used by ParserKind.Grammar (225-227) and CommandGrammar (42). Heavy CompletionKind/CompletionItem/CompletionPriority/CompletionRank/CompletionHint annotation use.",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5884,7 +5884,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/QueryParser.cs",
    "upstreamBlob": "606b69c8d71f2b0083464e9e4f5aed343d9f6d1a",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 4,
    "lines": 7062,
    "namespace": "Kusto.Language.Parsing",
@@ -5926,7 +5926,7 @@
     "Large switch/pattern code on SyntaxKind - Java switch on enum fine; 7000 lines may exceed 64KB method limit only in giant methods - check ParseQueryOperator style switch",
     "Uses GlobalState.Default.WithParseOptions (176) inside parser: parser->GlobalState dependency"
    ],
-   "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
+   "notes": "W4",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },

@@ -240,12 +240,16 @@
   "status": "ported"
  },
  "src/Kusto.Language/GlobalState.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W4): GlobalState, GlobalStateProperty; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W4",
+  "status": "ported"
+ },
+ "src/Kusto.Language/KustoCache.cs": {
+  "notes": "W4",
+  "status": "ported"
  },
  "src/Kusto.Language/KustoCode.cs": {
-  "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
-  "status": "partial"
+  "notes": "W4",
+  "status": "ported"
  },
  "src/Kusto.Language/KustoDialect.cs": {
   "notes": "W1",
@@ -403,6 +407,10 @@
   "notes": "W3",
   "status": "ported"
  },
+ "src/Kusto.Language/Parser/CommandGrammar.cs": {
+  "notes": "W4",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/KustoFacts.cs": {
   "notes": "W2",
   "status": "ported"
@@ -419,9 +427,17 @@
   "notes": "W2",
   "status": "ported"
  },
+ "src/Kusto.Language/Parser/PredefinedRuleParsers.cs": {
+  "notes": "W4",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/QueryGrammar.cs": {
+  "notes": "W4",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/QueryParser.cs": {
-  "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
-  "status": "partial"
+  "notes": "W4",
+  "status": "ported"
  },
  "src/Kusto.Language/Parser/SyntaxParsers.cs": {
   "notes": "W3",
