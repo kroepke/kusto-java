@@ -10,14 +10,32 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.graylog.kusto.language.Diagnostic;
 import org.graylog.kusto.language.DiagnosticLocationKind;
+import org.graylog.kusto.language.GlobalState;
+import org.graylog.kusto.language.KustoCode;
 import org.graylog.kusto.language.ParseOptions;
+import org.graylog.kusto.language.symbols.ClusterSymbol;
+import org.graylog.kusto.language.symbols.ColumnSymbol;
+import org.graylog.kusto.language.symbols.DatabaseSymbol;
+import org.graylog.kusto.language.symbols.EntityGroupSymbol;
+import org.graylog.kusto.language.symbols.ExternalTableSymbol;
+import org.graylog.kusto.language.symbols.FunctionSymbol;
+import org.graylog.kusto.language.symbols.MaterializedViewSymbol;
+import org.graylog.kusto.language.symbols.ScalarSymbol;
+import org.graylog.kusto.language.symbols.ScalarTypes;
+import org.graylog.kusto.language.symbols.Symbol;
+import org.graylog.kusto.language.symbols.TableSymbol;
+import org.graylog.kusto.language.syntax.IncludeTrivia;
+import org.graylog.kusto.language.syntax.SyntaxElement;
+import org.graylog.kusto.language.syntax.SyntaxNode;
 import org.graylog.kusto.language.editor.CodeKinds;
 import org.graylog.kusto.language.parsing.LexicalToken;
 import org.graylog.kusto.language.parsing.TextFacts;
@@ -31,24 +49,16 @@ import org.graylog.kusto.language.utils.dotnet.DotNet;
  * Normative: golden-format.md plus oracle/README.md "Rendering decisions"; the token section
  * mirrors {@code oracle/kusto-oracle/src/Golden.cs} {@code WriteRecord} line for line.
  *
- * <p><b>Layers available at W2 (lexer).</b> Only {@code id}, {@code kind}, {@code tokens},
- * {@code fidelity} and {@code outcome.tokenValues} come from the port. The parser (W4) and the
- * binder (W6) do not exist yet, so:
- * <ul>
- *   <li>{@code tree}, {@code syntaxDiagnostics}, {@code semanticDiagnostics}, {@code bind} are
- *       empty arrays and {@code resultType} is {@code null};</li>
- *   <li>{@code outcome.parse} is {@code "ok"} (lexing never throws; it is what the invariants
- *       check) and {@code outcome.analyze} is {@value #ANALYZE_UNAVAILABLE}.</li>
- * </ul>
- * These placeholders are well-formed output, so the comparator reports the unavailable layers
- * as ordinary differing records (cause {@code unclassified} on non-gated layers), never as an
- * adapter crash; they do not fail the build because those layers are not gated.
+ * <p><b>Layers available at W4 (parser).</b> {@code KustoCode.parse} (parse only) fills {@code kind},
+ * {@code tokens}, {@code fidelity} (from the syntax root), {@code tree}, {@code syntaxDiagnostics} and
+ * {@code outcome.parse}. The binder (W6) does not exist yet, so {@code semanticDiagnostics} and {@code bind} are
+ * empty arrays, {@code resultType} is {@code null} and {@code outcome.analyze} is {@value #ANALYZE_UNAVAILABLE};
+ * the comparator reports those as ordinary differing records on ungated layers. If {@code parse} throws, the
+ * record has empty {@code tokens}/{@code tree}, {@code roundTrip=false}, {@code fullWidth=0} and
+ * {@code outcome.parse = throw:<name>}, as the oracle writes it.
  *
- * <p><b>W2 approximation of {@code fidelity}.</b> {@code roundTrip} is
- * {@code concat(trivia + text over all lexical tokens) == text} and {@code fullWidth} is the
- * sum of the token lengths. golden-format.md defines both on the syntax root
- * ({@code root.ToString(IncludeTrivia.All)}, {@code root.FullWidth}); from W4 on they must be
- * computed from the root of {@code KustoCode.parseAndAnalyze} instead.
+ * <p><b>Schemas.</b> Built per schema id like {@code Schemas.cs}. Functions, materialized views and entity
+ * groups are skipped while their constructors still hit PORT-PENDING W6 stubs (parsing never reads them).
  *
  * <p><b>Exceptions.</b> A token value that throws renders as {@code "!<.NET name>"} and sets
  * {@code outcome.tokenValues} to {@code "throw:<mapped name>"}, exactly as the oracle: the Java
@@ -70,78 +80,105 @@ public final class GoldenWriter implements PortAdapter {
     @Override
     public ObjectNode write(CorpusRecord rec, SchemaFile schema) {
         String text = rec.text();
+        GlobalState globals = globals(schema);
         long t0 = System.nanoTime();
-        LexicalToken[] tokens = lex(text);
+        KustoCode code = null;
+        String parseOutcome = "ok";
+        try {
+            code = KustoCode.parse(text, globals);
+        } catch (Throwable ex) {
+            ExceptionNames names = exceptionNames();
+            parseOutcome = "throw:" + names.mapToJava(names.dotnetName(ex));
+        }
         double parseMs = (System.nanoTime() - t0) / 1e6;
+        return render(rec.id(), text, code, parseOutcome, parseMs);
+    }
+
+    /** Renders one golden record from {@code code} (null when the parse threw). */
+    static ObjectNode render(String id, String text, KustoCode code, String parseOutcome, double parseMs) {
+        SyntaxNode root = code == null ? null : code.syntax();
 
         ObjectNode r = Harness.MAPPER.createObjectNode();
-        r.put("id", rec.id());
-        r.put("kind", getKind(text));
+        r.put("id", id);
+        String kind;
+        try {
+            kind = code != null ? code.kind() : KustoCode.getKind(text);
+        } catch (RuntimeException ex) {
+            kind = "Unknown";
+        }
+        r.put("kind", kind);
 
         String tokenValuesOutcome = "ok";
         ArrayNode tokenArray = r.putArray("tokens");
-        StringBuilder roundTrip = new StringBuilder(text.length());
-        int pos = 0;
-        for (LexicalToken lt : tokens) {
-            int triviaStart = pos;
-            int start = pos + lt.trivia().length();
-            int end = start + lt.text().length();
-            pos = end;
-            roundTrip.append(lt.trivia()).append(lt.text());
+        if (code != null) {
+            int pos = 0;
+            for (LexicalToken lt : code.getLexicalTokens()) {
+                int triviaStart = pos;
+                int start = pos + lt.trivia().length();
+                int end = start + lt.text().length();
+                pos = end;
 
-            ObjectNode t = tokenArray.addObject();
-            t.put("kind", lt.kind().name());
-            t.put("triviaStart", triviaStart);
-            t.put("start", start);
-            t.put("end", end);
-            t.put("trivia", lt.trivia());
-            t.put("text", lt.text());
-            String value = null;
-            try {
-                SyntaxToken st = SyntaxToken.from(lt);
-                if (st.isLiteral()) {
-                    Object v = st.value();
-                    value = v == null ? null : DotNet.str(v);
+                ObjectNode t = tokenArray.addObject();
+                t.put("kind", lt.kind().name());
+                t.put("triviaStart", triviaStart);
+                t.put("start", start);
+                t.put("end", end);
+                t.put("trivia", lt.trivia());
+                t.put("text", lt.text());
+                String value = null;
+                try {
+                    SyntaxToken st = SyntaxToken.from(lt);
+                    if (st.isLiteral()) {
+                        Object v = st.value();
+                        value = v == null ? null : DotNet.str(v);
+                    }
+                } catch (RuntimeException | StackOverflowError ex) {
+                    ExceptionNames names = exceptionNames();
+                    String dotnet = names.dotnetName(ex);
+                    value = "!" + dotnet;
+                    if (tokenValuesOutcome.equals("ok")) {
+                        tokenValuesOutcome = "throw:" + names.mapToJava(dotnet);
+                    }
                 }
-            } catch (RuntimeException | StackOverflowError ex) {
-                ExceptionNames names = exceptionNames();
-                String dotnet = names.dotnetName(ex);
-                value = "!" + dotnet;
-                if (tokenValuesOutcome.equals("ok")) {
-                    tokenValuesOutcome = "throw:" + names.mapToJava(dotnet);
+                t.put("value", value);
+                ArrayNode dx = t.putArray("diagnostics");
+                for (Diagnostic d : lt.diagnostics()) {
+                    int dStart;
+                    int dLength;
+                    if (d.locationKind() == DiagnosticLocationKind.Absolute) {
+                        dStart = d.start();
+                        dLength = d.length();
+                    } else if (d.locationKind() == DiagnosticLocationKind.RelativeEnd) {
+                        dStart = end;
+                        dLength = 0;
+                    } else {
+                        dStart = start;
+                        dLength = end - start;
+                    }
+                    writeDiagnostic(dx, d, dStart, dLength);
                 }
-            }
-            t.put("value", value);
-            ArrayNode dx = t.putArray("diagnostics");
-            for (Diagnostic d : lt.diagnostics()) {
-                int dStart;
-                int dLength;
-                if (d.locationKind() == DiagnosticLocationKind.Absolute) {
-                    dStart = d.start();
-                    dLength = d.length();
-                } else if (d.locationKind() == DiagnosticLocationKind.RelativeEnd) {
-                    dStart = end;
-                    dLength = 0;
-                } else {
-                    dStart = start;
-                    dLength = end - start;
-                }
-                writeDiagnostic(dx, d, dStart, dLength);
             }
         }
 
         ObjectNode fidelity = r.putObject("fidelity");
-        fidelity.put("roundTrip", roundTrip.toString().equals(text));
-        fidelity.put("fullWidth", pos);
+        fidelity.put("roundTrip", root != null && root.toString(IncludeTrivia.All).equals(text));
+        fidelity.put("fullWidth", root == null ? 0 : root.fullWidth());
 
-        r.putArray("tree");
-        r.putArray("syntaxDiagnostics");
+        ArrayNode tree = r.putArray("tree");
+        writeTree(tree, root);
+
+        ArrayNode sdx = r.putArray("syntaxDiagnostics");
+        if (code != null) {
+            for (Diagnostic d : code.getSyntaxDiagnostics()) {
+                writeDiagnostic(sdx, d, d.start(), d.length());
+            }
+        }
         r.putArray("semanticDiagnostics");
         r.putArray("bind");
         r.putNull("resultType");
 
         ObjectNode outcome = r.putObject("outcome");
-        outcome.put("parse", "ok");
+        outcome.put("parse", parseOutcome);
         outcome.put("analyze", ANALYZE_UNAVAILABLE);
         outcome.put("tokenValues", tokenValuesOutcome);
 
@@ -151,10 +188,112 @@ public final class GoldenWriter implements PortAdapter {
         return r;
     }
 
+    /** One element of the pre-order walk. */
+    record TreeEntry(SyntaxElement element, int parent, String name, int depth) {
+    }
+
+    /** Pre-order over every element reachable through {@code getChild} (null children skipped), like Golden.cs PreOrder. */
+    static List<TreeEntry> preOrder(SyntaxNode root) {
+        List<TreeEntry> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        ArrayDeque<TreeEntry> stack = new ArrayDeque<>();
+        stack.push(new TreeEntry(root, -1, "", 0));
+        while (!stack.isEmpty()) {
+            TreeEntry e = stack.pop();
+            int index = result.size();
+            result.add(e);
+            SyntaxElement el = e.element();
+            for (int c = el.childCount() - 1; c >= 0; c--) {
+                SyntaxElement child = el.getChild(c);
+                if (child != null) {
+                    String n = el.getName(c);
+                    stack.push(new TreeEntry(child, index, n == null ? "" : n, e.depth() + 1));
+                }
+            }
+        }
+        return result;
+    }
+
+    private static void writeTree(ArrayNode into, SyntaxNode root) {
+        List<TreeEntry> tree = preOrder(root);
+        for (int i = 0; i < tree.size(); i++) {
+            TreeEntry e = tree.get(i);
+            ObjectNode o = into.addObject();
+            o.put("i", i);
+            o.put("kind", e.element().kind().name());
+            o.put("depth", e.depth());
+            o.put("parent", e.parent());
+            o.put("name", e.name());
+            o.put("start", e.element().textStart());
+            o.put("end", e.element().end());
+            o.put("missing", e.element().isMissing());
+        }
+    }
+
+    private static final Map<String, GlobalState> GLOBALS = new ConcurrentHashMap<>();
+
+    /** The {@code GlobalState} of a schema, cached per schema id ({@code null} means the default). */
+    static GlobalState globals(SchemaFile schema) {
+        if (schema == null) {
+            return GlobalState.default_();
+        }
+        return GLOBALS.computeIfAbsent(schema.id(), k -> build(schema));
+    }
+
+    private static GlobalState build(SchemaFile s) {
+        List<Symbol> members = new ArrayList<>();
+        for (SchemaFile.Table t : s.tables()) {
+            members.add(new TableSymbol(t.name(), columns(t.columns()), t.docstring()));
+        }
+        for (SchemaFile.Function f : s.functions()) {
+            String parameters = f.parameters() == null || f.parameters().isEmpty() ? "()" : f.parameters();
+            try {
+                members.add(new FunctionSymbol(f.name(), parameters, f.body(), f.docstring()));
+            } catch (UnsupportedOperationException pending) {
+                // PORT-PENDING W6: Parameter.parseList needs Binder.getDeclaredType. Parsing never reads
+                // database functions, so skipping them leaves the W4 layers unchanged; W6 removes this.
+            }
+        }
+        for (SchemaFile.Table t : s.externalTables()) {
+            members.add(new ExternalTableSymbol(t.name(), columns(t.columns()), t.docstring()));
+        }
+        for (SchemaFile.MaterializedView m : s.materializedViews()) {
+            try {
+                members.add(new MaterializedViewSymbol(m.name(), columns(m.columns()), m.query(), m.docstring()));
+            } catch (UnsupportedOperationException pending) {
+                // PORT-PENDING W6, see functions above.
+            }
+        }
+        for (SchemaFile.EntityGroup g : s.entityGroups()) {
+            try {
+                members.add(new EntityGroupSymbol(g.name(), g.definition(), g.docstring()));
+            } catch (UnsupportedOperationException pending) {
+                // PORT-PENDING W6, see functions above.
+            }
+        }
+        return GlobalState.default_()
+                .withCluster(new ClusterSymbol(s.cluster(), new DatabaseSymbol(s.database(), members)))
+                .withDatabase(s.database());
+    }
+
+    private static List<ColumnSymbol> columns(List<SchemaFile.Column> cols) {
+        List<ColumnSymbol> out = new ArrayList<>();
+        for (SchemaFile.Column c : cols) {
+            ScalarSymbol type = ScalarTypes.getSymbol(c.type());
+            if (type == null) {
+                throw new IllegalStateException("unknown scalar type '" + c.type() + "' for column '" + c.name() + "'");
+            }
+            out.add(new ColumnSymbol(c.name(), type));
+        }
+        return out;
+    }
+
     @Override
     public int[] tokenStarts(String text) {
-        LexicalToken[] tokens = lex(text);
-        List<Integer> starts = new ArrayList<>(tokens.length);
+        List<LexicalToken> tokens = KustoCode.parse(text, GlobalState.default_()).getLexicalTokens();
+        List<Integer> starts = new ArrayList<>(tokens.size());
         int pos = 0;
         for (LexicalToken lt : tokens) {
             int start = pos + lt.trivia().length();

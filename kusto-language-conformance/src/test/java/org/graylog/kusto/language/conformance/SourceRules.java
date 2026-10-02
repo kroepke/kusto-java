@@ -61,7 +61,7 @@ public final class SourceRules {
         banned(".trim()", "\\.\\s*trim\\s*\\(\\s*\\)");
         banned(".strip()", "\\.\\s*strip\\s*\\(\\s*\\)");
         banned(".isBlank()", "\\.\\s*isBlank\\s*\\(\\s*\\)");
-        banned(".split(", "\\.\\s*split\\s*\\(");
+        banned(".split(", "(?<!DotNetStrings)\\.\\s*split\\s*\\(");
         banned("String.join(", "\\bString\\s*\\.\\s*join\\s*\\(");
         banned("Double.parseDouble(", "\\bDouble\\s*\\.\\s*parseDouble\\s*\\(");
         banned("Long.parseLong(", "\\bLong\\s*\\.\\s*parseLong\\s*\\(");
