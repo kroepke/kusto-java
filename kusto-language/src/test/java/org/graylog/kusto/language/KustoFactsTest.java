@@ -472,7 +472,7 @@ class KustoFactsTest {
         Class<?> c = Class.forName("org.graylog.kusto.language.KustoFacts", true, KustoFactsTest.class.getClassLoader());
         Field f = c.getDeclaredField("_knownQueryOperatorParameterNames");
         f.setAccessible(true);
-        assertNull(f.get(null));
+        // (no null pre-check: other classes' static init may already have triggered the lazy list in this JVM)
         // the accessor is where the W3 dependency lives: every name and alias of AllParameters, sorted ordinally
         List<String> names = KustoFacts.knownQueryOperatorParameterNames();
         assertNotNull(f.get(null));

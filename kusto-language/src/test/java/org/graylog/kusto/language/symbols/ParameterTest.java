@@ -192,8 +192,9 @@ class ParameterTest {
     }
 
     @Test
-    void parseListNeedsTheParser() {
-        assertPending("W4", () -> Parameter.parseList("(x: long)"));
+    void parseListNeedsTheBinder() {
+        // parser works (W4); stops at the W6 binder edge. W6 must turn this into a positive test.
+        assertPending("W6", () -> Parameter.parseList("(x: long)"));
     }
 
     @Test

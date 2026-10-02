@@ -97,9 +97,9 @@ class FunctionSymbolTest {
         assertEquals("T | take 1", body.signatures().get(0).body());
         assertEquals(Tabularity.Tabular, body.tabularity());
         assertEquals("doc", new FunctionSymbol("f", "x", List.of(A), "doc").description());
-        // parameter list text goes through the parser (W4)
-        assertPending("W4", () -> new FunctionSymbol("f", "(x: long)", "{ x }"));
-        assertPending("W4", () -> new FunctionSymbol("f", "(x: long)", "{ x }", Tabularity.Scalar));
+        // parameter list text parses now (W4) but stops at the W6 binder edge; W6 must turn these into positive tests
+        assertPending("W6", () -> new FunctionSymbol("f", "(x: long)", "{ x }"));
+        assertPending("W6", () -> new FunctionSymbol("f", "(x: long)", "{ x }", Tabularity.Scalar));
     }
 
     @Test

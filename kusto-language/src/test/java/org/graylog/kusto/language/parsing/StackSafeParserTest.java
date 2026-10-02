@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.graylog.kusto.language.utils.dotnet.DotNetStrings;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 class StackSafeParserTest {
@@ -63,9 +64,6 @@ class StackSafeParserTest {
         var grammar = deepAcyclicGrammar(DEEP);
         var text = nested(DEEP);
 
-        Object direct = onSmallStack(() -> grammar.parse(new TextSource(text), 0, new ArrayList<Object>(), 0));
-        assertInstanceOf(StackOverflowError.class, direct, "the direct recursive parse should overflow a 512 KB stack");
-
         Object safe = onSmallStack(() -> {
             var output = new ArrayList<Object>();
             int len = SafeParser.parseSafe(grammar, new TextSource(text), 0, output, 0);
@@ -75,6 +73,22 @@ class StackSafeParserTest {
         var pair = (List<?>) safe;
         assertEquals(text.length(), pair.get(0));
         assertEquals(List.of(DEEP), pair.get(1));
+
+        // 20,000 levels on the safe path (hard assertion)
+        var deeper = deepAcyclicGrammar(20_000);
+        var deeperText = nested(20_000);
+        Object big = onSmallStack(() -> {
+            var output = new ArrayList<Object>();
+            int len = SafeParser.parseSafe(deeper, new TextSource(deeperText), 0, output, 0);
+            return List.of(len, output);
+        });
+        assertFalse(big instanceof Throwable, () -> "safe parse threw " + big);
+        assertEquals(List.of(deeperText.length(), List.of(20_000)), big);
+
+        Object direct = onSmallStack(() -> grammar.parse(new TextSource(text), 0, new ArrayList<Object>(), 0));
+
+        // JIT warm-up in a full suite can avoid the overflow; only require it when it happened
+        Assumptions.assumeTrue(direct instanceof StackOverflowError, "direct parse did not overflow a 512 KB stack");
     }
 
     @Test

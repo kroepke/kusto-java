@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.graylog.kusto.language.Functions;
 import org.graylog.kusto.language.syntax.Expression;
 import org.junit.jupiter.api.Test;
 
@@ -158,13 +159,15 @@ class SignatureTest {
     }
 
     @Test
-    void namedArgumentsOfFunctionsNeedGlobalState() {
-        // AllowsNamedArguments reads GlobalState.Default for FunctionSymbol signatures (W4 edge)
+    void namedArgumentsAreAllowedOnlyForUserFunctions() {
+        // Signature.cs: AllowsNamedArguments => !(Symbol is FunctionSymbol fn && GlobalState.Default.IsBuiltInFunction(fn))
         var fn = new FunctionSymbol("f", ScalarTypes.Long, A, B);
         var sig = fn.signatures().get(0);
         assertSame(fn, sig.symbol());
-        assertPending("W4", sig::allowsNamedArguments);
-        assertPending("W4", () -> layout(sig, 1));
+        assertTrue(sig.allowsNamedArguments());
+        var builtIn = Functions.Strlen.signatures().get(0);
+        assertFalse(builtIn.allowsNamedArguments());
+        assertEquals(2, layout(sig, 2).size());
     }
 
     @Test

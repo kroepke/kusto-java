@@ -178,12 +178,13 @@ class TableSymbolTest {
     }
 
     @Test
-    void schemaTextNeedsTheParser() {
-        // TableSymbol.From: QueryParser.ParseRowSchema (W4) then Binder.CreateColumnsFromRowSchema (W6)
-        assertPending("W4", () -> TableSymbol.from("a: long, b: string"));
-        assertPending("W4", () -> new TableSymbol("t", "(a: long)"));
-        assertPending("W4", () -> new ExternalTableSymbol("t", "(a: long)"));
-        assertPending("W4", () -> new MaterializedViewSymbol("t", "(a: long)", "T"));
+    void schemaTextNeedsTheBinder() {
+        // TableSymbol.From: QueryParser.ParseRowSchema (W4, done) then Binder.CreateColumnsFromRowSchema (W6, pending).
+        // W6 must turn these into positive tests.
+        assertPending("W6", () -> TableSymbol.from("a: long, b: string"));
+        assertPending("W6", () -> new TableSymbol("t", "(a: long)"));
+        assertPending("W6", () -> new ExternalTableSymbol("t", "(a: long)"));
+        assertPending("W6", () -> new MaterializedViewSymbol("t", "(a: long)", "T"));
         assertThrows(NullPointerException.class, () -> TableSymbol.from(null));
     }
 
