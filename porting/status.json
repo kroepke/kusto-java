@@ -1,4 +1,8 @@
 {
+ "kusto-language/src/main/java/org/graylog/kusto/language/symbols/P.java": {
+  "notes": "W1",
+  "status": "ported"
+ },
  "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DateTime.java": {
   "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
   "status": "ported"
@@ -163,6 +167,10 @@
   "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallInfo; see porting/skeletons-w0.md",
   "status": "partial"
  },
+ "src/Kusto.Language/Binder/ParameterMatchKind.cs": {
+  "notes": "W1 skeleton (PORT-SKELETON W6) for TableSymbol.from/Parameter.parseList/Signature edges",
+  "status": "partial"
+ },
  "src/Kusto.Language/Binder/SemanticInfo.cs": {
   "notes": "W0 skeleton (PORT-SKELETON W6): SemanticInfo; see porting/skeletons-w0.md",
   "status": "partial"
@@ -215,6 +223,18 @@
   "notes": "W0 skeleton (PORT-SKELETON W4): GlobalState, GlobalStateProperty; see porting/skeletons-w0.md",
   "status": "partial"
  },
+ "src/Kusto.Language/KustoCode.cs": {
+  "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
+  "status": "partial"
+ },
+ "src/Kusto.Language/KustoDialect.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Options.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/KustoFacts.cs": {
   "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
   "status": "partial"
@@ -227,6 +247,10 @@
   "notes": "W0 skeleton (PORT-SKELETON W2): LexicalToken; see porting/skeletons-w0.md",
   "status": "partial"
  },
+ "src/Kusto.Language/Parser/QueryParser.cs": {
+  "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
+  "status": "partial"
+ },
  "src/Kusto.Language/Parser/TextFacts.cs": {
   "notes": "W0 skeleton (PORT-SKELETON W2): TextFacts; see porting/skeletons-w0.md",
   "status": "partial"
@@ -236,52 +260,208 @@
   "status": "partial"
  },
  "src/Kusto.Language/Properties.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): Properties; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/QueryOperatorParameters.cs": {
   "notes": "W0 skeleton (PORT-SKELETON W3): QueryOperatorParameter; see porting/skeletons-w0.md",
   "status": "partial"
  },
+ "src/Kusto.Language/ServerKinds.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ArgumentKind.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ClusterSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
  "src/Kusto.Language/Symbols/ColumnSymbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): ColumnSymbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/CombineKind.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/CommandSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/Conversion.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/CustomAvailabilityContext.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/CustomAvailabilty.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/CustomReturnType.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/CustomReturnTypeContext.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/DatabaseSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/DebugDisplay.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/DynamicSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/EmptyScope.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): EntityGroupElementSymbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/EntityGroupSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ErrorSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/FunctionSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/GraphModelSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/GraphSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/GroupSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/OperatorKind.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): OperatorKind; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/OperatorSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/OptionSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/Parameter.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ParameterLayout.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ParameterLayouts.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ParameterSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ParameterTypeKind.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/PatternSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ResultNameKind.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ReturnTypeKind.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/ScalarSymbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): ScalarSymbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/ScalarTypes.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/SchemaDisplay.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/Scope.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/Signature.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): Signature; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/Symbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): Symbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/SymbolKind.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/SymbolMatch.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): SymbolMatch; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/TableState.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/TableSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/Tabularity.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/TupleSymbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): TupleSymbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/TypeFacts.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/TypeSymbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): TypeSymbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Symbols/VariableSymbol.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W1): VariableSymbol; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W1",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Symbols/VoidSymbol.cs": {
+  "notes": "W1",
+  "status": "ported"
  },
  "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.tt": {
   "notes": "W0; hand-written regions: BracedName, BracketedName, BracketedWildcardedName, CompoundStringLiteralExpression, DefaultSyntaxVisitor, DefaultSyntaxVisitor1, Directive, DynamicExpression, Expression, LiteralExpression, Name, NameDeclaration, NameReference, NamedParameter, SyntaxVisitor, SyntaxVisitor1, TokenName, TypeOfLiteralExpression, WildcardedName",

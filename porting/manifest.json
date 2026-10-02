@@ -1516,7 +1516,7 @@
    "upstreamPath": "src/Kusto.Language/Binder/ParameterMatchKind.cs",
    "upstreamBlob": "1d8f86171d91c007ac64aed18abb32bd2bb34ba3",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 6,
    "lines": 97,
    "namespace": "Kusto.Language.Binding",
@@ -1539,7 +1539,7 @@
    "traps": [
     "ParameterMatchKind.cs:8 enum member declaration order defines comparison (CompareParameterMatch in Binder_FunctionCalls.cs:1490): Java enum ordinal order must be identical"
    ],
-   "notes": "Binder is in scope (KustoCode.cs:243 Binder.TryBind; 409/422/435 Binder API).",
+   "notes": "W1 skeleton (PORT-SKELETON W6) for TableSymbol.from/Parameter.parseList/Signature edges",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3798,7 +3798,7 @@
    "upstreamPath": "src/Kusto.Language/KustoCode.cs",
    "upstreamBlob": "6a991f0b28d82b21443260dacd2aaeeeef70ba83",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 4,
    "lines": 518,
    "namespace": "Kusto.Language",
@@ -3847,7 +3847,7 @@
     "ParserKind.Grammar (QueryGrammar path 226) vs Default QueryParser",
     "internal members used by TestHelpers (_localCache)"
    ],
-   "notes": "Entry point: Parse (147), ParseAndAnalyze (164), Create (200), Analyze, GetDiagnostics.",
+   "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3855,7 +3855,7 @@
    "upstreamPath": "src/Kusto.Language/KustoDialect.cs",
    "upstreamBlob": "a135245b28865a4fffbdbeec56b10c5a368de670",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 12,
    "namespace": "Kusto.Language",
@@ -3878,7 +3878,7 @@
    "traps": [
     "Ordinal values: Unknown = 0 explicit"
    ],
-   "notes": "5-value enum; KustoCode.Dialect (KustoCode.cs:114-139) and KustoFacts.CanBeIdentifier/BracketNameIfNecessary (Parser/KustoFacts.cs:607-672). Trivial; port as-is.",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3920,7 +3920,7 @@
    "upstreamPath": "src/Kusto.Language/Options.cs",
    "upstreamBlob": "5aafb3428608b657022714b4cf5a7e0688c17e37",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 255,
    "namespace": "Kusto.Language",
@@ -3945,7 +3945,7 @@
     "Verbatim multi-line @\"...\" strings (e.g. 15-17, ~45) must convert to Java text blocks or concatenation preserving exact newlines (source uses LF, no CR)",
     "Class is non-static public (line 14)"
    ],
-   "notes": "Query option catalog: GlobalState.Default passes Language.Options.All (GlobalState.cs:1174). Required.",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5884,7 +5884,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/QueryParser.cs",
    "upstreamBlob": "606b69c8d71f2b0083464e9e4f5aed343d9f6d1a",
    "scope": "include",
-   "status": "pending",
+   "status": "partial",
    "wave": 4,
    "lines": 7062,
    "namespace": "Kusto.Language.Parsing",
@@ -5926,7 +5926,7 @@
     "Large switch/pattern code on SyntaxKind - Java switch on enum fine; 7000 lines may exceed 64KB method limit only in giant methods - check ParseQueryOperator style switch",
     "Uses GlobalState.Default.WithParseOptions (176) inside parser: parser->GlobalState dependency"
    ],
-   "notes": "Default parser: KustoCode.cs:223. Uses Editor.CompletionHint (3409-3417).",
+   "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6174,7 +6174,7 @@
    "upstreamPath": "src/Kusto.Language/Properties.cs",
    "upstreamBlob": "1498a7df58112e14161bd03daa059a6ee2e8365f",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 46,
    "namespace": "Kusto.Language",
@@ -6199,7 +6199,7 @@
     "Name clash with GlobalState.Properties private property and java.util.Properties: name class Properties but avoid importing java.util.*",
     "File has UTF-8 BOM"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): Properties; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6280,7 +6280,7 @@
    "upstreamPath": "src/Kusto.Language/ServerKinds.cs",
    "upstreamBlob": "ea849b0e121856f449ae4e7001dc81d29a74faa6",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 19,
    "namespace": "Kusto.Language",
@@ -6304,7 +6304,7 @@
     "const string -> static final String",
     "File has BOM"
    ],
-   "notes": "4 string constants; GlobalState.cs:195,873-880,1171; KustoCode.cs:123-127; CommandGrammar.cs:383-458. Trivial; port as-is.",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6312,7 +6312,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ArgumentKind.cs",
    "upstreamBlob": "8707c067dde062fbdd70a47d1fd0956502a04ab9",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 67,
    "namespace": "Kusto.Language.Symbols",
@@ -6333,7 +6333,7 @@
    "partialGroup": null,
    "purpose": "Enum describing how a function argument is interpreted (expression, star, aggregate, column, literal, constant).",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6341,7 +6341,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ClusterSymbol.cs",
    "upstreamBlob": "4811ad42a4b0de0ad2a31f8770eb5c4407c76d36",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 182,
    "namespace": "Kusto.Language.Symbols",
@@ -6369,7 +6369,7 @@
     "ClusterSymbol.Unknown (line 179) built with named args members:null,isOpen:true; also Signature.cs:489 uses new ClusterSymbol(\"\", null, isOpen:true) - null overload ambiguity in Java, add explicit factory",
     "SafeList<T> from Utils is required (members.ToSafeList(), AddItem, Concat)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6377,7 +6377,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ColumnSymbol.cs",
    "upstreamBlob": "4ac3446f35961fda28c82f6fa2673f37dc35ce6e",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 223,
    "namespace": "Kusto.Language.Symbols",
@@ -6404,7 +6404,7 @@
     "Combine() (lines ~190-215) calls into Binding.Binder statics: dependency cycle Symbols <-> Binder",
     "Examples uses ToReadOnly() on possibly-null list (Utils extension must tolerate null)"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): ColumnSymbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6412,7 +6412,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/CombineKind.cs",
    "upstreamBlob": "ce47da8522338c20c596946d797634def5f83b84",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 26,
    "namespace": "Kusto.Language.Symbols",
@@ -6433,7 +6433,7 @@
    "partialGroup": null,
    "purpose": "Enum selecting how ColumnSymbol.Combine unifies column sets.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6441,7 +6441,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/CommandSymbol.cs",
    "upstreamBlob": "00a4d942a0e8b36dac1f70924761421e1e831ec3",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 71,
    "namespace": "Kusto.Language.Symbols",
@@ -6465,7 +6465,7 @@
     "Lazy ResultSchema/ResultType (lines ~14-45) non-thread-safe racy caches; benign",
     "'()' / '(*)' special-cased to open empty table (line ~35)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6473,7 +6473,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Conversion.cs",
    "upstreamBlob": "9e159f675718422cc83a871a31bfa0d7ce5b7ed5",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 38,
    "namespace": "Kusto.Language.Symbols",
@@ -6496,7 +6496,7 @@
    "traps": [
     "Declaration order is semantically significant: comparisons use <= and >= on enum values (TypeFacts.cs:313, Symbol.cs AreAssignable). Java enum must keep order and use ordinal()/compareTo"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6504,7 +6504,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/CustomAvailabilityContext.cs",
    "upstreamBlob": "df6c75b73f84c3e5c3ceee7e5fbeb1ab89738e1e",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 15,
    "namespace": "Kusto.Language.Symbols",
@@ -6525,7 +6525,7 @@
    "partialGroup": null,
    "purpose": "Context passed to a CustomAvailability predicate; exposes the syntax node Location.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6533,7 +6533,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/CustomAvailabilty.cs",
    "upstreamBlob": "4e47e0ac4b4006f4e8e7d0de2fd6e2e57cea2e4d",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 7,
    "namespace": "Kusto.Language.Symbols",
@@ -6556,7 +6556,7 @@
    "traps": [
     "Filename misspelling vs type name: Java file must be named after the type (CustomAvailability.java) - one deliberate deviation from file-name mirroring"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6564,7 +6564,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/CustomReturnType.cs",
    "upstreamBlob": "b240463e32629f0c27d0e048892e3e87e0168055",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 7,
    "namespace": "Kusto.Language.Symbols",
@@ -6585,7 +6585,7 @@
    "partialGroup": null,
    "purpose": "Delegate TypeSymbol CustomReturnType(CustomReturnTypeContext) used for functions with computed return types.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6593,7 +6593,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/CustomReturnTypeContext.cs",
    "upstreamBlob": "5d61a39af1cba7644876d3004c35843ab8b6aa65",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 142,
    "namespace": "Kusto.Language.Symbols",
@@ -6617,7 +6617,7 @@
     "IndexOf on IReadOnlyList<Parameter> (line 97) is an extension in Utils using EqualityComparer default = reference equality here; Java List.indexOf uses equals - Parameter must NOT override equals",
     "GetArguments(Parameter) (lines ~118-135) returns shared EmptyReadOnlyList instance when none found"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6625,7 +6625,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/DatabaseSymbol.cs",
    "upstreamBlob": "c110c0ccb97bb95bb83e613def76b502260eb872",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 319,
    "namespace": "Kusto.Language.Symbols",
@@ -6653,7 +6653,7 @@
     "OfType<T> filtering (lines 88-150) = instanceof filters; _tables excludes subclasses ExternalTableSymbol/MaterializedViewSymbol/StoredQueryResultSymbol",
     "Lazy caches are racy-but-benign unsynchronised field writes"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6661,7 +6661,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/DebugDisplay.cs",
    "upstreamBlob": "cfb8042250e90b419fb8a390ca0bd8926b685ff5",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 199,
    "namespace": "Kusto.Language.Symbols",
@@ -6685,7 +6685,7 @@
     "Pattern-match switch (lines 14-95) is order dependent: PrimitiveSymbol/DynamicAnySymbol cases come after TupleSymbol etc.; if ported, use if/instanceof chain in same order",
     "Uses interpolated strings with embedded string.Join"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6693,7 +6693,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/DynamicSymbol.cs",
    "upstreamBlob": "4c81b208727ae077dbeab9247f7c0eb06a4d484c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 169,
    "namespace": "Kusto.Language.Symbols",
@@ -6762,7 +6762,7 @@
     "Ctor DynamicBagSymbol(IEnumerable) is internal and (params ColumnSymbol[]) public - Java needs both a List and varargs overload; `new DynamicBagSymbol()` with zero args picks params",
     "Static-init: DynamicSymbol subclasses reference ScalarSymbol only; ScalarTypes depends on DynamicAnySymbol.Instance and DynamicBagSymbol.Empty"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6770,7 +6770,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/EmptyScope.cs",
    "upstreamBlob": "e40edbe8e0172d773de790ae422e4e838a656044",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 18,
    "namespace": "Kusto.Language.Symbols",
@@ -6791,7 +6791,7 @@
    "partialGroup": null,
    "purpose": "Scope implementation that returns no symbols; singleton Instance.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6799,7 +6799,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupElementSymbol.cs",
    "upstreamBlob": "b8a8e750041b96467d03e0537d8880a416aaa1c6",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 67,
    "namespace": "Kusto.Language.Symbols",
@@ -6824,7 +6824,7 @@
     "SpecialMembers static array (line 60) built at class init using ScalarTypes.String -> triggers ScalarTypes init",
     "Members always returns SpecialMembers, not the underlying symbol's members"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): EntityGroupElementSymbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6832,7 +6832,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/EntityGroupSymbol.cs",
    "upstreamBlob": "7813a453ac314ff460f72a73537de5a95ada3190",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 96,
    "namespace": "Kusto.Language.Symbols",
@@ -6859,7 +6859,7 @@
     "Two ctors both call this.Signature.Symbol = this (internal setter) - Java needs package-private setter",
     "GetBodyFromDefinition (line 56) depends on KustoFacts.GetStringLiteralValue (Parser area)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6867,7 +6867,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ErrorSymbol.cs",
    "upstreamBlob": "280d147362b1e21a5045182e87fbaaf9c20fb8b4",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 25,
    "namespace": "Kusto.Language.Symbols",
@@ -6888,7 +6888,7 @@
    "partialGroup": null,
    "purpose": "Singleton error type symbol (IsError true, Tabularity.None).",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6896,7 +6896,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/FunctionSymbol.cs",
    "upstreamBlob": "3c3b1e5c49fd95a7bbfe4209735fe404eae37cae",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 420,
    "namespace": "Kusto.Language.Symbols",
@@ -6927,7 +6927,7 @@
     "Private enum FunctionFlags [Flags] -> Java int bitmask or EnumSet",
     "Bridge note: none"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6935,7 +6935,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/GraphModelSymbol.cs",
    "upstreamBlob": "952eeec3a32aa22d763187e271c62400135d3047",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 119,
    "namespace": "Kusto.Language.Symbols",
@@ -6972,7 +6972,7 @@
     "`internal GraphSymbol ComputedGraphSymbol {get;set;}` is a mutable cache set by the binder",
     "Tabularity.None"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6980,7 +6980,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/GraphSymbol.cs",
    "upstreamBlob": "d4e6b856a2f4f425e42a4d6b4f606b36729f20cf",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 156,
    "namespace": "Kusto.Language.Symbols",
@@ -7006,7 +7006,7 @@
     "Empty (line 153) = new GraphSymbol(\"\", TableSymbol.Empty, TableSymbol.Empty) -> depends on TableSymbol.Empty static init",
     "Tabularity.Other"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7014,7 +7014,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/GroupSymbol.cs",
    "upstreamBlob": "d50a25b3dfbe731795aaeb99ed31c51d42dc7097",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 35,
    "namespace": "Kusto.Language.Symbols",
@@ -7037,7 +7037,7 @@
    "traps": [
     "Tabularity uses Members[0] (throws on empty group)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7045,7 +7045,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/OperatorKind.cs",
    "upstreamBlob": "f044dd4861bb00400709a0251c1f83982d7da32e",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 78,
    "namespace": "Kusto.Language.Symbols",
@@ -7068,7 +7068,7 @@
    "traps": [
     "OperatorSymbol.cs:25 base(kind.ToString()) - enum name text is observable"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): OperatorKind; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7076,7 +7076,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/OperatorSymbol.cs",
    "upstreamBlob": "4eb208e095c5927c7f64c7d77ec5538324105e92",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 46,
    "namespace": "Kusto.Language.Symbols",
@@ -7101,7 +7101,7 @@
     "`Result` property declared but never assigned in this file",
     "Third ctor creates new Signature(resultType) with zero parameters"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7109,7 +7109,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/OptionSymbol.cs",
    "upstreamBlob": "736ff21ce6eb66bff3a417d7d84fd43bc83d8001",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 43,
    "namespace": "Kusto.Language.Symbols",
@@ -7132,7 +7132,7 @@
    "traps": [
     "Overloads (string, string, IReadOnlyList<ScalarSymbol>, IReadOnlyList<string>) vs (string, string, ScalarSymbol, IReadOnlyList<string>) with default args - Java needs explicit overloads"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7140,7 +7140,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Parameter.cs",
    "upstreamBlob": "12f29a54d30111b720c46aa77dec4e2328f3a82a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 356,
    "namespace": "Kusto.Language.Symbols",
@@ -7169,7 +7169,7 @@
     "ParseList(string) calls QueryParser.ParseFunctionParameters at runtime: catalog definitions parse at static init -> hidden dependency of Functions on the parser",
     "Parameter must keep reference identity equality (used with IndexOf)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7177,7 +7177,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayout.cs",
    "upstreamBlob": "ffc904f97f023910bdf432481c81f822e4e676ba",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 108,
    "namespace": "Kusto.Language.Symbols",
@@ -7202,7 +7202,7 @@
     "Do-while loop at lines ~74-82 uses nextParam.MinOccurring == 0 && paramIndex < Count-1 after increment (off-by-one semantics: mirror)",
     "Overloaded GetArgumentParameters(Signature, IReadOnlyList<Expression>, ...) vs (\u2026IReadOnlyList<TypeSymbol>, \u2026): erasure clash in Java (both List<...>) -> must rename (e.g. GetArgumentParametersFromTypes) - deviation required"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7210,7 +7210,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ParameterLayouts.cs",
    "upstreamBlob": "d7bb9f98f5c09db4c9c8850748ecc4e956b85d5a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 495,
    "namespace": "Kusto.Language.Symbols",
@@ -7289,7 +7289,7 @@
     "Static ObjectPools at line 228-231",
     "AllowsNamedArguments calls GlobalState.Default.IsBuiltInFunction (Signature.cs:335)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7297,7 +7297,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ParameterSymbol.cs",
    "upstreamBlob": "a617dbd83722361d6bd538b4ae11c2c719126cc9",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 29,
    "namespace": "Kusto.Language.Symbols",
@@ -7318,7 +7318,7 @@
    "partialGroup": null,
    "purpose": "Symbol for a function parameter variable inside a function body (name, type, description).",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7326,7 +7326,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ParameterTypeKind.cs",
    "upstreamBlob": "0a8d743c396069e8d32874ad8bd32404ad3b8342",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 156,
    "namespace": "Kusto.Language.Symbols",
@@ -7347,7 +7347,7 @@
    "partialGroup": null,
    "purpose": "Enum of parameter type constraint kinds (Any, Declared, Scalar, Tabular, Integer, Common*, ...).",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7355,7 +7355,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/PatternSymbol.cs",
    "upstreamBlob": "13c9b6845b314b222422e9059d81340a2c2c8286",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 118,
    "namespace": "Kusto.Language.Symbols",
@@ -7390,7 +7390,7 @@
     "Concat(...).ToList() of parameters to append PathParameter (line ~108)",
     "Symbol property has internal setter assigned in PatternSymbol ctor"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7398,7 +7398,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ResultNameKind.cs",
    "upstreamBlob": "0f1ced1d55fce296175cde22c91f9f8007e1920c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 59,
    "namespace": "Kusto.Language.Symbols",
@@ -7421,7 +7421,7 @@
    "traps": [
     "Enum has alias `Default = None` -> duplicate ordinal; Java enum cannot alias, expose Default as static final field / constant mapping to NONE"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7429,7 +7429,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ReturnTypeKind.cs",
    "upstreamBlob": "56d553b79fa4402a0b4c5e7fd1a91e9a98fb81cd",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 138,
    "namespace": "Kusto.Language.Symbols",
@@ -7450,7 +7450,7 @@
    "partialGroup": null,
    "purpose": "Enum of return-type strategies for signatures (Declared, Computed, Custom, ParameterN, Common, Widest, Parameter0Table ...).",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7458,7 +7458,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ScalarSymbol.cs",
    "upstreamBlob": "73874e521895b2fd3a6be60260be553e0fca3eff",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 120,
    "namespace": "Kusto.Language.Symbols",
@@ -7504,7 +7504,7 @@
     "ScalarFlags uses binary literals 0b0001_0000 and All composite - Java int constants",
     "IsWiderThan loops over _widerThan with reference equality (lines 71-79); aliases for 'int' include 'uint' etc."
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): ScalarSymbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7512,7 +7512,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/ScalarTypes.cs",
    "upstreamBlob": "17ca99d67eaa2779ac31bc0bfb4998d877c6359a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 388,
    "namespace": "Kusto.Language.Symbols",
@@ -7542,7 +7542,7 @@
     "`public static readonly` IReadOnlyList `All` ordering is observable (used for enumeration in catalogs)",
     "Name 'Type', 'String', 'Decimal', 'Guid', 'DateTime', 'TimeSpan' shadow System types inside the class - Java names like Type/String must be handled (rename fields e.g. STRING) - mirror deviation"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7550,7 +7550,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/SchemaDisplay.cs",
    "upstreamBlob": "04e6de32345d78ec6fb50915198ca575045b598d",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 75,
    "namespace": "Kusto.Language.Symbols",
@@ -7575,7 +7575,7 @@
     "GetScalarTypeText returns '' for non-scalar types (e.g. table columns of unexpected kind)",
     "Uses KustoFacts.BracketNameIfNecessary (Parser area)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7583,7 +7583,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Scope.cs",
    "upstreamBlob": "4628c113a152f90f519b21b5326e58f9d39c4b1f",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 24,
    "namespace": "Kusto.Language.Symbols",
@@ -7604,7 +7604,7 @@
    "partialGroup": null,
    "purpose": "Abstract symbol scope with GetSymbols(name, match, list) and convenience overload.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7612,7 +7612,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Signature.cs",
    "upstreamBlob": "6a713307e9e2565c5c94b237dbff22403194de11",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 694,
    "namespace": "Kusto.Language.Symbols",
@@ -7648,7 +7648,7 @@
     "Private ctor validation uses `body != null | declaration != null` (non-short-circuit |) - harmless",
     "ObjectPool<List<Parameter>> static (line 516)"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): Signature; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7656,7 +7656,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Symbol.cs",
    "upstreamBlob": "6edee9fb5ade24349f7eb15b4633bf7d2c15a4b0",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 362,
    "namespace": "Kusto.Language.Symbols",
@@ -7684,7 +7684,7 @@
     "Symbol equality is reference identity throughout (no Equals/GetHashCode overrides) - do NOT override equals/hashCode in Java",
     "GetResultType recursion on GroupSymbol builds a GroupSymbol from result TYPES"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): Symbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7692,7 +7692,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/SymbolKind.cs",
    "upstreamBlob": "47d644815b907613e5de6987a16acc21f28a59bd",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 146,
    "namespace": "Kusto.Language.Symbols",
@@ -7715,7 +7715,7 @@
    "traps": [
     "Explicit None = 0 then implicit ascending values; ordinals used nowhere numerically but keep order"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7723,7 +7723,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/SymbolMatch.cs",
    "upstreamBlob": "c60c79f69926970f55ab4c31604a10bd96e4da80",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 228,
    "namespace": "Kusto.Language.Symbols",
@@ -7760,7 +7760,7 @@
     "Matches flows through many `symbol is X` checks; ExternalTable vs Table distinguished via IsExternal/IsMaterializedView/IsStoredQueryResult",
     "Extension method on Symbol -> static helper SymbolMatchExtensions.matches(symbol,...) or instance method on Symbol (deviation)"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): SymbolMatch; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7768,7 +7768,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TableState.cs",
    "upstreamBlob": "5f98af3d3d5c9a885a10f94516082a4f428b4aef",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 75,
    "namespace": "Kusto.Language.Symbols",
@@ -7802,7 +7802,7 @@
     "NAME CLASH: TableSymbol.cs declares a nested protected `TableState : ushort` enum (line ~20) that shadows this top-level public TableState inside TableSymbol; the top-level one is used by the binder. Java: nested TableSymbol.TableState vs top-level TableState both named identically - rename one or merge (deviation)",
     "Extension methods named With/Open on an enum -> static methods in TableStateExtensions; New() adds Serialized"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7810,7 +7810,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TableSymbol.cs",
    "upstreamBlob": "8151734db450b0332f09426225c993f646eccbc8",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 600,
    "namespace": "Kusto.Language.Symbols",
@@ -7885,7 +7885,7 @@
     "MaterializedViewKind internal property setter 'TODO' state",
     "Overload ambiguity: TableSymbol(string name, string schema, string description) vs (string name, params ColumnSymbol[]) vs (string, IEnumerable<ColumnSymbol>, string)"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7893,7 +7893,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/Tabularity.cs",
    "upstreamBlob": "04f0d66682d0c300778f6718e4104e966d86003e",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 40,
    "namespace": "Kusto.Language.Symbols",
@@ -7914,7 +7914,7 @@
    "partialGroup": null,
    "purpose": "Enum: None, Scalar, Tabular, Other, Unknown, Unspecified.",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7922,7 +7922,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TupleSymbol.cs",
    "upstreamBlob": "4a6c92f93e38d66f3b8f0b5f258e6533ae66ab08",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 64,
    "namespace": "Kusto.Language.Symbols",
@@ -7947,7 +7947,7 @@
     "Empty (line 62) = new TupleSymbol(null): C# overload resolution picks the `params ColumnSymbol[]` ctor with a null array (array more specific than IEnumerable), which then casts to IEnumerable null -> ToReadOnly(null) must yield empty list; verify Utils.ToReadOnly/CheckArgumentNullOrElementNull behaviour",
     "Base name is literal 'tuple'"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): TupleSymbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7955,7 +7955,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TypeFacts.cs",
    "upstreamBlob": "c3fe64154f662903bd3f2f6d51ed33ec8b66618a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 634,
    "namespace": "Kusto.Language.Symbols",
@@ -7986,7 +7986,7 @@
     "GetCommonResultType overloads with params Expression[] vs IReadOnlyList<Expression>",
     "IsRealOrDecimal etc reference ScalarTypes by identity"
    ],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -7994,7 +7994,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/TypeSymbol.cs",
    "upstreamBlob": "68b2b048855eec92481a6cfb7d671cddbb55671d",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 19,
    "namespace": "Kusto.Language.Symbols",
@@ -8015,7 +8015,7 @@
    "partialGroup": null,
    "purpose": "Base class for symbols that are types.",
    "traps": [],
-   "notes": "W0 skeleton (PORT-SKELETON W1): TypeSymbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -8023,7 +8023,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/VariableSymbol.cs",
    "upstreamBlob": "f4fc1a2922f529268344d089e5d2ed4fa5e446d8",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 1,
    "lines": 57,
    "namespace": "Kusto.Language.Symbols",
@@ -8046,7 +8046,7 @@
    "traps": [
     "Type.CheckArgumentNull throws ArgumentNullException on null type"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W1): VariableSymbol; see porting/skeletons-w0.md",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -8054,7 +8054,7 @@
    "upstreamPath": "src/Kusto.Language/Symbols/VoidSymbol.cs",
    "upstreamBlob": "108ddf02353b0ce30f38c329656cb6c3638d9143",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 25,
    "namespace": "Kusto.Language.Symbols",
@@ -8075,7 +8075,7 @@
    "partialGroup": null,
    "purpose": "Singleton void type symbol (Tabularity.None).",
    "traps": [],
-   "notes": "Symbol model is in scope (binding output, schema input, catalogs).",
+   "notes": "W1",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -12542,7 +12542,7 @@
    "upstreamPath": null,
    "upstreamBlob": null,
    "scope": "synthetic",
-   "status": "pending",
+   "status": "ported",
    "wave": 1,
    "lines": 0,
    "namespace": null,
@@ -12553,7 +12553,7 @@
    "partialGroup": null,
    "purpose": "named-argument builder for Parameter, catalogs only",
    "traps": [],
-   "notes": "",
+   "notes": "W1",
    "module": "kusto-language",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
