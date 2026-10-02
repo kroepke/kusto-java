@@ -29,5 +29,8 @@
     }
   ],
   "pyyaml": "6.0.3",
-  "readmeSource": "upstream/kusto-query-language/src/Kusto.Language/readme.md"
+  "readmeSource": "upstream/kusto-query-language/src/Kusto.Language/readme.md",
+  "goldenSample": {
+    "sentinel": 1200
+  }
 }

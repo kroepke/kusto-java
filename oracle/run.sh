@@ -6,7 +6,7 @@
 #   run.sh facts                                  porting/dotnet-facts-cases.txt -> conformance dotnet-facts.json
 #   run.sh probe                                  T0 questions as JSON on stdout
 #   run.sh census <corpus.jsonl> [schemasDir]     throw / round-trip counts as JSON on stdout
-#   run.sh regenerate                             generate, build, facts, dump every corpus
+#   run.sh regenerate [--all]                     generate, build, facts, dump every corpus (sampled unless --all)
 #   run.sh sources-sha256                         print the sources hash used in golden headers
 set -euo pipefail
 
@@ -95,7 +95,28 @@ cmd_census() {
   oracle "${args[@]}"
 }
 
+# Committed goldens for large corpora are a deterministic sample (every k-th record) so the
+# repository stays small; `run.sh regenerate --all` (nightly CI) dumps every record.
+# Sample sizes live in porting/corpora.json under "goldenSample" (corpus name -> max records).
+golden_sample_size() {
+  python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("goldenSample",{}).get(sys.argv[2],0))' \
+    "$root/porting/corpora.json" "$1"
+}
+
+sample_corpus() {   # sample_corpus <in.jsonl> <max> <out.jsonl>
+  python3 - "$1" "$2" "$3" <<'PY'
+import sys, math
+src, n, dst = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+lines = [l for l in open(src, encoding='utf-8') if l.strip()]
+k = max(1, math.ceil(len(lines) / n)) if n > 0 else 1
+with open(dst, 'w', encoding='utf-8') as f:
+    f.writelines(lines[::k])
+PY
+}
+
 cmd_regenerate() {
+  local all=0
+  [ "${1:-}" = "--all" ] && all=1
   cmd_generate
   cmd_build
   cmd_facts
@@ -107,7 +128,16 @@ cmd_regenerate() {
   local c
   for c in "${corpora[@]}"; do
     local name; name="$(basename "$c" .jsonl)"
-    cmd_dump "$c" "$golden_dir/$name.jsonl.gz" "$schemas"
+    local n; n="$(golden_sample_size "$name")"
+    if [ "$all" = 0 ] && [ "$n" -gt 0 ]; then
+      local tmp; tmp="$(mktemp --suffix=.jsonl)"
+      sample_corpus "$c" "$n" "$tmp"
+      echo "regenerate: $name sampled to $(wc -l < "$tmp") records (goldenSample=$n)" >&2
+      cmd_dump "$tmp" "$golden_dir/$name.jsonl.gz" "$schemas"
+      rm -f "$tmp"
+    else
+      cmd_dump "$c" "$golden_dir/$name.jsonl.gz" "$schemas"
+    fi
   done
 }
 
