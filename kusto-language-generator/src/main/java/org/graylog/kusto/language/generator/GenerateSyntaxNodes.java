@@ -21,8 +21,10 @@ import java.util.stream.Stream;
  * GenerateSyntaxNodes [--check] &lt;source root&gt;     e.g. kusto-language/src/main/java
  * </pre>
  * Writes one file per class into {@code <source root>/org/graylog/kusto/language/syntax/}, keeping the
- * {@code <hand-written>} regions of existing files. With {@code --check} nothing is written: the output is
- * generated in memory and every file that differs from disk is listed (exit status 1).
+ * {@code <hand-written>} regions of existing files. Then writes the {@code LexicalTokenParsers} facade into
+ * {@code <source root>/org/graylog/kusto/language/parsing/}, derived from {@code Parsers.java} there
+ * ({@link LexicalTokenParsersGenerator}, PORTING.md 3.10, D7). With {@code --check} nothing is written: the
+ * output is generated in memory and every file that differs from disk is listed (exit status 1).
  * Exit status: 0 success, 1 drift or region error, 2 usage.
  */
 public final class GenerateSyntaxNodes {
@@ -54,7 +56,8 @@ public final class GenerateSyntaxNodes {
         int status;
         try {
             status = run(syntaxDirectory(Path.of(root)), check, System.out);
-        } catch (HandWrittenRegions.RegionException | UncheckedIOException e) {
+            status = Math.max(status, LexicalTokenParsersGenerator.run(Path.of(root), check, System.out));
+        } catch (HandWrittenRegions.RegionException | UncheckedIOException | IllegalStateException e) {
             System.err.println("GenerateSyntaxNodes: " + e.getMessage());
             status = 1;
         }

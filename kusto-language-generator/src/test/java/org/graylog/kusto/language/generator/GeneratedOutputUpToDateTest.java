@@ -1,5 +1,5 @@
 // Original to kusto-java (no upstream file). SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2026 Graylog, Inc. Purpose: drift test: the checked-in generated syntax nodes equal a fresh generation (PORTING.md 4.1).
+// Copyright (c) 2026 Graylog, Inc. Purpose: drift test: the checked-in generated syntax nodes and LexicalTokenParsers facade equal a fresh generation (PORTING.md 4.1, D7).
 package org.graylog.kusto.language.generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,8 +14,9 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Runs {@code GenerateSyntaxNodes --check} against {@code ../kusto-language/src/main/java}. Skipped while
- * that directory holds no generated files yet.
+ * Runs {@code GenerateSyntaxNodes --check} against {@code ../kusto-language/src/main/java}: the syntax nodes
+ * (skipped while that directory holds no generated files yet) and the {@code LexicalTokenParsers} facade
+ * (skipped while {@code Parsers.java} is absent).
  */
 class GeneratedOutputUpToDateTest {
     @Test
@@ -25,6 +26,17 @@ class GeneratedOutputUpToDateTest {
                 "no generated files in " + dir);
         var buffer = new ByteArrayOutputStream();
         int status = GenerateSyntaxNodes.run(dir, true, new PrintStream(buffer, true, StandardCharsets.UTF_8));
+        assertEquals(0, status, buffer.toString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void checked_in_lexical_token_parsers_facade_is_up_to_date() {
+        Path root = RepoPaths.kustoLanguageSourceRoot();
+        Path dir = LexicalTokenParsersGenerator.parsingDirectory(root);
+        Assumptions.assumeTrue(Files.isRegularFile(dir.resolve(LexicalTokenParsersGenerator.SOURCE_FILE)),
+                "no Parsers.java in " + dir);
+        var buffer = new ByteArrayOutputStream();
+        int status = LexicalTokenParsersGenerator.run(root, true, new PrintStream(buffer, true, StandardCharsets.UTF_8));
         assertEquals(0, status, buffer.toString(StandardCharsets.UTF_8));
     }
 }

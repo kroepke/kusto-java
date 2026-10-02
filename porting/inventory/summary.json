@@ -49,9 +49,10 @@
   "excluded": 124,
   "ported": 177,
   "partial": 19,
-  "pending": 21,
+  "pending": 20,
   "stubbed": 9,
-  "generated+handwritten": 1
+  "generated+handwritten": 1,
+  "generated": 1
  },
  "entriesTotal": 351,
  "syntheticCount": 26,

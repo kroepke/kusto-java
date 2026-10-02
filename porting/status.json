@@ -1,4 +1,8 @@
 {
+ "kusto-language/src/main/java/org/graylog/kusto/language/parsing/LexicalTokenParsers.java": {
+  "notes": "W3: emitted by LexicalTokenParsersGenerator from Parsers.java (D7)",
+  "status": "generated"
+ },
  "kusto-language/src/main/java/org/graylog/kusto/language/symbols/P.java": {
   "notes": "W1",
   "status": "ported"

@@ -391,7 +391,7 @@ static {                                                          // PORT: §3.9
 - **`default(T)`** (68 sites): `null` for reference types; porter checks each value-type use.
 - **`using static Parsers<LexicalToken>`**: Java cannot static-import from a parameterised
   type. `Parsers` is mirrored as static generic methods; `kusto-language-generator` also emits
-  the non-generic facade `LexicalTokenParsers` (84 methods, 35 names, plus the field `Any`)
+  the non-generic facade `LexicalTokenParsers` (77 methods, 35 names, plus the field `Any`; the 7 `Character`-only and nested-producer members are skipped)
   with `TInput` fixed. Grammar files `import static …LexicalTokenParsers.*`. Row D7.
 - Types implementing `IReadOnlyList<T>` (`SyntaxList<T>`, `SafeList<T>`) implement
   `utils.dotnet.ReadOnlyList<T>` (a minimal interface: `size()`, `get(int)`, `iterator()`)
