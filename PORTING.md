@@ -161,6 +161,8 @@ not listed here (added in T0).
 | `Binder_Misc.cs:476,490` | `BindParameterDeclarations` ×2 | `bindParameterDeclarations`, `bindParameterDeclarationsOfFunctionParameters` |
 | `Binder_Misc.cs:532,541` | `BindColumnDeclarations` ×2 | `bindColumnDeclarations`, `bindColumnDeclarationsOfSchema` |
 | `Binder_Misc.cs:1278,1294` | `CheckQueryOperatorParameters` ×2 | `checkQueryOperatorParameters`, `checkQueryOperatorParametersOfNamedParameters` |
+| `Symbols/GraphModelSymbol.cs` ctors | `(string, IEnumerable<Signature> edges, IEnumerable<Signature> nodes, IEnumerable<GraphSnapshotSymbol>)` vs `(string, IEnumerable<string>, IEnumerable<string>, IEnumerable<string>)` | first keeps `Iterable<Signature>`; the string form takes `List<String> edges, List<String> nodes, Iterable<String> snapshots` (W1) |
+| `Symbols/ClusterSymbol.cs` ctors | private `(string, IReadOnlyList<Symbol>, bool)` vs public `(string, IEnumerable<DatabaseSymbol>, bool)` | private form takes `List<Symbol>`; public takes `Iterable<? extends DatabaseSymbol>` and copies instead of throwing `InvalidCastException` (W1) |
 
 The suffix after `Of`/`Text`/`List` is the simple name of the distinguishing element type when
 that reads well; otherwise the porter proposes a name and adds it here before merging.
@@ -330,7 +332,7 @@ List<String> names = Linq.toList(Linq.where(Linq.select(columns, c -> c.name()),
 | `Func<T1..Tn,R>`, n ≥ 3 (combinator `Rule`) | `utils.dotnet.Func3..Func9` (`FuncN` = N inputs plus result) |
 | `Action<T>`, `Action<A,B>` | `Consumer<T>`, `BiConsumer<A,B>` |
 | `Func<T>` | `Supplier<T>` |
-| custom delegates `SourceProducer`, `SourceConsumer` (`Combinators/Parsers/`), `CustomAvailability` (`Symbols/CustomAvailabilty.cs`) | `@FunctionalInterface` with the upstream name, own file |
+| custom delegates `SourceProducer`, `SourceConsumer` (`Combinators/Parsers/`), `CustomAvailability` (`Symbols/CustomAvailabilty.cs`), `CustomReturnType`, `ParameterLayoutBuilder` | `@FunctionalInterface` with the upstream name, own file; the single method is named `invoke` (W1 decision; W3 follows it) |
 | `event`, operator overloads | none upstream |
 | implicit conversions (5 sites) | explicit at each use: `FunctionCallResult.of(type)` (`FunctionCallResult.cs:25`), `Optional.of(v)` (`Optional.cs:17`), `CancellationToken.of(…)` (`Cancellation.cs:30`), `EditString.of(s)`/`.toString()` (`EditString.cs:72,80`), `ScanOutput.from(ScanInput)` (`PartialParser.cs:959`). `// PORT: §3.8` |
 
