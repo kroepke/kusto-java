@@ -724,7 +724,10 @@ output `{api, input, ok, value}` is committed as `dotnet-facts.json` and every c
   2026-10-02); Java registers `""` → `None` explicitly after the sort (D13) and
   `TrapsTest.tryGetKindEmpty` pins it.
 - `OrderBy` (stable) → `List.sort` (stable). `StringComparer.OrdinalIgnoreCase` → upper-case
-  per char then compare (`'_'` vs `'a'` differs from `String.CASE_INSENSITIVE_ORDER`).
+  per char then compare (`'_'` vs `'a'` differs from `String.CASE_INSENSITIVE_ORDER`). .NET's
+  invariant upper-casing leaves `ı` (U+0131) and `ſ` (U+017F) unchanged where Java maps them to
+  `I`/`S`; `DotNetChars.toUpperInvariant` carries those exclusions and `traps/0395-0396` pin
+  the resulting sort order.
 - `StringAndNumberComparer` quirks (`:97-115`) mirrored with `// PORT-BUG`.
 - `ColumnMap.cs:81-85` same-name column with three types: mirrored, `// PORT-BUG`, traps case.
 

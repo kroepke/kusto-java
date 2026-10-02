@@ -92,7 +92,8 @@ node is an `Expression` with `ResultType != null`. Fields:
 - `type` = `SchemaDisplay.GetText(expression.ResultType)` or `null`.
 - `signature` = `SchemaDisplay.GetText` of `ReferencedSignature.Parameters` as a parameter
   list plus `->` and the declared return type text, or `null`.
-- `isConstant`, `constantValue` (`DotNet.str`, `null` when not constant).
+- `isConstant`, `constantValue` (`DotNet.str`, `null` when not constant; `"!<ExceptionTypeName>"`
+  when computing the constant value throws, as for `tokens[].value`).
 - `calledBody` = for a function call with an expansion: SHA-256 (first 16 hex chars) of
   `GetCalledFunctionBody().ToString()`, else `null`.
 - `alternates` = `Alternates?.Count ?? 0`.

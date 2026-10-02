@@ -312,7 +312,15 @@ namespace Kusto.Oracle
                     Json.Str(w, "signature", RenderSignature(node.ReferencedSignature));
                     bool isConstant = expr != null && expr.IsConstant;
                     w.WriteBoolean("isConstant", isConstant);
-                    Json.Str(w, "constantValue", isConstant ? DotNetStr(expr.ConstantValue) : null);
+                    string constantValue = null;
+                    if (isConstant)
+                    {
+                        // A literal whose value throws (overflowing timespan, bad \U escape) must not
+                        // abort the dump: record "!<ExceptionTypeName>" like tokens[].value does.
+                        try { constantValue = DotNetStr(expr.ConstantValue); }
+                        catch (Exception ex) { constantValue = "!" + ex.GetType().Name; }
+                    }
+                    Json.Str(w, "constantValue", constantValue);
                     var body = node.GetCalledFunctionBody();
                     Json.Str(w, "calledBody", body != null ? Sha16(body.ToString()) : null);
                     w.WriteNumber("alternates", node.Alternates?.Count ?? 0);
