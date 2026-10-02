@@ -1,0 +1,125 @@
+# Fuzz seeds: one corpus record id per line; lines starting with '#' are comments.
+# Generated deterministically from the corpora (selection rule per section).
+
+# docs: 20 most frequent first pipe operators (60..600 chars, no commands); shortest record per operator
+# extend
+docs/0079
+# where
+docs/0736
+# summarize
+docs/1287
+# project
+docs/0296
+# graph-match
+docs/0622
+# join
+docs/0166
+# evaluate
+docs/0114
+# count
+docs/0226
+# mv-expand
+docs/0898
+# make-series
+docs/1376
+# sort
+docs/1122
+# mv-apply
+docs/0890
+# parse-kv
+docs/0987
+# make-graph
+docs/0617
+# lookup
+docs/0836
+# partition
+docs/1015
+# take
+docs/1428
+# getschema
+docs/1167
+# project-by-names
+docs/1058
+# render
+docs/0475
+
+# sentinel: 20 most frequent (first, second) pipe-operator pairs (60..600 chars); shortest record per pair
+# where where
+sentinel/1415
+# where extend
+sentinel/2311
+# where project
+sentinel/0255
+# where summarize
+sentinel/2482
+# where join
+sentinel/1080
+# summarize where
+sentinel/0470
+# extend where
+sentinel/4164
+# where parse
+sentinel/1068
+# extend extend
+sentinel/0643
+# where mv-expand
+sentinel/1991
+# where project-away
+sentinel/1551
+# project where
+sentinel/2882
+# union where
+sentinel/2790
+# summarize mv-expand
+sentinel/0480
+# extend make-series
+sentinel/0513
+# join where
+sentinel/4532
+# summarize extend
+sentinel/4708
+# join join
+sentinel/0668
+# mv-expand extend
+sentinel/2222
+# summarize summarize
+sentinel/0471
+
+# traps: hand-picked lexer/binder traps
+# fidelity-tests-api.md A4 leading BOM is trivia, not stripped
+traps/0033
+# fidelity-tests-api.md A5 \r-only line ending ends comment
+traps/0035
+# fidelity-tests-api.md A4 single-quoted string stops at \r (unterminated)
+traps/0045
+# PORTING.md 5.2 lexer reads 2 octal digits, decoder reads 3
+traps/0316
+# PORTING.md 5.1 raw guid followed by identifier char (no boundary check)
+traps/0103
+# PORTING.md 5.2 1.5e lexes as long, dot, identifier
+traps/0163
+# PORTING.md 5.2 char.IsLetter split at e -> zero
+traps/0227
+# PORTING.md 5.2 offset converts
+traps/0249
+# PORTING.md 5.3 same-name column with three types (ColumnMap.cs:81-85)
+traps/0372
+# PORTING.md 5.3 StringAndNumberComparer zero-skip quirk
+traps/0394
+
+# readme: all records
+readme/0001
+readme/0002
+readme/0003
+readme/0004
+readme/0005
+readme/0006
+readme/0007
+
+# docs commands: 3 shortest with distinct first two words
+# .show function
+docs/0737
+# .drop graph_model
+docs/1458
+# .show diagnostics
+docs/0913
