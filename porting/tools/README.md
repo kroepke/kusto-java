@@ -40,3 +40,12 @@ Re-run `extract_docs_corpus.py` after adding it.
 - `check_generated_structure.py`: diffs node/visitor structure between
   `porting/reference/GeneratedSyntaxNodes.cs` and the generated Java (W0 gate).
 - `check_headers.py`, `check_pending.py`: review-gate scripts (headers/markers, PORT-PENDING list).
+
+## Member-order gate
+
+`check_member_order.py [--wave N] [--status ported,partial] [--only Type] [--verbose] [paths…]`
+compares the ordered member list of each manifest type (C# vs its Java class). Output: `OK`,
+or `ORDER: <java path>: …` lines; `warn: missing/extra` counts are informational. Exit 1 iff any
+ORDER violation. Token-level heuristic (no real parser): partial classes merge by `mergeOrder`;
+`#if BRIDGE` branches dropped; names compared case-insensitively with `_`, `set*` and
+overload-suffix folding. Generated nodes and not-yet-ported parts show up as missing/extra.
