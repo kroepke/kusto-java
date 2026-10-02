@@ -21,6 +21,9 @@ public final class KustoFacts
 
     // ===== upstream part: KustoFacts.cs =====
 
+    public static final String MultiLineStringQuote = "```"; // PORT-SKELETON: W2 (needed by TokenParser)
+    public static final String AlternateMultiLineStringQuote = "~~~"; // PORT-SKELETON: W2 (needed by TokenParser)
+
     public static String bracketNameIfNecessary(String name) // PORT-PENDING: W2
     {
         throw new UnsupportedOperationException("PORT-PENDING: W2");
