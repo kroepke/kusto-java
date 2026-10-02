@@ -755,7 +755,7 @@
    "upstreamPath": "src/Kusto.Language/Aggregates.cs",
    "upstreamBlob": "df3e722f30504fabbcfd26df64e318c7be8702f7",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 861,
    "namespace": "Kusto.Language",
@@ -781,7 +781,7 @@
     "Obsolete/Hide fluent chains (32-41,180,214,487,504,708,719) create new symbol instances; keep instance identity semantics (GlobalState.IsAggregateFunction compares by reference)",
     "GetAnyResult(514)/GetArgMinMaxResult(604) build result columns; column ordering observable"
    ],
-   "notes": "Built-in aggregate catalog; GlobalState.Default (1171).",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3548,7 +3548,7 @@
    "upstreamPath": "src/Kusto.Language/FunctionBodyFacts.cs",
    "upstreamBlob": "c60d5d7b6d194baefdad1fb3a52963e139a55a42",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 3,
    "lines": 363,
    "namespace": "Kusto.Language",
@@ -3573,7 +3573,7 @@
     "Optional<T> struct (Utils) used in With(...) at 61 and 154-170: need Java Optional-like class distinguishing 'unset' from null (do not use java.util.Optional)",
     "static readonly Default singleton (line 40)"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W3): FunctionBodyFacts; see porting/skeletons-w0.md",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3581,7 +3581,7 @@
    "upstreamPath": "src/Kusto.Language/FunctionHelpers.cs",
    "upstreamBlob": "a172dc2a7d9e1400019d05d7f14ebe3254ab0d4d",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 153,
    "namespace": "Kusto.Language",
@@ -3607,7 +3607,7 @@
     "MaxRepeat = short.MaxValue (19)",
     "used via 'using static FunctionHelpers' in Functions/Aggregates/PlugIns: Java static imports"
    ],
-   "notes": "Used by Functions/Aggregates/PlugIns to build signatures.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3615,7 +3615,7 @@
    "upstreamPath": "src/Kusto.Language/Functions.Convert.cs",
    "upstreamBlob": "b6f9b42c77fbbccb2a6b98edea727d9dbf1db093",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 342,
    "namespace": "Kusto.Language",
@@ -3641,7 +3641,7 @@
     "Merge into Functions.java BEFORE the Functions.All array (declared Functions.cs:3733): C# leaves cross-partial static-init order unspecified, Java must define these fields textually before All or they are null",
     "Unit lists must be copied verbatim (order observable in completion/diagnostics)"
    ],
-   "notes": "partial class Functions (line 11); merge into Functions.java per partial-class rule.",
+   "notes": "W3",
    "mergeOrder": 0,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -3650,7 +3650,7 @@
    "upstreamPath": "src/Kusto.Language/Functions.cs",
    "upstreamBlob": "cdaa1d0a59c7d640aa171c2814474e210f810ca5",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 4227,
    "namespace": "Kusto.Language",
@@ -3681,7 +3681,7 @@
     "Function named 'Any','_All' etc: Java identifier clashes (e.g. Table, Database, Cast, Prev, Next, Invoke, Map) fine inside class but check reserved words",
     "No culture-sensitive code found; string-literal defaults in parameters (e.g. enum value lists) must match exactly"
    ],
-   "notes": "Built-in scalar function catalog; GlobalState.Default (1170).",
+   "notes": "W3",
    "mergeOrder": 1,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -3886,7 +3886,7 @@
    "upstreamPath": "src/Kusto.Language/Operators.cs",
    "upstreamBlob": "f35822070282c3966d31970c41198a631a5b44ce",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 420,
    "namespace": "Kusto.Language",
@@ -3912,7 +3912,7 @@
     "Hide() on Signature (76-86,159-189) returns new Signature: preserve",
     "Name 'MatchRegex' etc. is operator names not regex usage"
    ],
-   "notes": "Built-in operator catalog; GlobalState.Default (1173); QueryParser/QueryGrammar/SyntaxFacts.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4206,7 +4206,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/ArraySource.cs",
    "upstreamBlob": "cf9482c4c881fac31b41f064e1a0cf23fcd166f0",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 47,
    "namespace": "Kusto.Language.Parsing",
@@ -4231,7 +4231,7 @@
     "ArraySource.cs:15 optional ctor args start=0,length=-1 -> overloads",
     "ArraySource.cs:18-25 length clamp uses Math.Min(length, input.Count-start)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4239,7 +4239,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Describer.cs",
    "upstreamBlob": "9a4db6007b0bd0a60d4819a5053242dd5fd70331",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 309,
    "namespace": "Kusto.Language.Parsing",
@@ -4266,7 +4266,7 @@
     "Describer.cs:173 switch on ApplyKind; builds temporary Parsers<TInput>.ZeroOrMore(...) objects during describe (allocation, fine)",
     "String output is observable via Parser.Description (tests/debug) - keep exact punctuation: ' | ', ' ', '[..]', '{..}', '{..}+', '!' , 'fails(..)', 'not(..)', 'match()', 'forward()', 'map()'"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4274,7 +4274,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/LimitSource.cs",
    "upstreamBlob": "4a74ae366be35db497859a435f367e21e187aaf8",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 29,
    "namespace": "Kusto.Language.Parsing",
@@ -4298,7 +4298,7 @@
     "LimitSource.cs:24 Peek(n=0) default arg while Source.Peek declares n=0 too; IsEnd checks n>=_limit relative to wrapped source offset (limit is relative index, nested LimitSource compounds)",
     "LimitSource.cs:14 wrapping creates new object per limit; cache (Source.Cache) is NOT forwarded: wrapped source gets its own empty SourceCache"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4306,7 +4306,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/OffsetValue.cs",
    "upstreamBlob": "db6fe1d09cd19a983d96f7f269df7b68d6b990c5",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 29,
    "namespace": "Kusto.Language.Parsing",
@@ -4329,7 +4329,7 @@
    "traps": [
     "OffsetValue.cs:6 struct -> Java record/final class; generic TValue boxed"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4337,7 +4337,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParseResult.cs",
    "upstreamBlob": "c1bd2e9b788a1c8e03a4c9c712e75a7da49fb26c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 26,
    "namespace": "Kusto.Language.Parsing",
@@ -4362,7 +4362,7 @@
     "ParseResult.cs:22 Succeeded => Length>=0 but ParserExtensions.TryParse uses Length>0 (inconsistent, mirror both)",
     "default(ParseResult<T>) would have Length 0 = success; callers always use ctor"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4370,7 +4370,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parser.cs",
    "upstreamBlob": "035a97276c397233f85ae666e8ece35774a21409",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 258,
    "namespace": "Kusto.Language.Parsing",
@@ -4412,7 +4412,7 @@
     "Parser.cs:45 DebuggerDisplay attribute -> drop",
     "Parser.cs:167-168 IsNegation/IsConditional have no doc comments; flags are virtual props -> methods isNegation() etc."
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4452,7 +4452,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs",
    "upstreamBlob": "74f44632c994f23cd8d4795cb8a451f14b97918c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 161,
    "namespace": "Kusto.Language.Parsing",
@@ -4510,7 +4510,7 @@
     "ParserVisitors.cs:89 bool result with TResult=bool -> Boolean boxing",
     "IsParentVisitor has no callers outside this file (grep) - dead code"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4518,7 +4518,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers.cs",
    "upstreamBlob": "02cad481da5a71d0e6e302cabd59ca86cbfea990",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 1520,
    "namespace": "Kusto.Language.Parsing",
@@ -4565,7 +4565,7 @@
     "Parsers.cs:25 'Any' static readonly field initialised via Match(t=>true)",
     "Parsers.cs:1452-1470 Text/TextAndOffset char-specific (ToString on StringBuilder, TextSource.PeekText)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4573,7 +4573,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ApplyParser.cs",
    "upstreamBlob": "2face96d91071e2b8d79311c85676b704d99e551",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 147,
    "namespace": "Kusto.Language.Parsing",
@@ -4609,7 +4609,7 @@
     "ApplyParser.cs:19,24 private ctor overload + public ctor taking RightParser (same arity different type) -> Java ok but erasure clash? Parser<TInput,TOutput> vs RightParser<..> are different classes, OK",
     "ApplyParser.cs:14 property named ApplyKind same as type ApplyKind (Color Color) -> getApplyKind()"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4617,7 +4617,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/BestParser.cs",
    "upstreamBlob": "e4738bc53031e9c430042050d9327a403e6c208d",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 312,
    "namespace": "Kusto.Language.Parsing",
@@ -4654,7 +4654,7 @@
     "Ties: first-best wins unless IsBetter; iteration order = array order (observable)",
     "BestParser.cs:16-17 Ensure.ElementsNotNull"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4662,7 +4662,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ConvertParser.cs",
    "upstreamBlob": "cfdf512cf91fa92f75ca835207d76375b7f208d4",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 128,
    "namespace": "Kusto.Language.Parsing",
@@ -4688,7 +4688,7 @@
     "ConvertParser.cs:99 default(TOutput)",
     "ConvertParser.cs:23 Ensure.IsTrue(listProducer!=null||singleProducer!=null)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4696,7 +4696,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FailsParser.cs",
    "upstreamBlob": "24578d6e09d7ae22a92afa8c879ea07ec0518a3f",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 63,
    "namespace": "Kusto.Language.Parsing",
@@ -4719,7 +4719,7 @@
    "traps": [
     "Success returns 0 length; distinct from NotParser which consumes one item"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4727,7 +4727,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/FirstParser.cs",
    "upstreamBlob": "28965c04bc89b700048b9085a5884f2f81aacce7",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 207,
    "namespace": "Kusto.Language.Parsing",
@@ -4762,7 +4762,7 @@
     "FirstParser.cs:159,170 default(TOutput); output.SetCount",
     "Order of alternatives is semantic"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4770,7 +4770,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ForwardParser.cs",
    "upstreamBlob": "7f375b6b0d34db93224d6815eb155dccc03aef0a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 109,
    "namespace": "Kusto.Language.Parsing",
@@ -4795,7 +4795,7 @@
     "ForwardParser.cs:12 DeferredParser is a Func property invoked each time (grammar lazily resolves) - Supplier",
     "Fall back to ParseSafe/ScanSafe changes only the execution engine, results must be identical"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4803,7 +4803,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/IfParser.cs",
    "upstreamBlob": "22c88929a4ce0b4e6c3f279452872642777f9a06",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 155,
    "namespace": "Kusto.Language.Parsing",
@@ -4837,7 +4837,7 @@
     "IfParser.cs:131 default(TOutput)",
     "GetChildParser switch with default null"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4845,7 +4845,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/LimitParser.cs",
    "upstreamBlob": "2bcf0e09c9f8481b4aea641b2e5d359ecbf79949",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 86,
    "namespace": "Kusto.Language.Parsing",
@@ -4869,7 +4869,7 @@
     "LimitParser.cs:53,64,75 wraps source in LimitSource; note LimitSource drops SourceCache",
     "LimitParser.cs:56 returns ParseResult(-1, default)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4877,7 +4877,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ListPrimaryParser.cs",
    "upstreamBlob": "9228dcb3459948b397ef8b7fa97468baa4e4a741",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 36,
    "namespace": "Kusto.Language.Parsing",
@@ -4901,7 +4901,7 @@
     "ListPrimaryParser.cs:15 static pool (size 50) in generic abstract class: shared per closed type; in Java one static (hold List<Object>) - fine since List<object> is type-independent",
     "ListPrimaryParser.cs:28 default(TOutput) cast of output[0]: (TOutput)output[0] unchecked cast"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4909,7 +4909,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MapParser.cs",
    "upstreamBlob": "e493b3cceb40d165a2ff240f9e547d5f796f476b",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 190,
    "namespace": "Kusto.Language.Parsing",
@@ -4936,7 +4936,7 @@
     "No dictionary iteration, only lookup - order not observable",
     "Longest-match semantics: bestLength updated only when node.HasValue"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4944,7 +4944,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/MatchParser.cs",
    "upstreamBlob": "307584964e4179679c1361292d3bdc9639eee8e9",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 150,
    "namespace": "Kusto.Language.Parsing",
@@ -4980,7 +4980,7 @@
     "Overload ambiguity in Java: MatchParser(Func<TInput,bool>) vs MatchParser(SourceConsumer<TInput>) both lambdas of different arity (1 vs 2 params): distinct arity so lambda ok, but SourceConsumer is a custom delegate -> custom functional interface",
     "SourceConsumer returns negative length = failure incl. ~i encoding"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4988,7 +4988,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/NotParser.cs",
    "upstreamBlob": "a0a40e4ed24c4262295b84c6fad3b4288e065efd",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 61,
    "namespace": "Kusto.Language.Parsing",
@@ -5011,7 +5011,7 @@
    "traps": [
     "Consumes 1 item (unlike FailsParser)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5019,7 +5019,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/OneOrMoreParser.cs",
    "upstreamBlob": "219b4bd7b1ac965f6efade313866ffbda8f03534",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 91,
    "namespace": "Kusto.Language.Parsing",
@@ -5042,7 +5042,7 @@
    "traps": [
     "OneOrMoreParser.cs:57 loop terminates when len<=0 (zero-length-progress guard); Scan mirror similar - keep identical"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5050,7 +5050,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/OptionalParser.cs",
    "upstreamBlob": "86402207ca48c20a07d6f7e33f98cfeb592b017c",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 90,
    "namespace": "Kusto.Language.Parsing",
@@ -5074,7 +5074,7 @@
     "OptionalParser.cs:70 output.SetCount(originalOutputCount) rollback",
     "Producer is Func<TOutput> evaluated per miss - may allocate nodes (missing-element placeholders)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5082,7 +5082,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ProduceParser.cs",
    "upstreamBlob": "4c07a461e7499500aa408a4494db58b167c3447a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 77,
    "namespace": "Kusto.Language.Parsing",
@@ -5106,7 +5106,7 @@
     "ProduceParser.cs:61,66 SetCount rollbacks",
     "Func<List<object>,int,T> -> custom BiFunction<List<Object>,Integer,T>; boxing ints"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5114,7 +5114,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/RequiredParser.cs",
    "upstreamBlob": "3d2fcb65a92511b949edf9b040b10d0a38324fc2",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 84,
    "namespace": "Kusto.Language.Parsing",
@@ -5139,7 +5139,7 @@
     "Producer gets (Source,int) to compute diagnostics position",
     "Describer prints '!' for required parsers"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5147,7 +5147,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ResultPrimaryParser.cs",
    "upstreamBlob": "782649c3df36013936c9a42ff0956c859c2784c4",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 23,
    "namespace": "Kusto.Language.Parsing",
@@ -5170,7 +5170,7 @@
    "traps": [
     "Pushes ParseResult.Value into output list when Succeeded"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5178,7 +5178,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/RuleParser.cs",
    "upstreamBlob": "c82aaad060f10c3410c6a987c1f81416d0773278",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 114,
    "namespace": "Kusto.Language.Parsing",
@@ -5203,7 +5203,7 @@
     "ResultProducer: Func<Source,int,ParseResult<T>> optional parameter (default null)",
     "Parsers.cs Rule(...) lambdas cast list items with (T1)list[start] unchecked - Java unchecked casts"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5211,7 +5211,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SequenceParser.cs",
    "upstreamBlob": "8ce777b25f458f9100ce06994b74215507a9a7b2",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 91,
    "namespace": "Kusto.Language.Parsing",
@@ -5234,7 +5234,7 @@
    "traps": [
     "SequenceParser.cs:61 SetCount rollback; failure length arithmetic"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5242,7 +5242,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SourceConsumer.cs",
    "upstreamBlob": "4a95bc2cfdb82139a3b18626aea9430459943bf9",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 12,
    "namespace": "Kusto.Language.Parsing",
@@ -5265,7 +5265,7 @@
    "traps": [
     "Java: @FunctionalInterface interface SourceConsumer<TInput> { int consume(Source<TInput>, int) }; file name = delegate name (one file per C# file)"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5273,7 +5273,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/SourceProducer.cs",
    "upstreamBlob": "25fc76e97ef2708b03aab8fa8258908670e98a21",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 17,
    "namespace": "Kusto.Language.Parsing",
@@ -5296,7 +5296,7 @@
    "traps": [
     "Java functional interface with 3 params"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5304,7 +5304,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Parsers/ZeroOrMoreParser.cs",
    "upstreamBlob": "46dca0c7985e866e70d82da4ea95b8f1a4241f3a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 86,
    "namespace": "Kusto.Language.Parsing",
@@ -5328,7 +5328,7 @@
     "zeroOrOne ctor flag changes semantics",
     "ZeroOrMoreParser.cs:62,79 loop terminates on len<=0 or ZeroOrOne - keep identical"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5336,7 +5336,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/PartialParser.cs",
    "upstreamBlob": "d60813211b0783de6cc82c423094cdd11251f56a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 1177,
    "namespace": "Kusto.Language.Parsing",
@@ -5366,7 +5366,7 @@
     "PartialParser.cs:993 SafeList<Path>.Empty.Append",
     "PartialParser.cs:19,28 extension methods on Parser<TInput> -> static methods"
    ],
-   "notes": "Referenced by CommandGrammar.cs:57,65. Also used by Editor completion. Port with CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5374,7 +5374,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/RightParser.cs",
    "upstreamBlob": "3c1eb5e2a321b8578114bf69ed8e6b19c44b0699",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 40,
    "namespace": "Kusto.Language.Parsing",
@@ -5398,7 +5398,7 @@
     "RightParser.cs:12,15 internal Parser property/ctor -> package-private in Java; package org.graylog.kusto.language.parsing is shared with Parsers so OK",
     "RightParser.cs:23-38 With* methods rewrap; struct->class OK"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5406,7 +5406,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeParse.cs",
    "upstreamBlob": "7e18a8589fb8fb4c73364f3f4e4f6179d8e665b2",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 700,
    "namespace": "Kusto.Language.Parsing",
@@ -5445,7 +5445,7 @@
     "SafeParse.cs:484 swaps this.source with LimitSource and restores via PreviousSource; error paths must restore",
     "internal class -> package-private; used from QueryParser (same package? QueryParser is Kusto.Language.Parsing) - fine"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5453,7 +5453,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/SafeScan.cs",
    "upstreamBlob": "f7cad687ff1d10ddff3954234ca464652eb772d2",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 695,
    "namespace": "Kusto.Language.Parsing",
@@ -5489,7 +5489,7 @@
     "SafeScan.cs:483 LimitSource wrapping then restore",
     "Negative-length failure encoding must match Parsers' Scan exactly"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5497,7 +5497,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/Source.cs",
    "upstreamBlob": "a12ea7d127d8e6287e58fbc3e74bd3a6995f5422",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 87,
    "namespace": "Kusto.Language.Parsing",
@@ -5534,7 +5534,7 @@
     "Source.cs:13,16 Peek(int n=0) default param -> overload; Source<char> boxed chars: Source<T> with T=char needs Character or separate primitive source in Java",
     "Source.cs:73-83 TryGetValue out param -> Optional/return null"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5542,7 +5542,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/TextSource.cs",
    "upstreamBlob": "4cb02edf32f5599afad51750ca18e5c992ba2d32",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 76,
    "namespace": "Kusto.Language.Parsing",
@@ -5569,7 +5569,7 @@
     "TextSource.cs:30 Peek returns '\\0' past end -> char 0",
     "TextSource.cs:17,50 StringTable interning of substrings (Utils) - drop to String.substring or port StringTable"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5673,7 +5673,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/KustoFacts.cs",
    "upstreamBlob": "ec8e0b97094ca16bba08f99d16b9b0906c94ef2e",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 2,
    "lines": 1483,
    "namespace": "Kusto.Language",
@@ -5706,7 +5706,7 @@
     "StringComparison.OrdinalIgnoreCase at 1045,1187,1205 -> equalsIgnoreCase/regionMatches (Unicode folding differences negligible)",
     "Lazy init of _knownQueryOperatorParameterNames (77-95) to avoid static-init cycle with QueryOperatorParameters: preserve lazy init in Java (holder class) to avoid class-init cycle"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
+   "notes": "W2",
    "mergeOrder": 0,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -5715,7 +5715,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
    "upstreamBlob": "758b43641842bbb7278b2b6f820d2b2cea70226a",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 2,
    "lines": 187,
    "namespace": "Kusto.Language",
@@ -5740,7 +5740,7 @@
    "traps": [
     "HashSet<string> default comparer is ordinal (line 14); use HashSet<String> in Java, no ordering reliance expected - verify consumers (CanBeIdentifier in KustoFacts.cs:607) only call Contains"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
+   "notes": "W2",
    "mergeOrder": 1,
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
@@ -5749,7 +5749,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/LexicalToken.cs",
    "upstreamBlob": "0ba2e8a163b768cb122a3ef7988050cb43596b18",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 2,
    "lines": 57,
    "namespace": "Kusto.Language.Parsing",
@@ -5773,7 +5773,7 @@
     "Diagnostics defaults to Diagnostic.NoDiagnostics (line 41); trivia/text null coerced to \"\" (lines 39-40)",
     "[DebuggerDisplay] attribute at line 13 is droppable"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W2): LexicalToken; see porting/skeletons-w0.md",
+   "notes": "W2",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5781,7 +5781,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/ParseOptions.cs",
    "upstreamBlob": "d317b8f17f8b5cd6aaf5614971b145a0d44d0e5a",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 2,
    "lines": 114,
    "namespace": "Kusto.Language",
@@ -5807,7 +5807,7 @@
     "Constructor optional ParserKind? args at 44 mean nullable value type -> use boxed Integer/Optional or overloads",
     "No GetHashCode override (grep) - Java equals/hashCode should be consistent"
    ],
-   "notes": "Lexer/parser/combinator infrastructure reachable from TokenParser.ParseTokens, QueryParser.ParseQuery, QueryGrammar or CommandGrammar.",
+   "notes": "W2",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5998,7 +5998,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/SyntaxParsers.cs",
    "upstreamBlob": "d70da7b6cc455b80d46005c2d4b2a2536968c99e",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 672,
    "namespace": "Kusto.Language.Parsing",
@@ -6025,7 +6025,7 @@
     "yield return in ParseAll (628) - lazy IEnumerable; implement as List or Iterator preserving laziness semantics only if observable",
     "HashSet<SyntaxKind>/HashSet<string> (153,350,550) membership only"
    ],
-   "notes": "Grammar helpers; builds CompletionItem annotations (105-160, 287-456, 664).",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6033,7 +6033,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/TextFacts.cs",
    "upstreamBlob": "1a0eac2127c5add2910d1934f02c30cfbb418739",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 2,
    "lines": 656,
    "namespace": "Kusto.Language.Parsing",
@@ -6059,7 +6059,7 @@
     "Line break set (117-150) includes U+2028/U+2029; \\r\\n pairing logic in GetLineBreakLength (132)",
     "Line start tables are UTF-16 code unit offsets; Java String indices match"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W2): TextFacts; see porting/skeletons-w0.md",
+   "notes": "W2",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6067,7 +6067,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/TokenParser.cs",
    "upstreamBlob": "17bc5a7892b1187eb55f08026665fc3f1207ac95",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 2,
    "lines": 1321,
    "namespace": "Kusto.Language.Parsing",
@@ -6098,7 +6098,7 @@
     "Token reuse 'trivia == \" \"' fast path (1275)",
     "Static init order: 18 TokenInfo static readonly fields (1283-1315) depend on s_kindToTokenInfoMap being initialised first"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W2): TokenParser; see porting/skeletons-w0.md",
+   "notes": "W2",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6137,7 +6137,7 @@
    "upstreamPath": "src/Kusto.Language/PlugIns.cs",
    "upstreamBlob": "91f27a042e1841a7d3cd4c6bc66f132145e5fd90",
    "scope": "include",
-   "status": "pending",
+   "status": "ported",
    "wave": 3,
    "lines": 1180,
    "namespace": "Kusto.Language",
@@ -6166,7 +6166,7 @@
     "GetPlugIn(name) null name throws in C# TryGetValue: guard",
     "Switch on string (594,683): Java switch on string OK"
    ],
-   "notes": "Built-in plugin catalog; GlobalState.Default (1172).",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6226,7 +6226,7 @@
    "upstreamPath": "src/Kusto.Language/QueryOperatorParameters.cs",
    "upstreamBlob": "f8b2cfab5f62c2ff039acd268135db24c1ea0032",
    "scope": "include",
-   "status": "partial",
+   "status": "ported",
    "wave": 3,
    "lines": 639,
    "namespace": "Kusto.Language",
@@ -6272,7 +6272,7 @@
     "Enum QueryOperatorParameterValueKind declared at 445: keep member order",
     "Symbol subclass: overrides IsHidden, Kind (115-117) -> SymbolKind.QueryOperatorParameter"
    ],
-   "notes": "W0 skeleton (PORT-SKELETON W3): QueryOperatorParameter; see porting/skeletons-w0.md",
+   "notes": "W3",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },

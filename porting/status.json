@@ -111,6 +111,10 @@
   "notes": "W0",
   "status": "ported"
  },
+ "src/Kusto.Language/Aggregates.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
  "src/Kusto.Language/Binder/Binder_API.cs": {
   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
   "status": "partial"
@@ -216,8 +220,20 @@
   "status": "ported"
  },
  "src/Kusto.Language/FunctionBodyFacts.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W3): FunctionBodyFacts; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/FunctionHelpers.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Functions.Convert.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Functions.cs": {
+  "notes": "W3",
+  "status": "ported"
  },
  "src/Kusto.Language/GlobalState.cs": {
   "notes": "W0 skeleton (PORT-SKELETON W4): GlobalState, GlobalStateProperty; see porting/skeletons-w0.md",
@@ -231,41 +247,201 @@
   "notes": "W1",
   "status": "ported"
  },
+ "src/Kusto.Language/Operators.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
  "src/Kusto.Language/Options.cs": {
   "notes": "W1",
   "status": "ported"
  },
+ "src/Kusto.Language/Parser/Combinators/ArraySource.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Describer.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/LimitSource.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/OffsetValue.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/ParseResult.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ApplyParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/BestParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ConvertParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/FailsParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/FirstParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ForwardParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/IfParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/LimitParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ListPrimaryParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/MapParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/MatchParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/NotParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/OneOrMoreParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/OptionalParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ProduceParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/RequiredParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ResultPrimaryParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/RuleParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/SequenceParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/SourceConsumer.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/SourceProducer.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Parsers/ZeroOrMoreParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/PartialParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/RightParser.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/SafeParse.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/SafeScan.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/Source.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/TextSource.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/KustoFacts.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W2",
+  "status": "ported"
  },
  "src/Kusto.Language/Parser/KustoFacts_Keywords.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W2): KustoFacts; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W2",
+  "status": "ported"
  },
  "src/Kusto.Language/Parser/LexicalToken.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W2): LexicalToken; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W2",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/ParseOptions.cs": {
+  "notes": "W2",
+  "status": "ported"
  },
  "src/Kusto.Language/Parser/QueryParser.cs": {
   "notes": "W1 skeleton (PORT-SKELETON W4) for TableSymbol.from/Parameter.parseList/Signature edges",
   "status": "partial"
  },
+ "src/Kusto.Language/Parser/SyntaxParsers.cs": {
+  "notes": "W3",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/TextFacts.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W2): TextFacts; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W2",
+  "status": "ported"
  },
  "src/Kusto.Language/Parser/TokenParser.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W2): TokenParser; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W2",
+  "status": "ported"
+ },
+ "src/Kusto.Language/PlugIns.cs": {
+  "notes": "W3",
+  "status": "ported"
  },
  "src/Kusto.Language/Properties.cs": {
   "notes": "W1",
   "status": "ported"
  },
  "src/Kusto.Language/QueryOperatorParameters.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W3): QueryOperatorParameter; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W3",
+  "status": "ported"
  },
  "src/Kusto.Language/ServerKinds.cs": {
   "notes": "W1",

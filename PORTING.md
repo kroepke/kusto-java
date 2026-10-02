@@ -119,6 +119,10 @@ builder) are listed in the manifest as `scope: synthetic` with `upstreamPath: nu
 - Any member, accessor or local whose Java name would be a reserved word gets a trailing
   underscore: `default_()`, `new_`, `if_`. `operator` is not a Java keyword and stays.
 
+Static get-only auto-properties that are pure catalog data (`Functions.All`, `Aggregates.All`,
+`Operators.All`, `PlugIns.All`, `QueryOperatorParameters.AllParameters`, `ScalarTypes.All`) stay
+`public static final` fields with the upstream spelling (W3 decision; `// PORT: §2.3`).
+
 ### 2.4 Generic-arity families
 
 Java cannot declare `Foo<T>` and `Foo<T,U>` side by side. The **lowest** arity keeps the
