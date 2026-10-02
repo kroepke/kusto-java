@@ -24,6 +24,7 @@ import org.graylog.kusto.language.GlobalState;
 import org.graylog.kusto.language.symbols.ColumnSymbol;
 import org.graylog.kusto.language.symbols.Parameter;
 import org.graylog.kusto.language.symbols.Signature;
+import org.graylog.kusto.language.symbols.TableSymbol;
 import org.graylog.kusto.language.symbols.TypeSymbol;
 import org.graylog.kusto.language.syntax.Expression;
 import org.graylog.kusto.language.syntax.NameAndTypeDeclaration;
@@ -78,6 +79,39 @@ public final class Binder
 
     @Internal
     public static TypeSymbol getDeclaredType(TypeExpression typeExpression) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    // ===== upstream part: Binder_Projection.cs =====
+
+    public static ColumnSymbol getResultColumn(Expression expr) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    /// <summary>
+    /// Gets the name that an expression will use for its column name in a projection.
+    /// </summary>
+    public static String getExpressionResultName(Expression expr, String defaultName, TableSymbol row) // PORT-PENDING: W6
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W6");
+    }
+
+    public static String getExpressionResultName(Expression expr, String defaultName) // PORT: §3.12 row = null
+    {
+        return getExpressionResultName(expr, defaultName, null);
+    }
+
+    public static String getExpressionResultName(Expression expr) // PORT: §3.12 defaultName = "", row = null
+    {
+        return getExpressionResultName(expr, "", null);
+    }
+
+    /// <summary>
+    /// Gets the expression underlying adornments such as name assignment or ordering
+    /// </summary>
+    public static Expression getUnderlyingExpression(Expression expression) // PORT-PENDING: W6
     {
         throw new UnsupportedOperationException("PORT-PENDING: W6");
     }
