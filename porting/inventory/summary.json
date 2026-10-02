@@ -47,9 +47,10 @@
  },
  "perStatus": {
   "excluded": 124,
-  "pending": 217,
+  "pending": 193,
   "stubbed": 9,
-  "generated": 1
+  "generated": 1,
+  "ported": 24
  },
  "entriesTotal": 351,
  "syntheticCount": 26,

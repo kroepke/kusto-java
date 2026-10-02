@@ -1,1 +1,98 @@
-{}
+{
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DateTime.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNet.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetBoolean.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetChars.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetDecimal.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetGuid.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetNumber.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/DotNetStrings.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/EqualityComparer.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func3.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func4.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func5.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func6.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func7.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func8.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Func9.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/IntList.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/IntRef.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Internal.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Linq.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/OperationCanceledException.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/Out.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/ReadOnlyList.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ },
+ "kusto-language/src/main/java/org/graylog/kusto/language/utils/dotnet/TimeSpan.java": {
+  "notes": "T0: .NET compatibility shim; tests pinned to dotnet-facts.json",
+  "status": "ported"
+ }
+}
