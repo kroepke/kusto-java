@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 // Upstream license: Apache-2.0, Copyright (c) 2019 Microsoft Corporation.
 // This file is a derived work; see NOTICE. Modifications are marked "// PORT:".
-// PORT-SKELETON: W1
 
 package org.graylog.kusto.language.symbols;
 
 // [Flags]
-public final class SymbolMatch // PORT: §3.17 [Flags] enum → int constants holder (D23); members ported in full ahead of W1
+public final class SymbolMatch // PORT: §3.17 [Flags] enum → int constants holder (D23)
 {
     private SymbolMatch() // PORT: §3.17
     {

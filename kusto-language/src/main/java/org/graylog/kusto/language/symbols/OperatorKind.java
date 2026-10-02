@@ -3,11 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 // Upstream license: Apache-2.0, Copyright (c) 2019 Microsoft Corporation.
 // This file is a derived work; see NOTICE. Modifications are marked "// PORT:".
-// PORT-SKELETON: W1
 
 package org.graylog.kusto.language.symbols;
 
-// Enum ported in full ahead of W1 (PORTING.md 2.8).
 /// <summary>
 /// The kind of operator for a <see cref="OperatorSymbol"/>
 /// </summary>
