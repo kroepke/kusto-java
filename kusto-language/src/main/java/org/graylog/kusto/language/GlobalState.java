@@ -7,6 +7,7 @@
 
 package org.graylog.kusto.language;
 
+import org.graylog.kusto.language.symbols.DatabaseSymbol;
 import org.graylog.kusto.language.symbols.FunctionSymbol;
 
 /// <summary>
@@ -14,6 +15,22 @@ import org.graylog.kusto.language.symbols.FunctionSymbol;
 /// </summary>
 public final class GlobalState
 {
+    /// <summary>
+    /// The default database.
+    /// </summary>
+    public DatabaseSymbol database() // PORT-PENDING: W4
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W4");
+    }
+
+    /// <summary>
+    /// Gets the function with the specified name, or null
+    /// </summary>
+    public FunctionSymbol getFunction(String name) // PORT-PENDING: W4
+    {
+        throw new UnsupportedOperationException("PORT-PENDING: W4");
+    }
+
     /// <summary>
     /// Returns true if the function is a built-in function.
     /// </summary>
