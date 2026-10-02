@@ -162,6 +162,7 @@ not listed here (added in T0).
 | `Binder_Misc.cs:532,541` | `BindColumnDeclarations` ×2 | `bindColumnDeclarations`, `bindColumnDeclarationsOfSchema` |
 | `Binder_Misc.cs:1278,1294` | `CheckQueryOperatorParameters` ×2 | `checkQueryOperatorParameters`, `checkQueryOperatorParametersOfNamedParameters` |
 | `Symbols/GraphModelSymbol.cs` ctors | `(string, IEnumerable<Signature> edges, IEnumerable<Signature> nodes, IEnumerable<GraphSnapshotSymbol>)` vs `(string, IEnumerable<string>, IEnumerable<string>, IEnumerable<string>)` | first keeps `Iterable<Signature>`; the string form takes `List<String> edges, List<String> nodes, Iterable<String> snapshots` (W1) |
+| `Combinators/Parsers/ConvertParser.cs:37,61` ctors | `(Parser, Func<IReadOnlyList<I>,O>)` vs `(Parser, Func<I,O>)` | the list form is the static factory `ConvertParser.ofList(pattern, producer)` (constructors cannot be renamed) |
 | `Symbols/ClusterSymbol.cs` ctors | private `(string, IReadOnlyList<Symbol>, bool)` vs public `(string, IEnumerable<DatabaseSymbol>, bool)` | private form takes `List<Symbol>`; public takes `Iterable<? extends DatabaseSymbol>` and copies instead of throwing `InvalidCastException` (W1) |
 
 The suffix after `Of`/`Text`/`List` is the simple name of the distinguishing element type when
@@ -854,7 +855,7 @@ Command text (`.`-prefixed), decided:
 | D6 | generated nodes | one file per node; hand-written partials in protected regions (4) | Java |
 | D7 | `Parsers<TInput>` | static generic methods + `LexicalTokenParsers` facade (3.10) | no static import from generic type |
 | D8 | `QueryGrammar.Initialize` | split into region methods; cross-boundary locals become fields (3.19) | 64 KB |
-| D9 | `ForwardParser.s_callDepth` | one shared `ThreadLocal` counter; fallback is result-equivalent (3.9) | erasure |
+| D9 | `ForwardParser.s_callDepth` | one shared `ThreadLocal` counter; fallback is result-equivalent (3.9) except upstream's own `StackSafeParser/Scanner.VisitZeroOrMore` dropping a successful `ZeroOrOne` item's length (`SafeParse.cs:684-698`, `SafeScan.cs:680-693`), mirrored as `PORT-BUG` | erasure |
 | D10 | `CommandGrammar.partialCommand` | guard for zero command parsers (8); T0 confirmed the throw | stub |
 | D11 | `DateTime.TryParse` | `Z`/offset → UTC, not local (5.2) | determinism |
 | D12 | culture-sensitive string APIs | ordinal (5.4) | invariant policy |
@@ -876,6 +877,8 @@ Command text (`.`-prefixed), decided:
 | D28 | enum aliases, explicit enum values | static alias constants; `value()` field (3.17) | Java enums |
 | D29 | `Ensure`/`Debug.Assert` | runtime flag, default off (3.20) | Release oracle parity |
 | D30 | module/tool names | `oracle/kusto-oracle` is not a Maven module; `porting/upstream-diff/` holds the tool | .NET is not Maven |
+| D31 | time-only `datetime(...)` literals | both sides fill in the run date (`DateTime.TryParse` semantics); goldens pin the oracle's generation day, so such records are known differences (`KD-001`) rather than corpus edits | date-dependent behaviour |
+| D32 | `PlugIns` `ArgumentKind.Column \| ArgumentKind.Literal` (4 `ai_*` sites) | `ArgumentKind` is not `[Flags]`; the value `(ArgumentKind)13` names no member and behaves like `Expression` everywhere; Java uses `ArgumentKind.Expression` with `// PORT-BUG` (oracle globals show `"13"`) | Java enums cannot hold 13 |
 
 Rows are added as porting proceeds. The manifest `notes` field points at the row.
 

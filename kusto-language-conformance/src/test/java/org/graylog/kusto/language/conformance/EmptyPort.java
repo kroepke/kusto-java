@@ -1,5 +1,5 @@
 // Original to kusto-java (no upstream file). SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2026 Graylog, Inc. Purpose: the default adapter while no port exists; reports nothing.
+// Copyright (c) 2026 Graylog, Inc. Purpose: no-port adapter (-Dkusto.port=...EmptyPort); reports nothing.
 
 package org.graylog.kusto.language.conformance;
 

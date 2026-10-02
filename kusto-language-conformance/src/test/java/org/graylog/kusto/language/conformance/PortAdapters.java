@@ -3,9 +3,9 @@
 
 package org.graylog.kusto.language.conformance;
 
-/** Loads the adapter class named by {@code kusto.port} (default {@link EmptyPort}). */
+/** Loads the adapter class named by {@code kusto.port} (default {@link GoldenWriter}). */
 public final class PortAdapters {
-    public static final String DEFAULT = "org.graylog.kusto.language.conformance.EmptyPort";
+    public static final String DEFAULT = "org.graylog.kusto.language.conformance.GoldenWriter";
 
     private static volatile PortAdapter cached;
 

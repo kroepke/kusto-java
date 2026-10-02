@@ -24,13 +24,17 @@ class KnownDifferencesTest {
 
     @Test
     void committed_files_load() {
-        assertTrue(KnownDifferences.load().entries().isEmpty());
+        // KD-001 (D31): the one date-dependent sentinel record
+        assertEquals(1, KnownDifferences.load().entries().size());
         ConformanceBaseline b = ConformanceBaseline.load();
-        assertEquals(Set.of(), b.gatedLayers());
+        assertTrue(b.gatedLayers().containsAll(Set.of(Layer.TOKENS, Layer.FIDELITY, Layer.TOKEN_VALUES)), "W2 gates the lexer layers");
         for (String c : Harness.KNOWN_CORPORA) {
             for (Layer l : Layer.values()) {
-                assertEquals(0, b.expected(c, l));
                 assertTrue(b.expected().get(c).containsKey(l), c + " " + l);
+                assertTrue(b.expected(c, l) >= 0, c + " " + l);
+                if (b.gatedLayers().contains(l)) {
+                    assertTrue(b.expected(c, l) > 0, "gated " + c + " " + l + " has a baseline");
+                }
             }
         }
     }
@@ -61,10 +65,10 @@ class KnownDifferencesTest {
 
     @Test
     void adapter_discovery() {
-        assertInstanceOf(EmptyPort.class, PortAdapters.load(PortAdapters.DEFAULT));
+        assertInstanceOf(GoldenWriter.class, PortAdapters.load(PortAdapters.DEFAULT));
+        assertTrue(PortAdapters.available(PortAdapters.load(PortAdapters.DEFAULT)));
         assertFalse(PortAdapters.available(new EmptyPort()));
         assertNull(new EmptyPort().write(new CorpusRecord("x/1", "T", null, null, false), null));
-        assertFalse(PortAdapters.available(PortAdapters.load(GoldenWriter.class.getName())), "PORT-PENDING stub counts as unavailable");
         assertThrows(IllegalStateException.class, () -> PortAdapters.load("java.lang.String"));
         assertThrows(IllegalStateException.class, () -> PortAdapters.load("no.such.Adapter"));
     }
