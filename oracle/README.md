@@ -43,6 +43,7 @@ bash oracle/run.sh generate                    # gen + check-generated.sh
 bash oracle/run.sh build                       # dotnet build -c Release (runs generate if needed)
 bash oracle/run.sh dump <corpus.jsonl> <out.jsonl.gz> [schemasDir]
 bash oracle/run.sh facts                       # -> kusto-language-conformance/src/test/resources/dotnet-facts.json
+bash oracle/run.sh globals                     # -> kusto-language-conformance/src/test/resources/globals.jsonl.gz
 bash oracle/run.sh probe                       # T0 questions, JSON on stdout
 bash oracle/run.sh census <corpus.jsonl> [schemasDir]
 bash oracle/run.sh regenerate                  # generate, build, facts, dump every corpus/*.jsonl to goldens/
@@ -53,7 +54,7 @@ bash oracle/run.sh sources-sha256              # the header hash, for inspection
 it is applied with `GlobalState.WithServerKind` when it differs and recorded in the header.
 
 The oracle binary itself: `dotnet oracle/kusto-oracle/bin/Release/net10.0/Kusto.Oracle.dll
-{dump|facts|probe|census} ...` with `--exception-map porting/exception-map.json` (found by
+{dump|facts|globals|probe|census} ...` with `--exception-map porting/exception-map.json` (found by
 walking up from the cwd if omitted). All work runs on one thread with a 256 MB stack.
 
 ### dump
@@ -76,6 +77,89 @@ Reads `porting/dotnet-facts-cases.txt` and writes one JSON object: header fields
 (`generatedAt`, `runtime`, `runtimeVersion`, `invariantGlobalization`, `tz`, `cases`) and
 `facts`, one per line, each `{"api","input","ok","value", extras...}`. Unknown API names or
 malformed lines fail the command (exit 1).
+
+### globals
+
+Gzip JSONL dump of the built-in catalogs of `GlobalState.Default`, for field-by-field comparison
+with the Java port's catalogs. stdout: one `catalog<TAB>count` line per catalog. Compact JSON,
+string escaping as for goldens. Deterministic apart from `generatedAt` (checked: two runs give
+identical bytes after line 1).
+
+Line 1 (header): `{"globals":1,"upstream":<submodule sha>,"oracle":{sourcesSha256, runtime,
+configuration, invariantGlobalization, tz, serverKind},"generatedAt":...}` (same `oracle` object as
+goldens; `serverKind` = `GlobalState.Default.ServerKind`).
+
+Then one record per symbol, catalogs in this order, each in its list's enumeration order.
+Every record starts with `catalog`, `index` (position in the list).
+
+| `catalog` | Source |
+|---|---|
+| `functions` | `GlobalState.Default.Functions` (= `Functions.All`) |
+| `aggregates` | `GlobalState.Default.Aggregates` |
+| `plugins` | `GlobalState.Default.PlugIns` |
+| `operators` | `GlobalState.Default.Operators` |
+| `queryOperatorParameters` | `QueryOperatorParameters.AllParameters` |
+| `queryOperatorParameterFields` | every other public static field of `QueryOperatorParameters` that is a `QueryOperatorParameter` or a list of them, in declaration order (`MetadataToken`). Extra keys `field` (field name), `isList`; `index` is the position in the list (0 for a single field). An empty list gives one marker record `{catalog, field, isList: true, index: -1}` and nothing else. |
+| `scalarTypes` | `ScalarTypes.All` |
+| `scalarTypeFields` | every public static `ScalarSymbol` field of `ScalarTypes`, declaration order; extra key `field` |
+| `options` | `GlobalState.Default.Options` (= `Options.All`) |
+
+Common symbol keys (functions, operators, scalar types, options), in this order: `kind`
+(`Symbol.Kind`), `name`, `alternateName`, `isHidden`, `tabularity` (`Symbol.Tabularity`).
+
+- **Function symbols** (functions, aggregates, plugins): common keys, then `description`,
+  `isObsolete`, `alternative` (the obsolete message: name of the replacement), `optimizedAlternative`,
+  `isConstantFoldable`, `isView`, `hasCustomAvailability` (`CustomAvailability != null`),
+  `resultNameKind`, `resultNamePrefix`, `minArgumentCount`, `maxArgumentCount` (the
+  `FunctionSymbol` properties over all signatures), `display` (`SchemaDisplay.GetText(f)`),
+  `debugDisplay` (internal `DebugDisplay.GetText(f)`), `signatures`.
+- **Operators**: common keys, `operatorKind`, `result` (`DebugDisplay` of `OperatorSymbol.Result`;
+  never assigned upstream, so always `null`), `signatures`.
+- **Signature**: `returnKind`, `returnType` (`SchemaDisplay.GetText(DeclaredReturnType)`, `null`
+  unless `Declared`), `returnTypeDebug` (`DebugDisplay` of the same; distinguishes
+  `dynamic([string])` etc., which `SchemaDisplay` renders as `dynamic`), `defaultReturnType`
+  (`DebugDisplay.GetText(GetReturnType(GlobalState.Default))`; `"!<ExceptionType>"` on throw;
+  no built-in signature is `Computed`, so this never runs the binder — `Custom` gives
+  `": ()"` for tabular (`TableSymbol.Empty` open) and `unknown` for scalar), `hasCustomReturnType`,
+  `body` (`Signature.Body`), `declaration` (`Declaration?.ToString()`, i.e. `IncludeTrivia.All`),
+  `layout` (`Fixed`/`Repeating`/`RepeatingSkipping`/`BlockRepeating` by reference identity with
+  the `ParameterLayouts` fields, else `Custom`), `layoutType` (runtime class name, e.g.
+  `NonRepeatingParameterLayout`), `minArgumentCount`, `maxArgumentCount`, `isHidden`,
+  `isObsolete`, `alternative`, `hasRepeatableParameters`, `hasOptionalParameters`,
+  `hasAggregateParameters`, `tabularity`, `isScalar`, `isTabular`, `allowsNamedArguments`,
+  `parameterListDeclaration` (`Parameter.GetParameterListDeclaration`), `parameters`.
+- **Parameter**: `name`, `typeKind`, `declaredTypes` (`SchemaDisplay.GetText` each),
+  `declaredTypesDebug` (`DebugDisplay` each), `typeText` (`SchemaDisplay.GetParameterTypeText`),
+  `argumentKind`, `minOccurring`, `maxOccurring`, `isOptional`, `isRepeatable`, `isCaseSensitive`,
+  `values` (`object.ToString()` each — every built-in value is a `String`), `valueTypes` (.NET type
+  name of each value), `examples`, `defaultValueIndicator`, `defaultValue`
+  (`DefaultValue?.ToString()`), `description`, `tabularity`, `typeDependsOnArguments`,
+  `declaration` (`Parameter.GetDeclaration`).
+- **Query operator parameters**: `kind`, `name`, `aliases`, `valueKind`, `isRepeatable`,
+  `isCaseSensitive`, `values`, `isHidden`, `hasNoEquals`. (`AllParameters` holds the `.Hide()`
+  copies, so all are hidden there; the `queryOperatorParameterFields` records show the originals
+  and the `.WithValues(...)` variants used by each operator.)
+- **Scalar types**: common keys, `display`, `debugDisplay`, `aliases` (`ScalarSymbol.Aliases`),
+  `typeMapKeys` (every key of the private `ScalarTypes.s_typeMap` mapping to this instance, read by
+  reflection, map enumeration order = insertion order; `[]` for types not in `All`), `isInteger`,
+  `isNumeric`, `isInterval`, `isSummable`, `isOrderable`, `isMultiValue`, `widerThan` (names of the
+  `ScalarTypes.All` members `o` with `t.IsWiderThan(o)`, in `All` order).
+- **Options**: common keys, `description`, `types` (`SchemaDisplay.GetText` each), `examples`.
+
+Enums are written with `ToString()`. `ResultNameKind` has the alias `Default = None`; .NET prints
+`None`. Strings that are `null` upstream are JSON `null`; lists are never `null`.
+
+Omitted: `CustomAvailability`, `CustomReturnType` and custom `ParameterLayoutBuilder` delegates
+(only presence is recorded); `Signature.Symbol` (back reference); `Symbol.Members`/`IsError`;
+`Parameter.DefaultValue` as a tree (only its text); hypothetical-argument
+`GetReturnType(globals, argTypes)` (binder territory); the private `FunctionFlags`/`ScalarFlags`
+bits (observable through the boolean properties); `GlobalState.Default` cluster/database/
+ambient/client symbols (empty or `Unknown` placeholders) and the command symbols (covered by the
+generated command sources).
+
+Counts at upstream `9d95a2d5`: functions 429, aggregates 61, plugins 48, operators 55,
+queryOperatorParameters 29, queryOperatorParameterFields 143, scalarTypes 12, scalarTypeFields 34,
+options 58.
 
 ### probe
 
@@ -144,7 +228,7 @@ observable; the probe reports tree depth, `HasSemantics` and diagnostics instead
 SHA-256. Paths are relative to the repository root. Included: every `src/Kusto.Language/**/*.cs`
 blob at the submodule `HEAD` except `*/CodeGen/*` (via `git ls-tree`), plus `oracle/generated/*.cs`
 and **the oracle's own `oracle/kusto-oracle/src/*.cs`** (via `git hash-object`), because the oracle
-code shapes the goldens too. That is exactly the set the build compiles (285 files: 270 upstream, 9 generated, 6 oracle). Untracked
+code shapes the goldens too. That is exactly the set the build compiles (286 files: 270 upstream, 9 generated, 7 oracle). Untracked
 `.cs` files dropped into the upstream tree would be compiled but not hashed.
 
 ### Schema files

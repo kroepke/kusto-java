@@ -4,6 +4,7 @@
 #   run.sh build                                  dotnet build -c Release of kusto-oracle
 #   run.sh dump <corpus.jsonl> <out.jsonl.gz> [schemasDir]
 #   run.sh facts                                  porting/dotnet-facts-cases.txt -> conformance dotnet-facts.json
+#   run.sh globals                                GlobalState.Default catalogs -> conformance globals.jsonl.gz
 #   run.sh probe                                  T0 questions as JSON on stdout
 #   run.sh census <corpus.jsonl> [schemasDir]     throw / round-trip counts as JSON on stdout
 #   run.sh regenerate [--all]                     generate, build, facts, dump every corpus (sampled unless --all)
@@ -82,6 +83,13 @@ cmd_facts() {
   oracle facts "$root/porting/dotnet-facts-cases.txt" --out "$resources/dotnet-facts.json"
 }
 
+cmd_globals() {
+  ensure_built
+  mkdir -p "$resources"
+  oracle globals --out "$resources/globals.jsonl.gz" \
+    --upstream "$(upstream_commit)" --sources-sha256 "$(sources_sha256)"
+}
+
 cmd_probe() {
   ensure_built
   oracle probe
@@ -141,13 +149,14 @@ cmd_regenerate() {
   done
 }
 
-[ $# -ge 1 ] || die "usage: run.sh {generate|build|dump|facts|probe|census|regenerate|sources-sha256} ..."
+[ $# -ge 1 ] || die "usage: run.sh {generate|build|dump|facts|globals|probe|census|regenerate|sources-sha256} ..."
 command="$1"; shift
 case "$command" in
   generate)       cmd_generate "$@" ;;
   build)          cmd_build "$@" ;;
   dump)           cmd_dump "$@" ;;
   facts)          cmd_facts "$@" ;;
+  globals)        cmd_globals "$@" ;;
   probe)          cmd_probe "$@" ;;
   census)         cmd_census "$@" ;;
   regenerate)     cmd_regenerate "$@" ;;

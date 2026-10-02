@@ -8,6 +8,7 @@ namespace Kusto.Oracle
     /// kusto-oracle: .NET reference runner for the Java port's conformance goldens.
     ///   dump &lt;corpus.jsonl&gt; --out &lt;golden.jsonl.gz&gt; [--schemas dir] [--server-kind Engine] [--upstream sha] [--sources-sha256 hex]
     ///   facts &lt;cases.txt&gt; --out &lt;dotnet-facts.json&gt;
+    ///   globals --out &lt;globals.jsonl.gz&gt; [--upstream sha] [--sources-sha256 hex]
     ///   probe
     ///   census &lt;corpus.jsonl&gt; [--schemas dir] [--server-kind Engine]
     /// Common: [--exception-map porting/exception-map.json]
@@ -42,6 +43,7 @@ namespace Kusto.Oracle
             if (message != null) Console.Error.WriteLine("error: " + message);
             Console.Error.WriteLine("usage: kusto-oracle dump <corpus.jsonl> --out <golden.jsonl.gz> [--schemas <dir>] [--server-kind Engine] [--upstream <sha>] [--sources-sha256 <hex>]");
             Console.Error.WriteLine("       kusto-oracle facts <cases.txt> --out <dotnet-facts.json>");
+            Console.Error.WriteLine("       kusto-oracle globals --out <globals.jsonl.gz> [--upstream <sha>] [--sources-sha256 <hex>]");
             Console.Error.WriteLine("       kusto-oracle probe");
             Console.Error.WriteLine("       kusto-oracle census <corpus.jsonl> [--schemas <dir>] [--server-kind Engine]");
             Console.Error.WriteLine("       common option: --exception-map <path>");
@@ -81,6 +83,11 @@ namespace Kusto.Oracle
                 case "facts":
                     if (positional.Count != 1 || !options.ContainsKey("out")) return Usage();
                     return Facts.Run(positional[0], options["out"]);
+                case "globals":
+                    if (positional.Count != 0 || !options.ContainsKey("out")) return Usage();
+                    return Globals.Run(options["out"],
+                        options.GetValueOrDefault("upstream") ?? "unknown",
+                        options.GetValueOrDefault("sources-sha256") ?? "unknown");
                 case "probe":
                     Probe.Run();
                     return 0;
