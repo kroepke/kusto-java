@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 // Upstream license: Apache-2.0, Copyright (c) 2019 Microsoft Corporation.
 // This file is a derived work; see NOTICE. Modifications are marked "// PORT:".
-// PORT-SKELETON: W6
 
 package org.graylog.kusto.language.binding;
 
 import org.graylog.kusto.language.utils.dotnet.Internal;
 
-// Type ported in full ahead of W6 (PORTING.md 2.8): RepeatingParameterLayout compares members with >=.
 /// <summary>
 /// The kind of match that an argument can have with its corresponding signature parameter.
 /// </summary>

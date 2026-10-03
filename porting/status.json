@@ -167,21 +167,53 @@
   "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
   "status": "partial"
  },
+ "src/Kusto.Language/Binder/CallSiteInfo.cs": {
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/ColumnMap.cs": {
+  "notes": "W6",
+  "status": "ported"
+ },
  "src/Kusto.Language/Binder/FunctionCallExpansion.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallExpansion; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/FunctionCallInfo.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): FunctionCallInfo; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/FunctionCallResult.cs": {
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/GlobalBindingCache.cs": {
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/LocalBindingCache.cs": {
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/LocalScope.cs": {
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/ParameterMatchKind.cs": {
-  "notes": "W1 skeleton (PORT-SKELETON W6) for TableSymbol.from/Parameter.parseList/Signature edges",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/ProjectionBuilder.cs": {
+  "notes": "W6",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Binder/ScopeKind.cs": {
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/SemanticInfo.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): SemanticInfo; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Diagnostics/Diagnostic.cs": {
   "notes": "W0",
