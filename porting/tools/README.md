@@ -49,3 +49,10 @@ or `ORDER: <java path>: …` lines; `warn: missing/extra` counts are information
 ORDER violation. Token-level heuristic (no real parser): partial classes merge by `mergeOrder`;
 `#if BRIDGE` branches dropped; names compared case-insensitively with `_`, `set*` and
 overload-suffix folding. Generated nodes and not-yet-ported parts show up as missing/extra.
+
+## Upstream tracking (T1)
+
+`porting/upstream-diff/upstream_diff.py <old> <new>` classifies upstream changes for a bump
+(usage, exit codes, classification table: `porting/upstream-diff/README.md`).
+`sync_headers.py --to <sha> [--dry-run] PATH...` rewrites the `// Upstream:` header line and
+`status.json` `syncedAt` per file; run `build_manifest.py` afterwards (PORTING.md 11).

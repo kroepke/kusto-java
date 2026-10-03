@@ -1,0 +1,597 @@
+{
+ "old": "008b1e802998c8e30d1e2aaa3c58c826fcbde64c",
+ "new": "cd24dcf305dd4ef4fe7654559a1c08155a047a90",
+ "summary": {
+  "patch": 12,
+  "re-check exclusion": 16,
+  "regenerate": 3,
+  "remove": 9
+ },
+ "files": [
+  {
+   "path": "src/Kusto.Language.Bridge/.npmrc",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 2,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Bridge/Kusto.Language.Bridge.csproj",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 12,
+    "removed": 1
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/AriaBridgeCommandInfos.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 21,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/ClusterManagerCommandInfos.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 21,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/CodeGenerator.cs",
+   "git": "A",
+   "manifestStatus": "ported",
+   "wave": 0,
+   "javaPaths": [
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/CodeGenerator.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/IndentedTextWriter.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/Indentation.java"
+   ],
+   "class": "regenerate",
+   "note": "generator source: patch the Java mirror, then regenerate (PORTING.md 11 step 4)",
+   "lines": {
+    "added": 880,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/CommandGenerator.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 2110,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/CommandInfo.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 26,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/DataManagerCommandInfos.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 21,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/EngineCommandInfos.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 3738,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/Grammar.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 2427,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/Kusto.Language.Generators.csproj",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 5,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/SyntaxNodeGenerator.cs",
+   "git": "A",
+   "manifestStatus": "ported",
+   "wave": 0,
+   "javaPaths": [
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/KnownTypeInfo.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeInfo.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/ConstructorGenerationOptions.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeCloneOptions.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeProperty.java",
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeGenerator.java"
+   ],
+   "class": "regenerate",
+   "note": "generator source: patch the Java mirror, then regenerate (PORTING.md 11 step 4)",
+   "lines": {
+    "added": 682,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/SyntaxNodeInfos.cs",
+   "git": "A",
+   "manifestStatus": "ported",
+   "wave": 0,
+   "javaPaths": [
+    "kusto-language-generator/src/main/java/org/graylog/kusto/language/generator/SyntaxNodeInfos.java"
+   ],
+   "class": "regenerate",
+   "note": "generator source: patch the Java mirror, then regenerate (PORTING.md 11 step 4)",
+   "lines": {
+    "added": 3344,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Binder/Binder_Names.cs",
+   "git": "M",
+   "manifestStatus": "partial",
+   "wave": 6,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 0,
+    "removed": 7
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Binder/Binder_NodeBinder.cs",
+   "git": "M",
+   "manifestStatus": "partial",
+   "wave": 6,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 220,
+    "removed": 155
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Binder/Binder_TreeBinder.cs",
+   "git": "M",
+   "manifestStatus": "partial",
+   "wave": 6,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/binding/Binder.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 11,
+    "removed": 1
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Diagnostics/DiagnosticFacts.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 0,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/DiagnosticFacts.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 35,
+    "removed": 4
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Directory.Build.targets",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 3,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Editor/FormattingOptions.cs",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 465,
+    "removed": 18
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Editor/Kusto/KustoFormatter.cs",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 678,
+    "removed": 163
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Editor/SpacingStyle.cs",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 53,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Functions.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 3,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/Functions.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 9,
+    "removed": 6
+   },
+   "bridgeTouched": false,
+   "catalog": {
+    "dataLines": 14,
+    "logicLines": 1,
+    "dataOnly": false
+   }
+  },
+  {
+   "path": "src/Kusto.Language/Kusto.Language.csproj",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 0,
+    "removed": 81
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Operators.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 3,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/Operators.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 2,
+    "removed": 0
+   },
+   "bridgeTouched": false,
+   "catalog": {
+    "dataLines": 2,
+    "logicLines": 0,
+    "dataOnly": true
+   }
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommandGrammar.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 47
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/AriaBridgeCommands.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 29
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommandGrammar.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 47
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/ClusterManagerCommands.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 29
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/DataManagerCommandGrammar.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 47
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/DataManagerCommands.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 29
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/EngineCommandGrammar.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 8431
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/CodeGen/EngineCommands.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 2594
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/KustoFacts.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 2,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/KustoFacts.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 2,
+    "removed": 1
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/KustoFacts_Keywords.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 2,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/KustoFacts.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 3,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/QueryGrammar.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 4,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/parsing/QueryGrammar.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 80,
+    "removed": 6
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Parser/QueryParser.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 4,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/parsing/AllowedNameKind.java",
+    "kusto-language/src/main/java/org/graylog/kusto/language/parsing/QueryParser.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 61,
+    "removed": 13
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/PlugIns.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 3,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/PlugIns.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 10,
+    "removed": 0
+   },
+   "bridgeTouched": false,
+   "catalog": {
+    "dataLines": 9,
+    "logicLines": 1,
+    "dataOnly": false
+   }
+  },
+  {
+   "path": "src/Kusto.Language/Syntax/CodeGen/GeneratedSyntaxNodes.cs",
+   "git": "D",
+   "manifestStatus": null,
+   "wave": null,
+   "javaPaths": [],
+   "class": "remove",
+   "note": "deleted upstream; no manifest entry at current pin",
+   "lines": {
+    "added": 0,
+    "removed": 18883
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Syntax/SyntaxFacts.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 0,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/syntax/SyntaxFacts.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 4,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/version.txt",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 1,
+    "removed": 1
+   },
+   "bridgeTouched": false
+  }
+ ]
+}

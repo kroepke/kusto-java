@@ -1,0 +1,119 @@
+{
+ "old": "1e0797913c18348c2845a3141a4666fee35488fb",
+ "new": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
+ "summary": {
+  "patch": 4,
+  "re-check exclusion": 3
+ },
+ "files": [
+  {
+   "path": ".github/dependabot.yml",
+   "git": "A",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 12,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": ".github/workflows/codeql.yml",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 3,
+    "removed": 3
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language.Generators/EngineCommandInfos.cs",
+   "git": "M",
+   "manifestStatus": "excluded",
+   "wave": null,
+   "javaPaths": [],
+   "class": "re-check exclusion",
+   "lines": {
+    "added": 40,
+    "removed": 5
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/Functions.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 3,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/Functions.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 2,
+    "removed": 1
+   },
+   "bridgeTouched": false,
+   "catalog": {
+    "dataLines": 3,
+    "logicLines": 0,
+    "dataOnly": true
+   }
+  },
+  {
+   "path": "src/Kusto.Language/Parser/KustoFacts.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 2,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/KustoFacts.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 2,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  },
+  {
+   "path": "src/Kusto.Language/PlugIns.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 3,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/PlugIns.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 10,
+    "removed": 0
+   },
+   "bridgeTouched": false,
+   "catalog": {
+    "dataLines": 9,
+    "logicLines": 1,
+    "dataOnly": false
+   }
+  },
+  {
+   "path": "src/Kusto.Language/Utils/Interlocked.cs",
+   "git": "M",
+   "manifestStatus": "ported",
+   "wave": 0,
+   "javaPaths": [
+    "kusto-language/src/main/java/org/graylog/kusto/language/utils/Interlocked.java"
+   ],
+   "class": "patch",
+   "lines": {
+    "added": 56,
+    "removed": 0
+   },
+   "bridgeTouched": false
+  }
+ ]
+}
