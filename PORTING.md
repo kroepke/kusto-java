@@ -887,6 +887,13 @@ Command text (`.`-prefixed), decided:
 
 Rows are added as porting proceeds. The manifest `notes` field points at the row.
 
+Site audit (W7, 2026-10-03): rows D7, D9, D10, D12, D13, D15, D16, D17-D26, D29, D33 have at
+least one `// PORT:`/`// PORT-BUG:` site citing the row. The remaining rows are rule-level and
+are cited through their section number at every site: D1 (2.4), D2 (2.5), D3 and D4 (2.2),
+D5 (2.6), D6 (4), D8 (3.19), D11 (5.2), D14 (3.4), D27 (3.12), D28 (3.17). D30 is tooling
+layout (no Java site); D31 is cited by `known-differences.json` (KD-001, KD-002); D32 is cited
+in `PlugIns.java`.
+
 ---
 
 ## 10. Decision log

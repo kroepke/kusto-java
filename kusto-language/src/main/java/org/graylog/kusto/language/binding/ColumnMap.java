@@ -109,7 +109,7 @@ public class ColumnMap
                 }
                 else
                 {
-                    // PORT-BUG: upstream builds this dictionary but never stores it in _nameMap, so the column is dropped; mirrored verbatim
+                    // PORT-BUG (D25): upstream builds this dictionary but never stores it in _nameMap, so the column is dropped; mirrored verbatim
                     var dict = new LinkedHashMap<TypeSymbol, Object>();
                     dict.put(listTypeKey, list);
                     dict.put(columnTypeKey, column);

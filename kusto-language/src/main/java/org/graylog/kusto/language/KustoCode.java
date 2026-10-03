@@ -217,7 +217,7 @@ public final class KustoCode
         globals = globals.withParseOptions(globals.parseOptions().withAlwaysProduceEndTokens(true));
         var tokens = TokenParser.parseTokens(text, globals.parseOptions());
         var starts = getTokenStarts(tokens);
-        // PORT-BUG: upstream passes default(CancellationToken) here instead of the caller's cancellationToken, so cancellation never reaches Create
+        // PORT-BUG (D17): upstream passes default(CancellationToken) here instead of the caller's cancellationToken, so cancellation never reaches Create
         return create(text, globals, tokens, starts, true, CancellationToken.NONE); // PORT: §3.12 analyze: true, cancellationToken: default(CancellationToken)
     }
 

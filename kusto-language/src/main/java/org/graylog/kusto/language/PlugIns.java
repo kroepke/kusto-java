@@ -437,7 +437,7 @@ public final class PlugIns // PORT: §3.5 static class → final class with a pr
                  return new TableSymbol(resultColumns);
              },
              Tabularity.Tabular,
-             new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG: ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
+             new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG (D32): ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
              new Parameter("ConnectionString", ScalarTypes.String),
              new Parameter("Options", ParameterTypeKind.DynamicBag, P.minOccurring(0)), // PORT: §3.12
              new Parameter("IncludeErrorMessages", ScalarTypes.Bool, P.minOccurring(0))) // PORT: §3.12
@@ -469,7 +469,7 @@ public final class PlugIns // PORT: §3.5 static class → final class with a pr
                 return new TableSymbol(resultColumns);
             },
             Tabularity.Tabular,
-            new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG: ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
+            new Parameter("Text", ParameterTypeKind.Scalar, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG (D32): ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
             new Parameter("ConnectionString", ScalarTypes.String),
             new Parameter("Options", ParameterTypeKind.DynamicBag, P.minOccurring(0)), // PORT: §3.12
             new Parameter("IncludeErrorMessages", ScalarTypes.Bool, P.minOccurring(0))); // PORT: §3.12
@@ -501,7 +501,7 @@ public final class PlugIns // PORT: §3.5 static class → final class with a pr
                  return new TableSymbol(resultColumns);
              },
              Tabularity.Tabular,
-             new Parameter("Prompt", ParameterTypeKind.DynamicArray, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG: ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
+             new Parameter("Prompt", ParameterTypeKind.DynamicArray, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG (D32): ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
              new Parameter("ConnectionString", ScalarTypes.String),
              new Parameter("Options", ParameterTypeKind.DynamicBag, P.minOccurring(0)), // PORT: §3.12
              new Parameter("IncludeErrorMessages", ScalarTypes.Bool, P.minOccurring(0))); // PORT: §3.12
@@ -532,7 +532,7 @@ public final class PlugIns // PORT: §3.5 static class → final class with a pr
                  return new TableSymbol(resultColumns);
              },
              Tabularity.Tabular,
-             new Parameter("Prompt", ScalarTypes.String, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG: ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
+             new Parameter("Prompt", ScalarTypes.String, ArgumentKind.Expression /* Column | Literal */), // PORT-BUG (D32): ArgumentKind is not [Flags]; Column | Literal is (ArgumentKind)13, no declared member, and every core comparison/switch on it falls through like Expression; Java enums cannot hold 13
              new Parameter("ConnectionString", ScalarTypes.String),
              new Parameter("Options", ParameterTypeKind.DynamicBag, P.minOccurring(0)), // PORT: §3.12
              new Parameter("IncludeErrorMessages", ScalarTypes.Bool, P.minOccurring(0))); // PORT: §3.12
