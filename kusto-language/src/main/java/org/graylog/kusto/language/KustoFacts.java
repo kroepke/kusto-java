@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.graylog.kusto.language.binding.Binder;
 import org.graylog.kusto.language.parsing.TextFacts;
 import org.graylog.kusto.language.parsing.TokenParser;
 import org.graylog.kusto.language.symbols.ScalarSymbol;
@@ -822,10 +823,9 @@ public final class KustoFacts
     /// <summary>
     /// Gets the column name used for an expression in a projection.
     /// </summary>
-    public static String getExpressionResultName(Expression expr, String defaultName, TableSymbol rowScope) // PORT-PENDING: W6 (Binder.getExpressionResultName)
+    public static String getExpressionResultName(Expression expr, String defaultName, TableSymbol rowScope)
     {
-        // return Binder.getExpressionResultName(expr, defaultName, rowScope);
-        throw new UnsupportedOperationException("PORT-PENDING: W6");
+        return Binder.getExpressionResultName(expr, defaultName, rowScope);
     }
 
     public static String getExpressionResultName(Expression expr, String defaultName) // PORT: §3.12 optional parameter rowScope = null
