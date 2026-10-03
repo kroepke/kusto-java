@@ -120,52 +120,52 @@
   "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_API.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_AsContextBuilder.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_ContextBuilder.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_FunctionCalls.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_Misc.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_Names.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_NodeBinder.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_Operators.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_Projection.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_SearchPredicateBinder.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_TablesAndColumns.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/Binder_TreeBinder.cs": {
-  "notes": "W0 skeleton (PORT-SKELETON W6): Binder; see porting/skeletons-w0.md",
-  "status": "partial"
+  "notes": "W6",
+  "status": "ported"
  },
  "src/Kusto.Language/Binder/CallSiteInfo.cs": {
   "notes": "W6",
