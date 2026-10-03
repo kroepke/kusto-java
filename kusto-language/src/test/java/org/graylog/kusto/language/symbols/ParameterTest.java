@@ -192,9 +192,11 @@ class ParameterTest {
     }
 
     @Test
-    void parseListNeedsTheBinder() {
-        // parser works (W4); stops at the W6 binder edge. W6 must turn this into a positive test.
-        assertPending("W6", () -> Parameter.parseList("(x: long)"));
+    void parseListParsesParameterText() {
+        var ps = Parameter.parseList("(x: long)");
+        assertEquals(1, ps.size());
+        assertEquals("x", ps.get(0).name());
+        assertSame(ScalarTypes.Long, ps.get(0).declaredTypes().get(0));
     }
 
     @Test

@@ -25,7 +25,7 @@ import org.graylog.kusto.language.symbols.TableSymbol;
 import org.junit.jupiter.api.Test;
 
 class GlobalStateTest {
-    // PORT: TableSymbol(String, String schema) needs the W6 binder, so tests build columns directly
+    // PORT: tests build columns directly (all long) rather than via TableSymbol(String, String schema)
     private static TableSymbol table(String name, String... columns) {
         List<ColumnSymbol> cols = new ArrayList<>();
         for (String c : columns) {

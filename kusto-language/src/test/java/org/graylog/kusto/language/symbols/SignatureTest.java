@@ -186,10 +186,11 @@ class SignatureTest {
     }
 
     @Test
-    void repeatingLayoutAmbiguityNeedsBinder() {
+    void repeatingLayoutAmbiguity() {
         var rep = new Parameter("r", ScalarTypes.Long, P.minOccurring(1), P.maxOccurring(3));
         var sig = new Signature(ScalarTypes.Long, rep, A);
-        assertPending("W6", () -> layout(sig, 2));
+        // both parameters match a long argument equally; Binder.GetParameterMatchKind ties go to the current (repeating) parameter
+        assertEquals(List.of(rep, rep), layout(sig, 2));
     }
 
     @Test

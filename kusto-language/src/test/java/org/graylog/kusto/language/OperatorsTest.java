@@ -111,10 +111,17 @@ class OperatorsTest {
     }
 
     @Test
+    void boundLiteralIsConstant() {
+        var code = KustoCode.parseAndAnalyze("print 1");
+        var lit = code.syntax().getFirstDescendant(org.graylog.kusto.language.syntax.LiteralExpression.class);
+        assertTrue(lit.isConstant());
+    }
+
+    @Test
     void unaryMinusPromotesNonConstantInt() {
         var sig = Operators.UnaryMinus.signatures().get(0);
         assertEquals(ReturnTypeKind.Custom, sig.returnKind());
-        // IsConstant comes from semantic info, which only the binder (W6) sets; an unbound literal is not constant yet
+        // IsConstant comes from semantic info that the binder sets; a literal built by hand was never bound, so it is not constant
         var unboundLiteral = longLit("1");
         var literalCtx = new FakeContext(sig, List.of(unboundLiteral), List.of(ScalarTypes.Int), List.of(sig.parameters().get(0)), null);
         assertSame(ScalarTypes.Long, sig.customReturnType().invoke(literalCtx));

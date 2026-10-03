@@ -194,11 +194,15 @@ class AggregatesTest {
     }
 
     @Test
-    void argMaxReturnReachesBinderSkeleton() {
+    void argMaxReturnWithStarArgument() {
         var sig = Aggregates.ArgMax.signatures().get(0);
-        var ctx = new FakeContext(sig, List.of(star()), List.of(ScalarTypes.Unknown), List.of(sig.parameters().get(0)), new TableSymbol());
-        var ex = assertThrows(UnsupportedOperationException.class, () -> sig.customReturnType().invoke(ctx));
-        assertEquals("PORT-PENDING: W6", ex.getMessage());
+        var ctx = new FakeContext(sig, List.of(star()), List.of(ScalarTypes.Unknown), List.of(sig.parameters().get(0)),
+            new TableSymbol(new ColumnSymbol("a", ScalarTypes.Long), new ColumnSymbol("b", ScalarTypes.String)));
+        TypeSymbol result = sig.customReturnType().invoke(ctx);
+        assertNotNull(result);
+        // Aggregates.ArgMax custom return: a `*` argument expands to the row-scope columns in a TupleSymbol
+        var names = ((TupleSymbol) result).columns().stream().map(c -> c.name() + ":" + c.type().name()).toList();
+        assertEquals(List.of("a:long", "b:string"), names);
     }
 
     // ---- oracle comparison ----

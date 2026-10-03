@@ -60,9 +60,11 @@ class ParameterLayoutsTest {
 
     @Test
     void baseTypeLayoutBuildsFakeExpressions() {
-        // ParameterLayout.GetArgumentParameters(signature, argumentTypes, …) makes FakeExpressions, which need the Binder (W6)
+        // ParameterLayout.GetArgumentParameters(signature, argumentTypes, …) makes FakeExpressions (via the Binder)
         var sig = new Signature(ScalarTypes.Long, A).withLayout((s, args, ps) -> { });
-        assertPending("W6", () -> sig.getArgumentParametersForTypes(List.of(ScalarTypes.Long), new ArrayList<>()));
+        var out = new ArrayList<Parameter>();
+        sig.getArgumentParametersForTypes(List.of(ScalarTypes.Long), out);
+        assertEquals(1, out.size());
     }
 
     @Test

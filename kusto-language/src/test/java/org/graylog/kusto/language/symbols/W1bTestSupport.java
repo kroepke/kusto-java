@@ -20,7 +20,7 @@ final class W1bTestSupport {
     private W1bTestSupport() {
     }
 
-    /** A bare expression with no semantic info (FakeExpression.Create needs the W6 Binder). */
+    /** A bare expression with no semantic info (unlike FakeExpression.Create, which goes through the Binder). */
     static Expression expr() {
         return new LiteralExpression(SyntaxKind.TokenLiteralExpression, SyntaxToken.missing(SyntaxKind.IdentifierToken));
     }

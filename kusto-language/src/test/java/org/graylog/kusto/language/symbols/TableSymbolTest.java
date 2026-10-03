@@ -177,19 +177,40 @@ class TableSymbolTest {
         assertFalse(TableSymbol.areColumnsEquivalent(t1, new TableSymbol(A)));
     }
 
+    private static void assertCols(TableSymbol t, Object... nameTypePairs) {
+        assertEquals(nameTypePairs.length / 2, t.columns().size());
+        for (int i = 0; i < t.columns().size(); i++) {
+            assertEquals(nameTypePairs[2 * i], t.columns().get(i).name());
+            assertSame(nameTypePairs[2 * i + 1], t.columns().get(i).type());
+        }
+    }
+
     @Test
-    void schemaTextNeedsTheBinder() {
-        // TableSymbol.From: QueryParser.ParseRowSchema (W4, done) then Binder.CreateColumnsFromRowSchema (W6, pending).
-        // W6 must turn these into positive tests.
-        assertPending("W6", () -> TableSymbol.from("a: long, b: string"));
-        assertPending("W6", () -> new TableSymbol("t", "(a: long)"));
-        assertPending("W6", () -> new ExternalTableSymbol("t", "(a: long)"));
-        assertPending("W6", () -> new MaterializedViewSymbol("t", "(a: long)", "T"));
+    void schemaText() {
+        // TableSymbol.From: QueryParser.ParseRowSchema then Binder.CreateColumnsFromRowSchema
+        assertCols(TableSymbol.from("a: long, b: string"), "a", ScalarTypes.Long, "b", ScalarTypes.String);
+        var t = new TableSymbol("t", "(a: long)");
+        assertEquals("t", t.name());
+        assertCols(t, "a", ScalarTypes.Long);
+        var ext = new ExternalTableSymbol("t", "(a: long)");
+        assertCols(ext, "a", ScalarTypes.Long);
+        assertEquals(SymbolKind.Table, ext.kind());
+        assertTrue(ext.isExternal());
+        var mv = new MaterializedViewSymbol("t", "(a: long)", "T");
+        assertCols(mv, "a", ScalarTypes.Long);
+        assertTrue(mv.isMaterializedView());
+        assertEquals("T", mv.materializedViewQuery());
         assertThrows(NullPointerException.class, () -> TableSymbol.from(null));
     }
 
     @Test
-    void combineNeedsTheBinder() {
-        assertPending("W6", () -> TableSymbol.combine(CombineKind.UnifySameName, new TableSymbol(A), new TableSymbol(B)));
+    void combineUnifySameName() {
+        var a2 = new ColumnSymbol("a", ScalarTypes.String);
+        // same-named columns of different types collapse into one column of the common type, else dynamic (Binder.UnifyColumnsWithSameName)
+        var r = TableSymbol.combine(CombineKind.UnifySameName, new TableSymbol(A), new TableSymbol(B));
+        assertCols(r, "a", ScalarTypes.Long, "b", ScalarTypes.String);
+        var u = TableSymbol.combine(CombineKind.UnifySameName, new TableSymbol(A), new TableSymbol(a2));
+        assertCols(u, "a", ScalarTypes.Dynamic);
+        assertCols(TableSymbol.combine(CombineKind.UnifySameName, new TableSymbol(A), new TableSymbol(A)), "a", ScalarTypes.Long);
     }
 }

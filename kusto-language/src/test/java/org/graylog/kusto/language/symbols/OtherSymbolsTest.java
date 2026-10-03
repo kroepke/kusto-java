@@ -26,10 +26,8 @@ class OtherSymbolsTest {
         assertSame(TableSymbol.Empty, GraphSymbol.Empty.nodeShape());
     }
 
-    // PORT-PENDING: W4 must remove the assumption below once QueryParser.parseRowSchema is ported.
     @Test
     void graphFromSchemas() {
-        Assumptions.assumeTrue(false, "PORT-PENDING: W4 (QueryParser.parseRowSchema)");
         var graph = GraphSymbol.from("(src:string, dst:string)", "(id:string)");
         assertEquals("", graph.name());
         assertEquals(2, graph.edgeShape().columns().size());
@@ -67,10 +65,8 @@ class OtherSymbolsTest {
         assertNull(GraphSymbol.merge(null, null));
     }
 
-    // PORT-PENDING: W6 (table merge) must remove the assumption below.
     @Test
     void graphMergeCombinesShapes() {
-        Assumptions.assumeTrue(false, "PORT-PENDING: W6 (TableSymbol.merge)");
         var a = new GraphSymbol(new TableSymbol(new ColumnSymbol("x", ScalarTypes.Int)));
         var b = new GraphSymbol(new TableSymbol(new ColumnSymbol("y", ScalarTypes.Int)),
             new TableSymbol(new ColumnSymbol("id", ScalarTypes.Int)));
@@ -149,10 +145,8 @@ class OtherSymbolsTest {
         assertThrows(NullPointerException.class, () -> new OptionSymbol("opt", "d", (ScalarSymbol) null));
     }
 
-    // PORT-PENDING: W4 must remove the assumption below once QueryParser.parseRowSchema is ported.
     @Test
     void commandSymbolConvertsLazily() {
-        Assumptions.assumeTrue(false, "PORT-PENDING: W4 (QueryParser.parseRowSchema)");
         var cmd = new CommandSymbol("c", "(a:int, b:string)");
         assertEquals("", cmd.construction());
         assertEquals(SymbolKind.Command, cmd.kind());
@@ -163,7 +157,7 @@ class OtherSymbolsTest {
         assertTrue(new CommandSymbol("c", "(*)").resultType().isOpen());
         var fromType = new CommandSymbol("c", new TableSymbol("R", new ColumnSymbol("a", ScalarTypes.Int)), "ctor");
         assertEquals("ctor", fromType.construction());
-        assertEquals("(a:int)", fromType.resultSchema());
+        assertEquals("(a: int)", fromType.resultSchema()); // SchemaDisplay.GetText spacing, as in the oracle goldens
         assertNull(new CommandSymbol("c", (String) null).resultType());
     }
 
