@@ -255,6 +255,10 @@
   "notes": "W0",
   "status": "ported"
  },
+ "src/Kusto.Language/Editor/TextRange.cs": {
+  "notes": "W7",
+  "status": "ported"
+ },
  "src/Kusto.Language/FunctionBodyFacts.cs": {
   "notes": "W3",
   "status": "ported"
@@ -295,6 +299,10 @@
   "notes": "W1",
   "status": "ported"
  },
+ "src/Kusto.Language/Parser/CharScanners.cs": {
+  "notes": "W7",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/Combinators/ArraySource.cs": {
   "notes": "W3",
   "status": "ported"
@@ -317,6 +325,10 @@
  },
  "src/Kusto.Language/Parser/Combinators/Parser.cs": {
   "notes": "W3",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/Combinators/ParserExtensions.cs": {
+  "notes": "W7",
   "status": "ported"
  },
  "src/Kusto.Language/Parser/Combinators/ParserVisitors.cs": {
@@ -439,8 +451,16 @@
   "notes": "W3",
   "status": "ported"
  },
+ "src/Kusto.Language/Parser/CommandFacts.cs": {
+  "notes": "W7",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/CommandGrammar.cs": {
   "notes": "W4",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/CommentFacts.cs": {
+  "notes": "W7",
   "status": "ported"
  },
  "src/Kusto.Language/Parser/KustoFacts.cs": {
@@ -471,6 +491,14 @@
   "notes": "W4",
   "status": "ported"
  },
+ "src/Kusto.Language/Parser/ScannerExtensions.cs": {
+  "notes": "W7",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/ScriptFacts.cs": {
+  "notes": "W7",
+  "status": "ported"
+ },
  "src/Kusto.Language/Parser/SyntaxParsers.cs": {
   "notes": "W3",
   "status": "ported"
@@ -481,6 +509,10 @@
  },
  "src/Kusto.Language/Parser/TokenParser.cs": {
   "notes": "W2",
+  "status": "ported"
+ },
+ "src/Kusto.Language/Parser/TriviaFacts.cs": {
+  "notes": "W7",
   "status": "ported"
  },
  "src/Kusto.Language/PlugIns.cs": {

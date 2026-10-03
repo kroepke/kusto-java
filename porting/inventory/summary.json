@@ -47,9 +47,8 @@
  },
  "perStatus": {
   "excluded": 124,
-  "ported": 208,
+  "ported": 216,
   "stubbed": 9,
-  "pending": 8,
   "generated+handwritten": 1,
   "generated": 1
  },

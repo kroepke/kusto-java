@@ -3500,7 +3500,7 @@
    "upstreamPath": "src/Kusto.Language/Editor/TextRange.cs",
    "upstreamBlob": "8ff62b7b1800989e05ba03374eebfb1847409f48",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 56,
    "namespace": "Kusto.Language.Editor",
@@ -3523,7 +3523,7 @@
    "traps": [
     "Struct with value equality semantics by default is NOT defined (no Equals override); Java record would add equals - acceptable but note Empty static field (line 36)."
    ],
-   "notes": "(a) 55-line struct. Only used by ScriptFacts.cs:90,121-145 (optional, off-path). Port with ScriptFacts or drop both.",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -3970,7 +3970,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/CharScanners.cs",
    "upstreamBlob": "78361a0d083ebe1c9eb2cf7396b37e5418f6f3ab",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 64,
    "namespace": "Kusto.Language.Parsing",
@@ -3993,7 +3993,7 @@
    "traps": [
     "Static field initializers (lines 26-60) run in textual order, Letter/Digit depend on TextFacts method groups"
    ],
-   "notes": "Not reachable: only caller is Editor/Kusto/Analyzers/AvoidUsingHasWithIPv4Strings.cs.",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -4420,7 +4420,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/Combinators/ParserExtensions.cs",
    "upstreamBlob": "bc3ad391cc6c1659d6ae31db15bc63617f7c069b",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 34,
    "namespace": "Kusto.Language.Parsing",
@@ -4444,7 +4444,7 @@
     "ParserExtensions.cs:25-31 TryParse out param -> return Optional/holder; returns result.Length>0 (not Succeeded)",
     "Extension methods on Parser<char> only (char-specific) -> static methods taking Parser<Character>"
    ],
-   "notes": "Not reachable: no callers anywhere (grep). Parser<char> convenience methods.",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5577,7 +5577,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/CommandFacts.cs",
    "upstreamBlob": "1a64828a68636978ce5763aae304459675f32cf8",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 115,
    "namespace": "Kusto.Language.Parsing",
@@ -5600,7 +5600,7 @@
    "traps": [
     "Line-start based scanning; depends on TextFacts line break set"
    ],
-   "notes": "Not reachable from entry points: only referenced by itself (CommandFacts) and used by no in-scope file (grep). Depends on ScriptFacts/CommentFacts. Cheap public utility.",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5641,7 +5641,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/CommentFacts.cs",
    "upstreamBlob": "611a3ea3b627fe3b5f9e336e94fc38a8769bd655",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 109,
    "namespace": "Kusto.Language.Parsing",
@@ -5665,7 +5665,7 @@
     "text.Contains(\"/\") (18) string overload ordinal in .NET; Java contains ok",
     "Substring(...).Trim() (56) trims Unicode whitespace per char.IsWhiteSpace; Java String.trim() trims <= U+0020 only - use strip semantic carefully"
    ],
-   "notes": "Not reachable: only caller is Parser/CommandFacts.cs.",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5934,7 +5934,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/ScannerExtensions.cs",
    "upstreamBlob": "abde3d1ce9cd00d52544d9258c58cb0335e8da7b",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 84,
    "namespace": "Kusto.Language.Parsing",
@@ -5958,7 +5958,7 @@
     "ObjectPool of ReuseableTextSource (line 36) - thread-safety semantics must be preserved or replaced by new instance",
     "Peek returns '\\0' past end (line 70)"
    ],
-   "notes": "Not reachable: no callers anywhere (grep).",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -5966,7 +5966,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/ScriptFacts.cs",
    "upstreamBlob": "1c6e818565859111105a00b86ee17878187640a1",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 158,
    "namespace": "Kusto.Language.Parsing",
@@ -5990,7 +5990,7 @@
     "blockStarts.OrderBy(x=>x) on ints (62,92) - stable, deterministic",
     "Depends on TokenParser.ScanStringLiteral/ScanComment public statics"
    ],
-   "notes": "Not reachable from entry points: only caller is Editor/CodeScript.cs:157 and Parser/CommandFacts.cs:78-79. Uses Editor.TextRange (90,121-145).",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
@@ -6106,7 +6106,7 @@
    "upstreamPath": "src/Kusto.Language/Parser/TriviaFacts.cs",
    "upstreamBlob": "03ca6298b5b4e53dc4d39b9147829777830b79d6",
    "scope": "optional",
-   "status": "pending",
+   "status": "ported",
    "wave": 7,
    "lines": 62,
    "namespace": "Kusto.Language.Parsing",
@@ -6129,7 +6129,7 @@
    "traps": [
     "Whitespace test via TextFacts.IsWhitespace (line 38)"
    ],
-   "notes": "Not reachable: only callers are Editor/Kusto/KustoCodeService.cs:533 and KustoCompleter.cs:379. 'using Kusto.Language.Editor' (line 5) is unused.",
+   "notes": "W7",
    "syncedAt": "9d95a2d5bb085d151f14e88e07b703755fd914e1",
    "droppedMembers": []
   },
