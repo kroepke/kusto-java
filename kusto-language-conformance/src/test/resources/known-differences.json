@@ -8,6 +8,15 @@
    "dRow": "D31",
    "reason": "datetime(\"8:00:00 AM\") is a time-only literal; .NET DateTime.TryParse fills in the oracle run date (golden generated 2026-10-02) and Java fills in its own run date, so the values match only on the generation day.",
    "expires": "9d95a2d5bb085d151f14e88e07b703755fd914e1"
+  },
+  {
+   "id": "KD-002",
+   "record": "sentinel/0965",
+   "path": "bind\\[\\d+\\]\\.constantValue",
+   "layer": "BIND",
+   "dRow": "D31",
+   "reason": "Same time-only datetime literal as KD-001 surfaced through the binder constant value; .NET and Java each fill in their own run date.",
+   "expires": "9d95a2d5bb085d151f14e88e07b703755fd914e1"
   }
  ]
 }

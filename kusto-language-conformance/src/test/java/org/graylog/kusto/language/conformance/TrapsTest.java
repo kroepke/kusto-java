@@ -179,8 +179,7 @@ class TrapsTest {
     /** PORTING.md 5.3: {@code Distinct()} keeps insertion order. */
     @Test
     void distinctInsertionOrder() {
-        // PORT-PENDING: W6 (binder output order; traps 5.3 records are compared on bind/resultType)
-        Assumptions.abort("PORT-PENDING: W6");
+        // traps 5.3 records are compared on bind/resultType by the conformance run (ConformanceTest).
     }
 
     /** PORTING.md 5.3/5.4: {@code OrdinalIgnoreCase} upper-cases per char ('_' vs 'a', K vs Kelvin sign). */

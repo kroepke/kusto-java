@@ -21,6 +21,13 @@ import org.graylog.kusto.language.Diagnostic;
 import org.graylog.kusto.language.DiagnosticLocationKind;
 import org.graylog.kusto.language.GlobalState;
 import org.graylog.kusto.language.KustoCode;
+import org.graylog.kusto.language.KustoFacts;
+import org.graylog.kusto.language.symbols.Parameter;
+import org.graylog.kusto.language.symbols.ReturnTypeKind;
+import org.graylog.kusto.language.symbols.SchemaDisplay;
+import org.graylog.kusto.language.symbols.Signature;
+import org.graylog.kusto.language.symbols.TypeSymbol;
+import org.graylog.kusto.language.syntax.Expression;
 import org.graylog.kusto.language.ParseOptions;
 import org.graylog.kusto.language.symbols.ClusterSymbol;
 import org.graylog.kusto.language.symbols.ColumnSymbol;
@@ -58,7 +65,7 @@ import org.graylog.kusto.language.utils.dotnet.DotNet;
  * {@code outcome.parse = throw:<name>}, as the oracle writes it.
  *
  * <p><b>Schemas.</b> Built per schema id like {@code Schemas.cs}. Functions, materialized views and entity
- * groups are skipped while their constructors still hit PORT-PENDING W6 stubs (parsing never reads them).
+ * groups are skipped while their constructors still hit (no longer applies: the schema is complete).
  *
  * <p><b>Exceptions.</b> A token value that throws renders as {@code "!<.NET name>"} and sets
  * {@code outcome.tokenValues} to {@code "throw:<mapped name>"}, exactly as the oracle: the Java
@@ -91,11 +98,36 @@ public final class GoldenWriter implements PortAdapter {
             parseOutcome = "throw:" + names.mapToJava(names.dotnetName(ex));
         }
         double parseMs = (System.nanoTime() - t0) / 1e6;
-        return render(rec.id(), text, code, parseOutcome, parseMs);
+
+        t0 = System.nanoTime();
+        KustoCode analyzed = null;
+        String analyzeOutcome = "ok";
+        try {
+            analyzed = KustoCode.parseAndAnalyze(text, globals);
+            if (!analyzed.hasSemantics()) {
+                analyzeOutcome = "skipped:depth";
+            }
+        } catch (Throwable ex) {
+            ExceptionNames names = exceptionNames();
+            analyzeOutcome = "throw:" + names.mapToJava(names.dotnetName(ex));
+        }
+        double analyzeMs = (System.nanoTime() - t0) / 1e6;
+        // Golden.cs: Code => AnalyzedCode ?? ParseCode
+        return render(rec.id(), text, analyzed != null ? analyzed : code, analyzed, parseOutcome, analyzeOutcome, parseMs,
+                analyzeMs);
     }
 
-    /** Renders one golden record from {@code code} (null when the parse threw). */
+    /** Parse-only rendering: the semantic layers stay empty and {@code outcome.analyze} is {@value #ANALYZE_UNAVAILABLE}. */
     static ObjectNode render(String id, String text, KustoCode code, String parseOutcome, double parseMs) {
+        return render(id, text, code, null, parseOutcome, ANALYZE_UNAVAILABLE, parseMs, 0.0);
+    }
+
+    /**
+     * Renders one golden record from {@code code} (the analysed code if available, else the parse-only code; null
+     * when both threw). {@code analyzed} is null when analysis threw.
+     */
+    static ObjectNode render(String id, String text, KustoCode code, KustoCode analyzed, String parseOutcome,
+            String analyzeOutcome, double parseMs, double analyzeMs) {
         SyntaxNode root = code == null ? null : code.syntax();
 
         ObjectNode r = Harness.MAPPER.createObjectNode();
@@ -168,24 +200,124 @@ public final class GoldenWriter implements PortAdapter {
         writeTree(tree, root);
 
         ArrayNode sdx = r.putArray("syntaxDiagnostics");
-        if (code != null) {
-            for (Diagnostic d : code.getSyntaxDiagnostics()) {
-                writeDiagnostic(sdx, d, d.start(), d.length());
+        List<Diagnostic> syntaxDx = code != null ? code.getSyntaxDiagnostics() : List.of();
+        for (Diagnostic d : syntaxDx) {
+            writeDiagnostic(sdx, d, d.start(), d.length());
+        }
+
+        ArrayNode semDx = r.putArray("semanticDiagnostics");
+        if (analyzed != null) {
+            for (Diagnostic d : analyzed.getDiagnostics()) {
+                boolean isSyntax = false;
+                for (Diagnostic s : syntaxDx) {
+                    if (s == d || s.equals(d)) {
+                        isSyntax = true;
+                        break;
+                    }
+                }
+                if (!isSyntax) {
+                    writeDiagnostic(semDx, d, d.start(), d.length());
+                }
             }
         }
-        r.putArray("semanticDiagnostics");
-        r.putArray("bind");
-        r.putNull("resultType");
+
+        ArrayNode bind = r.putArray("bind");
+        if (analyzed != null && analyzed.hasSemantics()) {
+            writeBind(bind, analyzed, preOrder(root));
+        }
+
+        TypeSymbol rt = analyzed != null && analyzed.hasSemantics() ? analyzed.resultType() : null;
+        r.put("resultType", rt != null ? SchemaDisplay.getText(rt) : null);
 
         ObjectNode outcome = r.putObject("outcome");
         outcome.put("parse", parseOutcome);
-        outcome.put("analyze", ANALYZE_UNAVAILABLE);
+        outcome.put("analyze", analyzeOutcome);
         outcome.put("tokenValues", tokenValuesOutcome);
 
         ObjectNode timing = r.putObject("timing");
         timing.put("parseMs", Math.round(parseMs * 1000.0) / 1000.0);
-        timing.put("analyzeMs", 0.0);
+        timing.put("analyzeMs", Math.round(analyzeMs * 1000.0) / 1000.0);
         return r;
+    }
+
+    private static void writeBind(ArrayNode into, KustoCode analyzed, List<TreeEntry> tree) {
+        GlobalState globals = analyzed.globals();
+        for (int i = 0; i < tree.size(); i++) {
+            if (!(tree.get(i).element() instanceof SyntaxNode node)) {
+                continue;
+            }
+            Symbol sym = node.referencedSymbol();
+            Expression expr = node instanceof Expression e ? e : null;
+            TypeSymbol type = expr != null ? expr.resultType() : null;
+            if (sym == null && type == null) {
+                continue;
+            }
+            ObjectNode o = into.addObject();
+            o.put("i", i);
+            o.put("symbolKind", sym != null ? sym.kind().name() : null);
+            o.put("symbol", sym != null ? sym.name() : null);
+            o.put("symbolOwner", ownerOf(sym, globals));
+            o.put("type", type != null ? SchemaDisplay.getText(type) : null);
+            o.put("signature", renderSignature(node.referencedSignature()));
+            boolean isConstant = expr != null && expr.isConstant();
+            o.put("isConstant", isConstant);
+            String constantValue = null;
+            if (isConstant) {
+                try {
+                    Object v = expr.constantValue();
+                    constantValue = v == null ? null : DotNet.str(v);
+                } catch (RuntimeException | StackOverflowError ex) {
+                    constantValue = "!" + exceptionNames().dotnetName(ex);
+                }
+            }
+            o.put("constantValue", constantValue);
+            SyntaxNode body = node.getCalledFunctionBody();
+            o.put("calledBody", body != null ? sha16(body.toString()) : null);
+            List<SyntaxNode> alts = node.alternates();
+            o.put("alternates", alts == null ? 0 : alts.size());
+        }
+    }
+
+    /** Column -> GetTable(column); Database -> GetCluster(database); any other symbol -> GetDatabase(symbol). */
+    static String ownerOf(Symbol sym, GlobalState globals) {
+        if (sym == null) {
+            return null;
+        }
+        Symbol owner;
+        if (sym instanceof ColumnSymbol c) {
+            owner = globals.getTable(c);
+        } else if (sym instanceof DatabaseSymbol d) {
+            owner = globals.getCluster(d);
+        } else {
+            owner = globals.getDatabase(sym);
+        }
+        return owner != null ? owner.name() : null;
+    }
+
+    static String renderSignature(Signature sig) {
+        if (sig == null) {
+            return null;
+        }
+        StringBuilder ps = new StringBuilder();
+        for (Parameter p : sig.parameters()) {
+            if (ps.length() > 0) {
+                ps.append(", ");
+            }
+            ps.append(KustoFacts.bracketNameIfNecessary(p.name())).append(": ").append(SchemaDisplay.getParameterTypeText(p));
+        }
+        String ret = sig.returnKind() == ReturnTypeKind.Declared && sig.declaredReturnType() != null
+                ? SchemaDisplay.getText(sig.declaredReturnType())
+                : sig.returnKind().name();
+        return "(" + ps + ") -> " + ret;
+    }
+
+    static String sha16(String text) {
+        try {
+            byte[] h = java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return java.util.HexFormat.of().formatHex(h).substring(0, 16);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /** One element of the pre-order walk. */
@@ -249,29 +381,16 @@ public final class GoldenWriter implements PortAdapter {
         }
         for (SchemaFile.Function f : s.functions()) {
             String parameters = f.parameters() == null || f.parameters().isEmpty() ? "()" : f.parameters();
-            try {
-                members.add(new FunctionSymbol(f.name(), parameters, f.body(), f.docstring()));
-            } catch (UnsupportedOperationException pending) {
-                // PORT-PENDING W6: Parameter.parseList needs Binder.getDeclaredType. Parsing never reads
-                // database functions, so skipping them leaves the W4 layers unchanged; W6 removes this.
-            }
+            members.add(new FunctionSymbol(f.name(), parameters, f.body(), f.docstring()));
         }
         for (SchemaFile.Table t : s.externalTables()) {
             members.add(new ExternalTableSymbol(t.name(), columns(t.columns()), t.docstring()));
         }
         for (SchemaFile.MaterializedView m : s.materializedViews()) {
-            try {
-                members.add(new MaterializedViewSymbol(m.name(), columns(m.columns()), m.query(), m.docstring()));
-            } catch (UnsupportedOperationException pending) {
-                // PORT-PENDING W6, see functions above.
-            }
+            members.add(new MaterializedViewSymbol(m.name(), columns(m.columns()), m.query(), m.docstring()));
         }
         for (SchemaFile.EntityGroup g : s.entityGroups()) {
-            try {
-                members.add(new EntityGroupSymbol(g.name(), g.definition(), g.docstring()));
-            } catch (UnsupportedOperationException pending) {
-                // PORT-PENDING W6, see functions above.
-            }
+            members.add(new EntityGroupSymbol(g.name(), g.definition(), g.docstring()));
         }
         return GlobalState.default_()
                 .withCluster(new ClusterSymbol(s.cluster(), new DatabaseSymbol(s.database(), members)))
