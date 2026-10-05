@@ -33,7 +33,7 @@ import org.junit.jupiter.api.TestFactory;
  * name via {@code parent.getName(i)}, start, end, missing flag) with the golden {@code tree[]}
  * written by {@code kusto-oracle}. Only the first mismatch of a record is reported.
  */
-class QueryParserPartBTest {
+class QueryParserGoldenTreeTest {
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final Path RESOURCES = Paths.get(System.getProperty("kusto.conformanceResources",
             Paths.get("..", "kusto-language-conformance", "src", "test", "resources").toString()));

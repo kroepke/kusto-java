@@ -32,7 +32,7 @@ import org.junit.jupiter.api.TestFactory;
  * corpus text, parses from the token at the subtree's start and compares kind, child name, start, end and
  * missing flag for every node in pre-order. Positions are compared relative to the subtree root.
  */
-class QueryParserPartATest {
+class QueryParserSubtreeTest {
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final Path RESOURCES = Paths.get(System.getProperty("kusto.conformanceResources",
             Paths.get("..", "kusto-language-conformance", "src", "test", "resources").toString()));

@@ -11,8 +11,8 @@ import org.graylog.kusto.language.syntax.SyntaxKind;
 import org.graylog.kusto.language.syntax.SyntaxToken;
 import org.graylog.kusto.language.syntax.TokenName;
 
-final class W1bTestSupport {
-    private W1bTestSupport() {
+final class SymbolTestSupport {
+    private SymbolTestSupport() {
     }
 
     /** A bare expression with no semantic info (unlike FakeExpression.Create, which goes through the Binder). */
