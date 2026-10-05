@@ -296,7 +296,7 @@ class TrapsTest {
                 tokens++;
                 JsonNode ev = e.get("value");
                 JsonNode av = at.get(i).get("value");
-                threw |= ev.isTextual() && ev.asText().startsWith("!");
+                threw |= ev.isTextual() && ev.asText().startsWith("!") && ev.asText().endsWith("Exception");
                 if (!ev.equals(av)) {
                     diffs.add(r.id() + " tokens[" + i + "] " + e.path("text") + ": expected " + ev + ", actual " + av
                             + "  [" + r.source() + "]");

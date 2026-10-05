@@ -60,7 +60,9 @@ From `KustoCode.GetLexicalTokens()` of the **analysed** code (so `AlwaysProduceE
 the text; `end` = `start + text.Length`; `value` = `DotNet.str(token.Value)` for literal
 tokens (`SyntaxToken.Value` after `SyntaxToken.From`), else `null`; if computing the value
 throws, `value` is `"!<ExceptionTypeName>"` (unmapped .NET name) and `outcome.tokenValues`
-becomes `"throw:<Name>"` (mapped). The token `value` is set only for literal tokens
+becomes `"throw:<Name>"` (mapped). A literal whose value itself starts with `!` (e.g. the string
+`"!"`) renders the same way, so readers treat a value as a throw marker only when it is
+`"!<Name>Exception"`. The token `value` is set only for literal tokens
 (`SyntaxToken.From(lexicalToken).Value` when `IsLiteral`), else `null`.
 `diagnostics` = the token's own diagnostics (same shape as below, positions absolute).
 

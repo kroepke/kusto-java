@@ -105,7 +105,8 @@ class KustoFactsTest {
                 }
                 String want = e.get("value").asText();
                 SyntaxToken token = SyntaxToken.from(tokens[i]);
-                if (want.startsWith("!")) {
+                // "!<Name>Exception" marks a throw; a literal whose value merely starts with "!" (e.g. "!") is a value
+                if (want.startsWith("!") && want.endsWith("Exception")) {
                     throwing++;
                     String javaName = dotnetToJava.get(want.substring(1));
                     try {
