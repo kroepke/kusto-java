@@ -3,6 +3,7 @@
 package org.graylog.kusto.language.generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -10,20 +11,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Runs {@code GenerateSyntaxNodes --check} against {@code ../kusto-language/src/main/java}: the syntax nodes
- * (skipped while that directory holds no generated files yet) and the {@code LexicalTokenParsers} facade
- * (skipped while {@code Parsers.java} is absent).
+ * Runs {@code GenerateSyntaxNodes --check} against {@code ../kusto-language/src/main/java}: the checked-in
+ * syntax nodes and the {@code LexicalTokenParsers} facade must exist and equal a fresh generation.
  */
 class GeneratedOutputUpToDateTest {
     @Test
     void checked_in_output_is_up_to_date() {
         Path dir = GenerateSyntaxNodes.syntaxDirectory(RepoPaths.kustoLanguageSourceRoot());
-        Assumptions.assumeTrue(Files.isRegularFile(dir.resolve("BinaryExpression.java")),
-                "no generated files in " + dir);
+        assertTrue(Files.isRegularFile(dir.resolve("BinaryExpression.java")), "no generated files in " + dir);
         var buffer = new ByteArrayOutputStream();
         int status = GenerateSyntaxNodes.run(dir, true, new PrintStream(buffer, true, StandardCharsets.UTF_8));
         assertEquals(0, status, buffer.toString(StandardCharsets.UTF_8));
@@ -33,8 +31,7 @@ class GeneratedOutputUpToDateTest {
     void checked_in_lexical_token_parsers_facade_is_up_to_date() {
         Path root = RepoPaths.kustoLanguageSourceRoot();
         Path dir = LexicalTokenParsersGenerator.parsingDirectory(root);
-        Assumptions.assumeTrue(Files.isRegularFile(dir.resolve(LexicalTokenParsersGenerator.SOURCE_FILE)),
-                "no Parsers.java in " + dir);
+        assertTrue(Files.isRegularFile(dir.resolve(LexicalTokenParsersGenerator.SOURCE_FILE)), "no Parsers.java in " + dir);
         var buffer = new ByteArrayOutputStream();
         int status = LexicalTokenParsersGenerator.run(root, true, new PrintStream(buffer, true, StandardCharsets.UTF_8));
         assertEquals(0, status, buffer.toString(StandardCharsets.UTF_8));
