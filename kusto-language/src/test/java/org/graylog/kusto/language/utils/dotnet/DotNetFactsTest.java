@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+import org.graylog.kusto.language.syntax.SyntaxFacts;
+import org.graylog.kusto.language.syntax.SyntaxKind;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -150,7 +152,12 @@ class DotNetFactsTest {
                 value.forEach(n -> expected.add(n.asText()));
                 assertEquals(expected, DotNetStrings.split(a.get(0).asText(), a.get(1).asText().charAt(0)));
             }
-            case "SyntaxFacts.TryGetKind" -> Assumptions.abort("SyntaxFacts not ported yet");
+            case "SyntaxFacts.TryGetKind" -> {
+                Out<SyntaxKind> kind = new Out<>();
+                assertEquals(ok, SyntaxFacts.tryGetKind(arg0(fact), kind), "ok");
+                // C# default(SyntaxKind) is None when the lookup fails
+                assertEquals(value.asText(), kind.value == null ? "None" : kind.value.name(), "kind");
+            }
             default -> fail("unhandled api " + api + " (ok=" + ok + ")");
         }
     }
