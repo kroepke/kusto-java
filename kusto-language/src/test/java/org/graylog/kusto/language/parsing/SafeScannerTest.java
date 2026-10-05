@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 class SafeScannerTest {
@@ -24,10 +23,9 @@ class SafeScannerTest {
         var deeperText = StackSafeParserTest.nested(20_000);
         assertEquals(deeperText.length(), StackSafeParserTest.onSmallStack(() -> SafeScanner.scanSafe(deeper, new TextSource(deeperText), 0)));
 
-        Object direct = StackSafeParserTest.onSmallStack(() -> grammar.scan(new TextSource(text), 0));
-        // JIT warm-up in a full suite can shrink frames enough to avoid overflow; only compare when it did overflow
-        Assumptions.assumeTrue(direct instanceof StackOverflowError, "direct scan did not overflow a 512 KB stack");
-
+        // the direct scan of the same 20,000 levels overflows (5,000 can survive once the JIT shrinks frames)
+        Object direct = StackSafeParserTest.onSmallStack(() -> deeper.scan(new TextSource(deeperText), 0));
+        assertInstanceOf(StackOverflowError.class, direct, "direct scan did not overflow a 512 KB stack");
     }
 
     @Test

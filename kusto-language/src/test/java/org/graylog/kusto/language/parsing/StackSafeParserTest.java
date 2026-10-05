@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.graylog.kusto.language.utils.dotnet.DotNetStrings;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 class StackSafeParserTest {
@@ -85,10 +84,9 @@ class StackSafeParserTest {
         assertFalse(big instanceof Throwable, () -> "safe parse threw " + big);
         assertEquals(List.of(deeperText.length(), List.of(20_000)), big);
 
-        Object direct = onSmallStack(() -> grammar.parse(new TextSource(text), 0, new ArrayList<Object>(), 0));
-
-        // JIT warm-up in a full suite can avoid the overflow; only require it when it happened
-        Assumptions.assumeTrue(direct instanceof StackOverflowError, "direct parse did not overflow a 512 KB stack");
+        // the direct parse of the same 20,000 levels overflows (5,000 can survive once the JIT shrinks frames)
+        Object direct = onSmallStack(() -> deeper.parse(new TextSource(deeperText), 0, new ArrayList<Object>(), 0));
+        assertInstanceOf(StackOverflowError.class, direct, "direct parse did not overflow a 512 KB stack");
     }
 
     @Test
