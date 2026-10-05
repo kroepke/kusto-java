@@ -5,7 +5,7 @@ package org.graylog.kusto.language.conformance;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/** No port: {@link #available()} is false and every layer reports cause {@code no-port}. */
+/** Test double for a missing port: {@link #available()} is false and every layer reports cause {@code no-port}. */
 public final class EmptyPort implements PortAdapter {
     @Override
     public boolean available() {

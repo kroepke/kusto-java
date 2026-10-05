@@ -46,16 +46,6 @@ class TrapsTest {
     static final String KQL_WHITESPACE = "\t \r\n\u000c  ᠎      "
             + "     ​  　﻿";
 
-    /**
-     * The rendered value of a token whose value computation reaches a {@code PORT-PENDING} stub
-     * ({@code UnsupportedOperationException}, mapped to .NET {@code NotImplementedException}); the
-     * oracle never produces it. While W2 is in flight, quoted literal interiors go through
-     * {@code KustoFacts.getStringLiteralValue}; tokens that only differ this way abort the policy
-     * test (reported as skipped with the list) instead of failing it. Any other difference fails.
-     * Remove once no lexer-reachable stub remains (end of W2).
-     */
-    static final String PENDING_VALUE = "!NotImplementedException";
-
     private static final GoldenWriter WRITER = new GoldenWriter();
     private static volatile Traps traps;
     private static volatile JsonNode facts;
@@ -275,7 +265,6 @@ class TrapsTest {
         Set<String> kindNames = new java.util.HashSet<>();
         kinds.forEach(k -> kindNames.add(k.name()));
         List<String> diffs = new ArrayList<>();
-        List<String> pending = new ArrayList<>();
         int records = 0;
         int tokens = 0;
         for (CorpusRecord r : t.records.values()) {
@@ -309,9 +298,8 @@ class TrapsTest {
                 JsonNode av = at.get(i).get("value");
                 threw |= ev.isTextual() && ev.asText().startsWith("!");
                 if (!ev.equals(av)) {
-                    String line = r.id() + " tokens[" + i + "] " + e.path("text") + ": expected " + ev + ", actual " + av
-                            + "  [" + r.source() + "]";
-                    (PENDING_VALUE.equals(av.asText(null)) && !PENDING_VALUE.equals(ev.asText(null)) ? pending : diffs).add(line);
+                    diffs.add(r.id() + " tokens[" + i + "] " + e.path("text") + ": expected " + ev + ", actual " + av
+                            + "  [" + r.source() + "]");
                 }
             }
             if (threw) {
@@ -326,10 +314,6 @@ class TrapsTest {
         if (!diffs.isEmpty()) {
             fail(policy + " literal values: " + diffs.size() + " differences in " + records + " records (" + tokens
                     + " tokens):\n  " + String.join("\n  ", diffs));
-        }
-        if (!pending.isEmpty()) {
-            Assumptions.abort(policy + " literal values: " + pending.size() + " tokens still hit a PORT-PENDING stub:\n  "
-                    + String.join("\n  ", pending));
         }
     }
 

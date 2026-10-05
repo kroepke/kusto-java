@@ -43,7 +43,7 @@ class ParserKindEquivalenceTest {
     void grammarEqualsDefaultParser() throws Exception {
         PortAdapter port = PortAdapters.get();
         if (!PortAdapters.available(port) || !(port instanceof GoldenWriter)) {
-            Assumptions.abort("needs the GoldenWriter port");
+            Assumptions.abort("needs the GoldenWriter port (kusto.port selects another adapter)");
         }
         List<String> unexpected = new ArrayList<>();
         Set<String> diverged = new TreeSet<>();

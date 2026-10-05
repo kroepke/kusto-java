@@ -27,7 +27,7 @@ class KnownDifferencesTest {
         // KD-001/KD-002 (D31): the one date-dependent sentinel record, on tokens and on bind
         assertEquals(2, KnownDifferences.load().entries().size());
         ConformanceBaseline b = ConformanceBaseline.load();
-        assertTrue(b.gatedLayers().containsAll(Set.of(Layer.TOKENS, Layer.FIDELITY, Layer.TOKEN_VALUES)), "W2 gates the lexer layers");
+        assertTrue(b.gatedLayers().containsAll(Set.of(Layer.TOKENS, Layer.FIDELITY, Layer.TOKEN_VALUES)), "the lexer layers are gated");
         for (String c : Harness.KNOWN_CORPORA) {
             for (Layer l : Layer.values()) {
                 assertTrue(b.expected().get(c).containsKey(l), c + " " + l);

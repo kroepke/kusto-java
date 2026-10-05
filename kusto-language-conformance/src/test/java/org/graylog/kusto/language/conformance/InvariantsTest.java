@@ -26,14 +26,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 /**
  * {@link Invariants} over every record of every corpus (goldens not needed). Writes
  * {@code target/invariants-report.md} with violations and pathological (&gt; 200 ms) inputs.
- * Aborted while no port is available.
+ * Aborted when the selected {@code kusto.port} adapter is unavailable.
  */
 class InvariantsTest {
     @Test
     void invariants() {
         PortAdapter port = PortAdapters.get();
         if (!PortAdapters.available(port)) {
-            Assumptions.abort("no port yet");
+            Assumptions.abort("no port adapter available (kusto.port)");
         }
         List<String> violations = new ArrayList<>();
         List<String> pathological = new ArrayList<>();
@@ -132,7 +132,7 @@ class InvariantsTest {
         assertNull(parseProblem(nested(n), SMALL_STACK, ParserKind.Grammar), "4 MB, grammar, n=" + n);
     }
 
-    /** {@code Properties.MaxAnalysisDepth = 500}: parsing must succeed; analysis is W6. */
+    /** {@code Properties.MaxAnalysisDepth = 500}: parsing must succeed. */
     @ParameterizedTest
     @ValueSource(ints = {499, 500, 501, 1000})
     void analysisDepthBoundaryParses(int n) {

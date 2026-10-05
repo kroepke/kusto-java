@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  * written (once per distinct reduced text and schema) to {@code target/fuzz-failures.jsonl} as a corpus line with
  * {@code "source": "fuzz: <seedId> <mutation>"}, ready to promote into {@code traps.jsonl}.
  * The seed is {@code -Dkusto.fuzzSeed} (default {@value #DEFAULT_SEED}).
- * Aborted while no port is available or the seeds file does not exist.
+ * Aborted when the selected {@code kusto.port} adapter is unavailable or the seeds file does not exist.
  */
 class FuzzTest {
     static final long DEFAULT_SEED = 20261002L;
@@ -35,7 +35,7 @@ class FuzzTest {
     void fuzz() {
         PortAdapter port = PortAdapters.get();
         if (!PortAdapters.available(port)) {
-            Assumptions.abort("no port yet");
+            Assumptions.abort("no port adapter available (kusto.port)");
         }
         Path seedsFile = Harness.corpusDir().resolve("fuzz-seeds.txt");
         if (!Files.isRegularFile(seedsFile)) {

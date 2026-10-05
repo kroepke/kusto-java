@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  * <p><b>Split of {@code tokens}.</b> {@link #TOKENS} compares {@code tokens[]} <em>without</em> the
  * {@code value} field of each token; {@link #TOKEN_VALUES} compares only those {@code value}
- * fields plus {@code outcome.tokenValues}. This lets the lexer gate (W2) pass on token kinds,
- * offsets, trivia, text and token diagnostics before literal-value parsing is wired. The split
+ * fields plus {@code outcome.tokenValues}. This lets the token-kind, offset, trivia, text and
+ * token-diagnostic comparison be gated separately from literal-value parsing. The split
  * is a harness decision; golden-format.md describes the record, not the layers.
  *
  * <p>The top-level {@code id}, {@code kind} and {@code timing} fields belong to no layer:

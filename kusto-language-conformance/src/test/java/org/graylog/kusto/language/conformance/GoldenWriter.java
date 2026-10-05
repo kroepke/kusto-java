@@ -56,16 +56,15 @@ import org.graylog.kusto.language.utils.dotnet.DotNet;
  * Normative: golden-format.md plus oracle/README.md "Rendering decisions"; the token section
  * mirrors {@code oracle/kusto-oracle/src/Golden.cs} {@code WriteRecord} line for line.
  *
- * <p><b>Layers available at W4 (parser).</b> {@code KustoCode.parse} (parse only) fills {@code kind},
- * {@code tokens}, {@code fidelity} (from the syntax root), {@code tree}, {@code syntaxDiagnostics} and
- * {@code outcome.parse}. The binder (W6) does not exist yet, so {@code semanticDiagnostics} and {@code bind} are
- * empty arrays, {@code resultType} is {@code null} and {@code outcome.analyze} is {@value #ANALYZE_UNAVAILABLE};
- * the comparator reports those as ordinary differing records on ungated layers. If {@code parse} throws, the
- * record has empty {@code tokens}/{@code tree}, {@code roundTrip=false}, {@code fullWidth=0} and
- * {@code outcome.parse = throw:<name>}, as the oracle writes it.
+ * <p><b>Layers.</b> {@link #write} runs {@code KustoCode.parse} (filling {@code kind}, {@code tokens},
+ * {@code fidelity}, {@code tree}, {@code syntaxDiagnostics}, {@code outcome.parse}) and then
+ * {@code KustoCode.parseAndAnalyze} (filling {@code semanticDiagnostics}, {@code bind}, {@code resultType},
+ * {@code outcome.analyze}). If {@code parse} throws, the record has empty {@code tokens}/{@code tree},
+ * {@code roundTrip=false}, {@code fullWidth=0} and {@code outcome.parse = throw:<name>}, as the oracle writes it.
+ * The parse-only {@code render} overload leaves the semantic layers empty and sets {@code outcome.analyze} to
+ * {@value #ANALYZE_SKIPPED}.
  *
- * <p><b>Schemas.</b> Built per schema id like {@code Schemas.cs}. Functions, materialized views and entity
- * groups are skipped while their constructors still hit (no longer applies: the schema is complete).
+ * <p><b>Schemas.</b> Built per schema id like {@code Schemas.cs}.
  *
  * <p><b>Exceptions.</b> A token value that throws renders as {@code "!<.NET name>"} and sets
  * {@code outcome.tokenValues} to {@code "throw:<mapped name>"}, exactly as the oracle: the Java
@@ -74,8 +73,8 @@ import org.graylog.kusto.language.utils.dotnet.DotNet;
  * is mapped back through the {@code dotnet} table for the outcome (unmapped names unchanged).
  */
 public final class GoldenWriter implements PortAdapter {
-    /** {@code outcome.analyze} while the binder is not ported. */
-    public static final String ANALYZE_UNAVAILABLE = "skipped:no-port";
+    /** {@code outcome.analyze} of a parse-only rendering (no analysis was run). */
+    public static final String ANALYZE_SKIPPED = "skipped:no-port";
 
     private static volatile ExceptionNames exceptionNames;
 
@@ -117,9 +116,9 @@ public final class GoldenWriter implements PortAdapter {
                 analyzeMs);
     }
 
-    /** Parse-only rendering: the semantic layers stay empty and {@code outcome.analyze} is {@value #ANALYZE_UNAVAILABLE}. */
+    /** Parse-only rendering: the semantic layers stay empty and {@code outcome.analyze} is {@value #ANALYZE_SKIPPED}. */
     static ObjectNode render(String id, String text, KustoCode code, String parseOutcome, double parseMs) {
-        return render(id, text, code, null, parseOutcome, ANALYZE_UNAVAILABLE, parseMs, 0.0);
+        return render(id, text, code, null, parseOutcome, ANALYZE_SKIPPED, parseMs, 0.0);
     }
 
     /**

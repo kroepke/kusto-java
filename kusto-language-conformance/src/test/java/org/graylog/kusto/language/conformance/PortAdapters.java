@@ -34,12 +34,8 @@ public final class PortAdapters {
         }
     }
 
-    /** {@code a.available()}, treating a throwing adapter (e.g. a PORT-PENDING stub) as unavailable. */
+    /** {@code a.available()}; {@code false} for an adapter with no port behind it (e.g. {@link EmptyPort}). */
     public static boolean available(PortAdapter a) {
-        try {
-            return a.available();
-        } catch (UnsupportedOperationException e) {
-            return false;
-        }
+        return a.available();
     }
 }
