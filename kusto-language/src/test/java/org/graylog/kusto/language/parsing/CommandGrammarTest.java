@@ -36,7 +36,6 @@ import org.graylog.kusto.language.syntax.PipeExpression;
 import org.graylog.kusto.language.syntax.SyntaxElement;
 import org.graylog.kusto.language.syntax.SyntaxKind;
 import org.graylog.kusto.language.syntax.UnknownCommand;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
@@ -54,15 +53,8 @@ class CommandGrammarTest {
     private static final Path RESOURCES = Paths.get(System.getProperty("kusto.conformanceResources",
             Paths.get("..", "kusto-language-conformance", "src", "test", "resources").toString()));
 
-    /** Skips the test while QueryGrammar or GlobalState are not yet ported. */
     private static CommandGrammar grammar() {
-        try {
-            Class.forName("org.graylog.kusto.language.parsing.QueryGrammar");
-            return CommandGrammar.from(GlobalState.default_());
-        } catch (ClassNotFoundException | UnsupportedOperationException | LinkageError e) {
-            Assumptions.abort("QueryGrammar/GlobalState not available: " + e);
-            return null;
-        }
+        return CommandGrammar.from(GlobalState.default_());
     }
 
     @TestFactory

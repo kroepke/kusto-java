@@ -1,5 +1,5 @@
 // Original to kusto-java (no upstream file). SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2026 Graylog, Inc. Purpose: compares QueryParser part A (literals, schemas, expressions, function parameters) against subtrees of the .NET oracle's traps goldens.
+// Copyright (c) 2026 Graylog, Inc. Purpose: compares the QueryParser entry points (literals, schemas, expressions, function parameters) against subtrees of the .NET oracle's traps goldens.
 
 package org.graylog.kusto.language.parsing;
 
@@ -22,12 +22,11 @@ import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import org.graylog.kusto.language.ParseOptions;
 import org.graylog.kusto.language.syntax.SyntaxElement;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
 /**
- * For every {@code traps} golden, finds the subtrees that one of the part A entry points
+ * For every {@code traps} golden, finds the subtrees that one of the QueryParser entry points
  * ({@code parseLiteral}, {@code parseRowSchema}, {@code parseFunctionParameters}, and
  * {@code parseExpression} for the single expressions of a {@code print}) is responsible for, re-lexes the
  * corpus text, parses from the token at the subtree's start and compares kind, child name, start, end and
@@ -146,27 +145,19 @@ class QueryParserPartATest {
         }
 
         SyntaxElement actual;
-        try {
-            switch (mode) {
-                case "literal":
-                    actual = QueryParser.parseLiteral(tokens, tokenIndex, OPTIONS);
-                    break;
-                case "rowSchema":
-                    actual = QueryParser.parseRowSchema(tokens, tokenIndex, OPTIONS);
-                    break;
-                case "functionParameters":
-                    actual = QueryParser.parseFunctionParameters(tokens, tokenIndex, OPTIONS);
-                    break;
-                default:
-                    actual = QueryParser.parseExpression(tokens, tokenIndex, OPTIONS);
-                    break;
-            }
-        } catch (UnsupportedOperationException | NoSuchMethodError | AbstractMethodError e) {
-            Assumptions.abort(mode + " needs QueryParser part B / QueryGrammar: " + e);
-            return;
-        }
-        if (actual == null && !mode.equals("literal") && !mode.equals("rowSchema")) {
-            Assumptions.assumeTrue(partBAvailable(), mode + " needs QueryParser part B");
+        switch (mode) {
+            case "literal":
+                actual = QueryParser.parseLiteral(tokens, tokenIndex, OPTIONS);
+                break;
+            case "rowSchema":
+                actual = QueryParser.parseRowSchema(tokens, tokenIndex, OPTIONS);
+                break;
+            case "functionParameters":
+                actual = QueryParser.parseFunctionParameters(tokens, tokenIndex, OPTIONS);
+                break;
+            default:
+                actual = QueryParser.parseExpression(tokens, tokenIndex, OPTIONS);
+                break;
         }
         if (actual == null) {
             fail(id + ": parser returned null, expected " + root.get("kind").asText());
@@ -192,15 +183,6 @@ class QueryParserPartATest {
             if (!e.equals(g)) {
                 fail(id + " " + mode + ": node " + i + " expected " + e + " but was " + g);
             }
-        }
-    }
-
-    /** True when the part B members (function parameters, query operator parameters, ...) are implemented. */
-    private static boolean partBAvailable() {
-        try {
-            return QueryParser.parseFunctionParameters("(a: long)") != null;
-        } catch (UnsupportedOperationException | LinkageError e) {
-            return false;
         }
     }
 

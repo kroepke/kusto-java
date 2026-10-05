@@ -20,8 +20,7 @@ class SymbolAssignabilityTest {
         return new ColumnSymbol(name, type);
     }
 
-    // Upstream table/tuple/bag helpers. Table cases (Symbol.cs:276-277, 346-360) need TableSymbol (other W1 partition)
-    // and are not covered here.
+    // Upstream table/tuple/bag helpers. Table cases (Symbol.cs:276-277, 346-360) are not covered here.
     static Stream<Arguments> cases() {
         var L = ScalarTypes.Long;
         var I = ScalarTypes.Int;

@@ -57,7 +57,7 @@ class SymbolTest {
 
     @Test
     void getResultType() {
-        // Symbol.cs:136-183 (VariableSymbol/EntityGroupElementSymbol/ParameterSymbol cases belong to the other W1 partition)
+        // Symbol.cs:136-183 (VariableSymbol/EntityGroupElementSymbol/ParameterSymbol cases are not covered here)
         assertNull(Symbol.getResultType(null));
         assertSame(ScalarTypes.Long, Symbol.getResultType(ScalarTypes.Long));
         assertSame(ScalarTypes.Real, Symbol.getResultType(new ColumnSymbol("a", ScalarTypes.Real)));

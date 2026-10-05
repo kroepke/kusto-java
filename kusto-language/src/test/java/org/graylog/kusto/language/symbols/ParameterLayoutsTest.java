@@ -2,7 +2,6 @@
 // Copyright (c) 2026 Graylog, Inc. Purpose: unit tests for ParameterLayouts (Symbols/ParameterLayouts.cs) and the ParameterMatchKind order.
 package org.graylog.kusto.language.symbols;
 
-import static org.graylog.kusto.language.symbols.W1bTestSupport.assertPending;
 import static org.graylog.kusto.language.symbols.W1bTestSupport.expr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

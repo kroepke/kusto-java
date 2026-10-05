@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.graylog.kusto.language.utils.dotnet.Out;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 class KustoCacheTest {
@@ -74,13 +73,7 @@ class KustoCacheTest {
     void withGlobalsReusesWhenGlobalsAreSame() {
         KustoCache cache = new KustoCache(null);
         assertSame(cache, cache.withGlobals(null));
-        GlobalState globals;
-        try {
-            globals = GlobalState.default_();
-        } catch (UnsupportedOperationException e) {
-            Assumptions.abort("GlobalState not yet ported: " + e);
-            return;
-        }
+        GlobalState globals = GlobalState.default_();
         KustoCache other = cache.withGlobals(globals);
         assertNotSame(cache, other);
         assertSame(globals, other.globals());

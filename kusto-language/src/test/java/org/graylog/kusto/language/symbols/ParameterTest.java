@@ -2,8 +2,6 @@
 // Copyright (c) 2026 Graylog, Inc. Purpose: unit tests for Parameter (Symbols/Parameter.cs) and the P named-argument builder.
 package org.graylog.kusto.language.symbols;
 
-import static org.graylog.kusto.language.symbols.W1bTestSupport.assertPending;
-import static org.graylog.kusto.language.symbols.W1bTestSupport.assumeKustoFacts;
 import static org.graylog.kusto.language.symbols.W1bTestSupport.expr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -201,7 +199,6 @@ class ParameterTest {
 
     @Test
     void declarationText() {
-        assumeKustoFacts();
         assertEquals("x: long", Parameter.getDeclaration(new Parameter("x", ScalarTypes.Long)));
         assertEquals("T: (*)", Parameter.getDeclaration(new Parameter("T", ParameterTypeKind.Tabular)));
         assertEquals("T: (*)", Parameter.getDeclaration(new Parameter("T", TableSymbol.Empty)));

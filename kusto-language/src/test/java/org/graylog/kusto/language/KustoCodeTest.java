@@ -24,7 +24,6 @@ import org.graylog.kusto.language.parsing.LexicalToken;
 import org.graylog.kusto.language.syntax.IncludeTrivia;
 import org.graylog.kusto.language.syntax.SyntaxKind;
 import org.graylog.kusto.language.utils.dotnet.IntRef;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
@@ -33,28 +32,6 @@ class KustoCodeTest {
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final Path RESOURCES = Paths.get(System.getProperty("kusto.conformanceResources",
             Paths.get("..", "kusto-language-conformance", "src", "test", "resources").toString()));
-
-    private static Boolean parseAvailable;
-
-    /**
-     * True once QueryParser (part B) and the grammar classes are spliced in. Until then parse() hits a
-     * PORT-PENDING stub or a missing class, which is not a failure of this port unit.
-     */
-    private static synchronized boolean parseAvailable() {
-        if (parseAvailable == null) {
-            try {
-                KustoCode.parse("T | take 1");
-                parseAvailable = Boolean.TRUE;
-            } catch (UnsupportedOperationException | LinkageError e) {
-                parseAvailable = Boolean.FALSE;
-            }
-        }
-        return parseAvailable;
-    }
-
-    private static void assumeParse() {
-        Assumptions.assumeTrue(parseAvailable(), "KustoCode.parse not available yet (QueryParser part B / grammars not spliced)");
-    }
 
     // ---- no parser needed ----
 
@@ -104,7 +81,6 @@ class KustoCodeTest {
             String text = texts.get(id);
             tests.add(DynamicTest.dynamicTest(id, () -> {
                 assertNotNull(text, id + ": no corpus text");
-                assumeParse();
                 check(id, text, golden);
             }));
         }
@@ -149,7 +125,6 @@ class KustoCodeTest {
 
     @Test
     void tokenIndexAndLineLookup() {
-        assumeParse();
         String text = "T\n| where a > 1\n| take 2";
         KustoCode code = KustoCode.parse(text);
         assertTrue(code.globals().parseOptions().alwaysProduceEndToken());
@@ -173,7 +148,6 @@ class KustoCodeTest {
 
     @Test
     void withGlobalsKeepsInstanceForSameGlobalsAndNoSemantics() {
-        assumeParse();
         KustoCode code = KustoCode.parse("T | take 1");
         assertSame(code, code.withGlobals(code.globals()));
         assertEquals(KustoDialect.Query, code.dialect());
@@ -182,7 +156,6 @@ class KustoCodeTest {
 
     @Test
     void symbolQueriesWithoutSemanticsAreEmpty() {
-        assumeParse();
         KustoCode code = KustoCode.parse("T | take 1");
         assertTrue(code.getSymbolsInScope(0).isEmpty());
         assertNull(code.getSpeculativeReferencedSymbol(0, "T"));

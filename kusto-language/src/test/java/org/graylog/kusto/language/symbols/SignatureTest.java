@@ -2,7 +2,6 @@
 // Copyright (c) 2026 Graylog, Inc. Purpose: unit tests for Signature (Symbols/Signature.cs): argument counts, layouts, tabularity, With* copies.
 package org.graylog.kusto.language.symbols;
 
-import static org.graylog.kusto.language.symbols.W1bTestSupport.assertPending;
 import static org.graylog.kusto.language.symbols.W1bTestSupport.expr;
 import static org.graylog.kusto.language.symbols.W1bTestSupport.named;
 import static org.junit.jupiter.api.Assertions.assertEquals;

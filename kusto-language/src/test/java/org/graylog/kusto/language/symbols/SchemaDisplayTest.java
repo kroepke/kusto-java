@@ -2,7 +2,6 @@
 // Copyright (c) 2026 Graylog, Inc. Purpose: unit tests for SchemaDisplay (Symbols/SchemaDisplay.cs); expected text from upstream and the goldens.
 package org.graylog.kusto.language.symbols;
 
-import static org.graylog.kusto.language.symbols.W1bTestSupport.assumeKustoFacts;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.Test;
  * The goldens render {@code type}/{@code resultType} with {@code SchemaDisplay.GetText} and the signature parameters
  * with {@code GetParameterTypeText} ({@code oracle/kusto-oracle/src/Golden.cs:311,334,386-395}). Strings marked
  * "golden" below occur verbatim in {@code kusto-language-conformance/src/test/resources/goldens/*.jsonl.gz}.
- * Tests that render a column or parameter name go through {@code KustoFacts.BracketNameIfNecessary} and are skipped
- * until W2 ports it.
  */
 class SchemaDisplayTest {
     @Test
@@ -74,7 +71,6 @@ class SchemaDisplayTest {
 
     @Test
     void tablesWithColumns() {
-        assumeKustoFacts();
         assertEquals("(a: long, b: string)", SchemaDisplay.getText(new TableSymbol(
             new ColumnSymbol("a", ScalarTypes.Long), new ColumnSymbol("b", ScalarTypes.String))));
         assertEquals("(a: real)", SchemaDisplay.getText(new TableSymbol(new ColumnSymbol("a", ScalarTypes.Real))));  // golden
@@ -92,7 +88,6 @@ class SchemaDisplayTest {
 
     @Test
     void functionsRenderTheirFirstSignature() {
-        assumeKustoFacts();
         assertEquals("(T: (*))", SchemaDisplay.getText(new FunctionSymbol("f", ScalarTypes.Long,  // golden
             new Parameter("T", TableSymbol.Empty))));
         assertEquals("(tbl: (*), A_col: string, B_col: string, scope_col: string)", SchemaDisplay.getText(new FunctionSymbol("f", // golden
